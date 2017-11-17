@@ -3,7 +3,6 @@
 import collections
 import json
 import bottle
-import db.mysql
 
 _Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
 
@@ -11,20 +10,15 @@ _Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
 class ApiServer(object):
   """The UW Solar API server."""
 
-  def __init__(self):
-    """Initializes routes and WSGI application."""
+  def __init__(self, db):
+    """Initializes routes and WSGI application.
 
-    # Initialize the database connection handler.
-    # TODO(kjiwa): Get these arguments from the constructor.
-    dbconfig = {
-        'user': 'uwsolar_ro',
-        'password': '',
-        'host': 'localhost',
-        'database': 'uwsolar',
-        'pool_size': 3
-    }
+    Args:
+      db: A database accessor.
+    """
 
-    self._db = db.mysql.MysqlDatabase(**dbconfig)
+    self._db = db
+    self._app = bottle.Bottle()
 
     # Define web application routes.
     routes = [
@@ -38,8 +32,6 @@ class ApiServer(object):
         _Route('GET', '/topics', self.get_all_topics)
     ]
 
-    # Initialize the WSGI application.
-    self._app = bottle.Bottle()
     for route in routes:
       self._app.route(route.path, method=route.method, callback=route.callback)
 
@@ -92,6 +84,7 @@ class ApiServer(object):
     Returns:
       A JSON-encoded ISO8601 timestamp.
     """
+    bottle.response.content_type = 'application/json'
     return json.dumps(self._db.get_earliest_data_timestamp().isoformat())
 
   def get_latest_data_timestamp(self):
@@ -100,4 +93,5 @@ class ApiServer(object):
     Returns:
       A JSON-encoded ISO8601 timestamp.
     """
+    bottle.response.content_type = 'application/json'
     return json.dumps(self._db.get_latest_data_timestamp().isoformat())

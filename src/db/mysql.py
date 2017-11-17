@@ -8,16 +8,24 @@ import mysql.connector
 class MysqlDatabase(object):
   """A MySQL connection handler and data accessor."""
 
-  def __init__(self, **kwargs):
+  def __init__(self, options):
     """Initializes a connection to the database.
 
     Detailed documentation for MySQL Connection/Python is available at
     https://dev.mysql.com/doc/connector-python/en/.
 
     Args:
-      **kwargs: A dict of arguments for the MySQL connector.
+      options: An object containing database connectivity options.
     """
-    self._db = mysql.connector.connect(**kwargs)
+    dbconfig = {
+        'user': options.user,
+        'password': options.password,
+        'host': options.host,
+        'database': options.database,
+        'pool_size': options.pool_size
+    }
+
+    self._db = mysql.connector.connect(**dbconfig)
 
   def __del__(self):
     """Release the database connection."""

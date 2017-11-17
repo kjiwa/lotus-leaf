@@ -1,4 +1,4 @@
-"""A UW SOlar web server."""
+"""A UW Solar web server."""
 
 import collections
 import os.path
