@@ -19,8 +19,8 @@ class MysqlDatabase(object):
     """
     self._db = mysql.connector.connect(**kwargs)
 
-  def close(self):
-    """Closes the database connection."""
+  def __del__(self):
+    """Release the database connection."""
     self._db.close()
 
   def get_earliest_data_timestamp(self):

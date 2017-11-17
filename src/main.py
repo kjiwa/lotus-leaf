@@ -3,8 +3,9 @@
 
 import argparse
 import logging
+import api_server
 import bottle
-import server
+import www_server
 
 
 def parse_arguments():
@@ -35,13 +36,11 @@ def main():
   # Initialize logging.
   logging.basicConfig(level=logging.getLevelName(args.log_level))
 
-  # Start the web server.
+  # Initialize and start the web application.
   # TODO(kjiwa): Load configuration from a file and pass it to the server.
-  bottle.run(
-      app=server.Server().app(),
-      host='0.0.0.0',
-      port=args.port,
-      debug=args.debug)
+  app = www_server.WwwServer().app()
+  app.mount('/_/', api_server.ApiServer().app())
+  bottle.run(app=app, host='0.0.0.0', port=args.port, debug=args.debug)
 
 
 if __name__ == '__main__':

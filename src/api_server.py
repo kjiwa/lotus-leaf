@@ -1,8 +1,4 @@
-"""The UW Solar web server object containing routes and route handlers.
-
-The server contains route handlers and instantiates a reference to a WSGI
-application.
-"""
+"""The UW Solar API server."""
 
 import collections
 import json
@@ -12,8 +8,8 @@ import db.mysql
 _Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
 
 
-class Server(object):
-  """The UW Solar web server."""
+class ApiServer(object):
+  """The UW Solar API server."""
 
   def __init__(self):
     """Initializes routes and WSGI application."""
@@ -32,7 +28,7 @@ class Server(object):
 
     # Define web application routes.
     routes = [
-        _Route('GET', '/ping', self.ping),
+        _Route('GET', '/ping', ApiServer.ping),
         _Route('GET', '/data/dates', self.get_all_data_dates),
         _Route('GET', '/data/timestamp/earliest',
                self.get_latest_data_timestamp),
@@ -51,7 +47,8 @@ class Server(object):
     """Returns a reference to the WSGI application."""
     return self._app
 
-  def ping(self):
+  @staticmethod
+  def ping():
     """Returns a ping response.
 
     For now, this method always returns success as long as the web server was
