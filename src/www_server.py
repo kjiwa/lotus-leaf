@@ -17,7 +17,10 @@ class WwwServer(object):
     """Initializes routes and WSGI application."""
 
     # Define web application routes.
-    routes = [_Route('GET', '/index.html', WwwServer.index)]
+    routes = [
+        _Route('GET', '/', WwwServer.index),
+        _Route('GET', '/index.html', WwwServer.index)
+    ]
 
     # Initialize the WSGI application.
     self._app = bottle.Bottle()
