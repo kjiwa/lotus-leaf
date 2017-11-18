@@ -2,6 +2,7 @@
 
 import collections
 import json
+
 import bottle
 
 _Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
@@ -25,9 +26,9 @@ class ApiServer(object):
         _Route('GET', '/ping', ApiServer.ping),
         _Route('GET', '/data/dates', self.get_all_data_dates),
         _Route('GET', '/data/timestamp/earliest',
-               self.get_latest_data_timestamp),
-        _Route('GET', '/data/timestamp/latest',
                self.get_earliest_data_timestamp),
+        _Route('GET', '/data/timestamp/latest',
+               self.get_latest_data_timestamp),
         _Route('GET', '/meta', self.get_all_metadata),
         _Route('GET', '/topics', self.get_all_topics)
     ]
@@ -85,7 +86,11 @@ class ApiServer(object):
       A JSON-encoded ISO8601 timestamp.
     """
     bottle.response.content_type = 'application/json'
-    return json.dumps(self._db.get_earliest_data_timestamp().isoformat())
+    result = self._db.get_earliest_data_timestamp()
+    if not result:
+      return
+
+    return json.dumps(result.isoformat())
 
   def get_latest_data_timestamp(self):
     """Returns the latest timestamp for which there is solar panel activity.
@@ -94,4 +99,8 @@ class ApiServer(object):
       A JSON-encoded ISO8601 timestamp.
     """
     bottle.response.content_type = 'application/json'
-    return json.dumps(self._db.get_latest_data_timestamp().isoformat())
+    result = self._db.get_earliest_data_timestamp()
+    if not result:
+      return
+
+    return json.dumps(result.isoformat())

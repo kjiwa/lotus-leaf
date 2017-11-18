@@ -3,10 +3,10 @@
 
 import argparse
 import logging
+
 import api_server
 import bottle
-import db.mysql
-import db.options
+import db
 import www_server
 
 
@@ -38,17 +38,48 @@ def parse_arguments():
       help='The port on which to listen for requests.')
 
   # Database connectivity arguments
-  db_group = parser.add_argument_group('database', 'Database connectivity arguments.')
-  db_group.add_argument('--db_user', required=True, help='The database user.')
+  db_group = parser.add_argument_group('database',
+                                       'Database connectivity arguments.')
   db_group.add_argument(
-      '--db_password', required=True, help='The database password.')
-  db_group.add_argument('--db_host', required=True, help='The database host.')
+      '--db_type',
+      choices=['mysql', 'sqlite'],
+      default='sqlite',
+      help='Which database type should be used.')
+  db_group.add_argument(
+      '--db_user', default='uwsolar', help='The database user.')
+  db_group.add_argument(
+      '--db_password', default='', help='The database password.')
+  db_group.add_argument(
+      '--db_host', default=':memory:', help='The database host.')
   db_group.add_argument(
       '--db_name', default='uwsolar', help='The database name.')
   db_group.add_argument(
       '--db_pool_size', type=int, default=3, help='The database pool size.')
 
   return parser.parse_args()
+
+
+def initialize_db(db_type, db_user, db_password, db_host, db_name,
+                  db_pool_size):
+  """Initializes the database connection.
+
+  Args:
+    db_type: The type of database to which to connect.
+    db_user: The database user.
+    db_password: The database password.
+    db_host: The database host.
+    db_name: The database name.
+    db_pool_size: The database pool size.
+
+  Returns:
+    A database accessor.
+  """
+  db_options = db.DatabaseOptions(db_user, db_password, db_host, db_name,
+                                  db_pool_size)
+  if db_type == 'sqlite':
+    return db.SqliteDatabase(db_options)
+
+  return db.MysqlDatabase(db_options)
 
 
 def main():
@@ -58,13 +89,9 @@ def main():
   # Initialize logging.
   logging.basicConfig(level=logging.getLevelName(args.log_level))
 
-  # Construct the database options object.
-  db_options = db.options.DatabaseOptions(args.db_user, args.db_password,
-                                          args.db_host, args.db_name,
-                                          args.db_pool_size)
-
-  # TODO(kjiwa): Use an in-memory database in development mode.
-  db_accessor = db.mysql.MysqlDatabase(db_options)
+  # Initialize the database connection.
+  db_accessor = initialize_db(args.db_type, args.db_user, args.db_password,
+                              args.db_host, args.db_name, args.db_pool_size)
 
   # Initialize and start the web application.
   app = www_server.WwwServer().app()

@@ -2,6 +2,7 @@
 
 import collections
 import os.path
+
 import bottle
 
 _WWW_PATH = os.path.dirname(__file__) + '/../www'
