@@ -10,6 +10,7 @@ import sqlite3
 import model
 import mysql.connector
 
+_SQLITE_DATE_FORMAT = '%Y-%m-%d %H:%M:%S.%f'
 _SQLITE_SQL_PATH = os.path.dirname(__file__) + '/../test/db/'
 _SQLITE_SQL = [
     'meta.sql', 'topics.sql', 'data.sql', 'volttron_table_definitions.sql'
@@ -184,6 +185,26 @@ class SqliteDatabase(AbstractSqlDatabase):
     """Releases the database connection."""
     self._db.close()
 
+  def get_all_data_dates(self):
+    """Gets a list of unique dates for which there is solar panel data.
+
+    This method is overridden because SQLite uses the strftime() function to
+    format dates instead of DATE_FORMAT, like MySQL.
+
+    Returns:
+      A list of dates.
+    """
+    timestamps = []
+
+    sql = 'select distinct strftime("%d/%m/%Y", ts) date from data'
+    cursor = self._db.cursor()
+    cursor.execute(sql)
+    for (date, ) in cursor:
+      timestamps.append(datetime.datetime.strptime(date, '%d/%m/%Y').date())
+
+    cursor.close()
+    return timestamps
+
   def get_earliest_data_timestamp(self):
     """Gets the earliest timestamp for which there is data.
 
@@ -195,7 +216,7 @@ class SqliteDatabase(AbstractSqlDatabase):
       A datetime object.
     """
     result = super().get_earliest_data_timestamp()
-    return datetime.datetime.strptime(result, '%Y-%m-%d %H:%M:%S.%f').date()
+    return datetime.datetime.strptime(result, _SQLITE_DATE_FORMAT).date()
 
   def get_latest_data_timestamp(self):
     """Gets the latest timestamp for which there is data.
@@ -208,4 +229,4 @@ class SqliteDatabase(AbstractSqlDatabase):
       A datetime object.
     """
     result = super().get_latest_data_timestamp()
-    return datetime.datetime.strptime(result, '%Y-%m-%d %H:%M:%S.%f').date()
+    return datetime.datetime.strptime(result, _SQLITE_DATE_FORMAT).date()
