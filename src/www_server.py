@@ -48,12 +48,22 @@ class WwwServer(object):
 
   @staticmethod
   def uwsolarcss():
+    """Returns the contents of uwsolar.css.
+
+    Returns:
+      An CSS stylesheet.
+    """
     bottle.response.content_type = 'text/css'
     with open(_CSS_PATH + '/uwsolar.css', 'r') as f:
       return f.read()
 
   @staticmethod
   def uwsolarjs():
+    """Returns the contents of uwsolar.js.
+
+    Returns:
+      A JavaScript script.
+    """
     bottle.response.content_type = 'application/javascript'
     with open(_JS_PATH + '/uwsolar.js', 'r') as f:
       return f.read()
