@@ -25,6 +25,6 @@ popd
 # Install Python dependencies.
 echo -e "\e[1;45mInstalling Python dependencies...\e[0m"
 python3 -m venv "${FLAGS_envroot}"
-source env/bin/activate
+source ${FLAGS_envroot}/bin/activate
 pip install -r requirements.txt
 deactivate
