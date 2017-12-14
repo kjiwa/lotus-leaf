@@ -1,0 +1,21 @@
+{
+  "name": "uwsolar",
+  "version": "1.0.0",
+  "description": "JavaScript for the UW Solar project.",
+  "scripts": {
+    "gulp": "gulp"
+  },
+  "author": "Kamil Jiwa <kjiwa@uw.edu>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-jshint": "^2.0.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "jshint": "^2.9.5"
+  },
+  "dependencies": {
+    "requirejs": "^2.3.5"
+  }
+}

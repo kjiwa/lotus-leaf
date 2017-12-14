@@ -6,6 +6,8 @@ import os.path
 import bottle
 
 _WWW_PATH = os.path.dirname(__file__) + '/../www'
+_CSS_PATH = _WWW_PATH + '/css/dist'
+_JS_PATH = _WWW_PATH + '/js/dist'
 
 _Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
 
@@ -19,7 +21,9 @@ class WwwServer(object):
     # Define web application routes.
     routes = [
         _Route('GET', '/', WwwServer.index),
-        _Route('GET', '/index.html', WwwServer.index)
+        _Route('GET', '/index.html', WwwServer.index),
+        _Route('GET', '/uwsolar.css', WwwServer.uwsolarcss),
+        _Route('GET', '/uwsolar.js', WwwServer.uwsolarjs)
     ]
 
     # Initialize the WSGI application.
@@ -40,4 +44,16 @@ class WwwServer(object):
     """
     bottle.response.content_type = 'text/html'
     with open(_WWW_PATH + '/index.html', 'r') as f:
+      return f.read()
+
+  @staticmethod
+  def uwsolarcss():
+    bottle.response.content_type = 'text/css'
+    with open(_CSS_PATH + '/uwsolar.css', 'r') as f:
+      return f.read()
+
+  @staticmethod
+  def uwsolarjs():
+    bottle.response.content_type = 'application/javascript'
+    with open(_JS_PATH + '/uwsolar.js', 'r') as f:
       return f.read()

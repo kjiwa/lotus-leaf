@@ -1,0 +1,16 @@
+{
+  "name": "uwsolar-css",
+  "version": "1.0.0",
+  "description": "Stylesheets for the UW Solar project.",
+  "scripts": {
+    "gulp": "gulp"
+  },
+  "author": "Kamil Jiwa <kjiwa@uw.edu>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-csslint": "^1.0.0",
+    "gulp-rename": "^1.2.2"
+  }
+}

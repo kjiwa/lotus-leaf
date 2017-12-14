@@ -1,0 +1,10 @@
+**/*.pyc
+**/*~
+**/__pycache__/
+env/
+www/js/dist/
+www/js/node_modules/
+www/js/package-lock.json
+www/css/dist/
+www/css/node_modules/
+www/css/package-lock.json

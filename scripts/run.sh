@@ -17,13 +17,28 @@ eval set -- "${FLAGS_ARGV}"
 
 set -e
 
-if [ ! -d env ]; then
+# Ensure that Python dependencies have been installed.
+if [ ! -d "${FLAGS_envroot}" ]; then
   echo "No environment directory found. Run setup.sh."
   exit -1
 fi
 
+# Build stylesheets.
+echo "Building stylesheets..."
+pushd www/css
+npm run gulp package-dev
+popd
+
+# Build the frontend code.
+echo "Building JavaScript..."
+pushd www/js
+npm run gulp package-dev
+popd
+
+# Run the web server.
+echo "Running web server..."
 python3 -m venv "${FLAGS_envroot}"
-source env/bin/activate
+source ${FLAGS_envroot}/bin/activate
 python src/main.py \
   --debug \
   --port=${FLAGS_port} \
