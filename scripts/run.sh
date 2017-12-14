@@ -44,7 +44,7 @@ fi
 
 # Ensure that Python dependencies have been installed.
 if [ ! -d "${FLAGS_envroot}" ]; then
-  echo "No environment directory found. Run setup.sh."
+  echo -e "\e[91mNo environment directory found. Run setup.sh.\e[0m"
   exit -1
 fi
 
@@ -55,13 +55,13 @@ fi
 
 # Ensure that stylesheets have been built.
 if [ ! -f "$DIR/../www/css/dist/uwsolar.css" ]; then
-  echo "Stylesheets not found. Run build.sh."
+  echo -e "\e[91mStylesheets not found. Run build.sh.\e[0m"
   exit -1
 fi
 
 # Ensure that JavaScript sources have been built.
 if [ ! -f "$DIR/../www/js/dist/uwsolar.js" ]; then
-  echo "JavaScript archive not found. Run build.sh."
+  echo -e "\e[91mJavaScript archives not found. Run build.sh.\e[0m"
   exit -1
 fi
 
