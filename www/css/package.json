@@ -2,6 +2,10 @@
   "name": "uwsolar-css",
   "version": "1.0.0",
   "description": "Stylesheets for the UW Solar project.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kjiwa/lotus-leaf.git"
+  },
   "scripts": {
     "gulp": "gulp"
   },

@@ -24,19 +24,19 @@ if [ ! -d "${FLAGS_envroot}" ]; then
 fi
 
 # Build stylesheets.
-echo "Building stylesheets..."
+echo -e "\e[1;45mBuilding stylesheet sources...\e[0m"
 pushd www/css
 npm run gulp package-dev
 popd
 
 # Build the frontend code.
-echo "Building JavaScript..."
+echo -e "\e[1;45mBuilding JavaScript sources...\e[0m"
 pushd www/js
 npm run gulp package-dev
 popd
 
 # Run the web server.
-echo "Running web server..."
+echo -e "\e[1;45mRunning web server...\e[0m"
 python3 -m venv "${FLAGS_envroot}"
 source ${FLAGS_envroot}/bin/activate
 python src/main.py \
