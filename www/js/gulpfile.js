@@ -1,6 +1,6 @@
 var gulp = require('gulp');
 var browserify = require('gulp-browserify');
-var jshint = require('gulp-jshint');
+var eslint = require('gulp-eslint');
 var rename = require('gulp-rename');
 var uglify = require('gulp-uglify');
 
@@ -10,8 +10,9 @@ var uglify = require('gulp-uglify');
  */
 gulp.task('lint', function() {
   return gulp.src('src/**/*.js')
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 /**
@@ -20,9 +21,8 @@ gulp.task('lint', function() {
  * development.
  */
 gulp.task('package-dev', ['lint'], function() {
-  return gulp.src('src/**/*.js')
+  return gulp.src('src/main.js')
     .pipe(browserify())
-    .pipe(uglify())
     .pipe(rename('uwsolar.js'))
     .pipe(gulp.dest('dist'));
 });
@@ -32,7 +32,7 @@ gulp.task('package-dev', ['lint'], function() {
  * and minifies it.
  */
 gulp.task('package', ['lint'], function() {
-  return gulp.src('src/**/*.js')
+  return gulp.src('src/main.js')
     .pipe(browserify())
     .pipe(uglify())
     .pipe(rename('uwsolar.js'))

@@ -12,14 +12,15 @@
   "author": "Kamil Jiwa <kjiwa@uw.edu>",
   "license": "UNLICENSED",
   "devDependencies": {
+    "eslint": "^4.13.1",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
-    "gulp-jshint": "^2.0.4",
+    "gulp-eslint": "^4.0.0",
     "gulp-rename": "^1.2.2",
-    "gulp-uglify": "^3.0.0",
-    "jshint": "^2.9.5"
+    "gulp-uglify": "^3.0.0"
   },
   "dependencies": {
+    "navigo": "^6.0.1",
     "requirejs": "^2.3.5"
   }
 }
