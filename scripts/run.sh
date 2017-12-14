@@ -1,9 +1,20 @@
+# A script that sets up the environment and runs the web server.
+#
+# The script has several flags that can be used to control program behavior, as
+# well as convenience flags to automatically invoke the setup and build scripts.
+#
+# By default, the script will run setup.sh and build.sh and run the web server
+# so that an in-memory database with sample data is used and port 8080 is used
+# to listen for requests.
+
 #!/bin/bash
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${DIR}/shflags"
 
 DEFINE_string "envroot" "$DIR/../env" "The environment root." "e"
+DEFINE_boolean "setup" ${FLAGS_TRUE} "Whether to run the setup script." "t"
+DEFINE_boolean "build" ${FLAGS_TRUE} "Whether to run the build script." "b"
 DEFINE_integer "port" 8080 "The port on which to listen for requests." "p"
 DEFINE_string "db_type" "sqlite" "The type of database to use." "d"
 DEFINE_string "db_user" "uwsolar" "The database user." "u"
@@ -17,23 +28,33 @@ eval set -- "${FLAGS_ARGV}"
 
 set -e
 
+# Install build and runtime dependencies.
+if [ "${FLAGS_setup}" -eq "${FLAGS_TRUE}" ]; then
+  $DIR/setup.sh
+fi
+
 # Ensure that Python dependencies have been installed.
 if [ ! -d "${FLAGS_envroot}" ]; then
   echo "No environment directory found. Run setup.sh."
   exit -1
 fi
 
-# Build stylesheets.
-echo -e "\e[1;45mBuilding stylesheet sources...\e[0m"
-pushd www/css
-npm run gulp package-dev
-popd
+# Build stylesheets and JavaScript sources.
+if [ "${FLAGS_build}" -eq "${FLAGS_TRUE}" ]; then
+  $DIR/build.sh
+fi
 
-# Build the frontend code.
-echo -e "\e[1;45mBuilding JavaScript sources...\e[0m"
-pushd www/js
-npm run gulp package-dev
-popd
+# Ensure that stylesheets have been built.
+if [ ! -f "$DIR/../www/css/dist/uwsolar.css" ]; then
+  echo "Stylesheets not found. Run build.sh."
+  exit -1
+fi
+
+# Ensure that JavaScript sources have been built.
+if [ ! -f "$DIR/../www/js/dist/uwsolar.js" ]; then
+  echo "JavaScript archive not found. Run build.sh."
+  exit -1
+fi
 
 # Run the web server.
 echo -e "\e[1;45mRunning web server...\e[0m"

@@ -1,3 +1,5 @@
+# A script that removes dependencies, build artifacts, and temporary files.
+
 #!/bin/bash
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
