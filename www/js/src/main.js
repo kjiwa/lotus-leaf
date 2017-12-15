@@ -1,14 +1,19 @@
-var navigo = require('navigo');
-var homeview = require('./views/home.js');
+'use strict';
 
-function main() {
-  var routes = {
-    '*': homeview
-  };
+var Navigo = require('navigo');
+var HomeView = require('./views/home.js');
 
-  new navigo(null, true, '#!')
-    .on(routes)
-    .resolve();
-}
+(function() {
 
-main();
+  function main() {
+    var routes = {
+      '*': HomeView
+    };
+
+    new Navigo(null, true, '#!')
+      .on(routes)
+      .resolve();
+  }
+
+  main();
+}());

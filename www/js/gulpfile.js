@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var browserify = require('gulp-browserify');
 var eslint = require('gulp-eslint');
 var rename = require('gulp-rename');
+var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 
 /**
@@ -22,8 +23,10 @@ gulp.task('lint', function() {
  */
 gulp.task('package-dev', ['lint'], function() {
   return gulp.src('src/main.js')
+    .pipe(sourcemaps.init())
     .pipe(browserify())
     .pipe(rename('uwsolar.js'))
+    .pipe(sourcemaps.write('/'))
     .pipe(gulp.dest('dist'));
 });
 

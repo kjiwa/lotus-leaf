@@ -17,9 +17,11 @@
     "gulp-browserify": "^0.5.1",
     "gulp-eslint": "^4.0.0",
     "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.1",
     "gulp-uglify": "^3.0.0"
   },
   "dependencies": {
+    "chart.js": "^2.7.1",
     "navigo": "^6.0.1",
     "requirejs": "^2.3.5"
   }

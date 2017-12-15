@@ -23,7 +23,8 @@ class WwwServer(object):
         _Route('GET', '/', WwwServer.index),
         _Route('GET', '/index.html', WwwServer.index),
         _Route('GET', '/uwsolar.css', WwwServer.uwsolarcss),
-        _Route('GET', '/uwsolar.js', WwwServer.uwsolarjs)
+        _Route('GET', '/uwsolar.js', WwwServer.uwsolarjs),
+        _Route('GET', '/uwsolar.js.map', WwwServer.uwsolarjsmap)
     ]
 
     # Initialize the WSGI application.
@@ -66,4 +67,15 @@ class WwwServer(object):
     """
     bottle.response.content_type = 'application/javascript'
     with open(_JS_PATH + '/uwsolar.js', 'r') as f:
+      return f.read()
+
+  @staticmethod
+  def uwsolarjsmap():
+    """Returns the contents of uwsolar.js.map.
+
+    Returns:
+      A JavaScript sourcemap.
+    """
+    bottle.response.content_type = 'application/json'
+    with open(_JS_PATH + '/uwsolar.js.map', 'r') as f:
       return f.read()
