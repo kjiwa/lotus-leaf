@@ -13,7 +13,7 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${DIR}/shflags"
 
 DEFINE_string "envroot" "$DIR/../env" "The environment root." "e"
-DEFINE_boolean "debug" ${FLAGS_TRUE} "Whether to run the server in debug mode." "d"
+DEFINE_boolean "debug" ${FLAGS_FALSE} "Whether to run the server in debug mode." "d"
 DEFINE_boolean "setup" ${FLAGS_TRUE} "Whether to run the setup script." "s"
 DEFINE_boolean "build" ${FLAGS_TRUE} "Whether to run the build script." "b"
 DEFINE_integer "port" 8080 "The port on which to listen for requests." "p"
@@ -48,20 +48,17 @@ if [ ! -d "${FLAGS_envroot}" ]; then
   exit -1
 fi
 
-# Build stylesheets and JavaScript sources.
+# Build project.
 if [ ${FLAGS_build} -eq ${FLAGS_TRUE} ]; then
   $DIR/build.sh $BUILD_DEBUG_FLAG
 fi
 
-# Ensure that stylesheets have been built.
-if [ ! -f "$DIR/../www/css/dist/uwsolar.css" ]; then
-  echo -e "\e[91mStylesheets not found. Run build.sh.\e[0m"
+# Ensure that frontend resources have been built.
+if [ ! -f "$DIR/../www/dist/index.html" ]; then
+  echo -e "\e[91mwww/dist/index.html not found. Run build.sh.\e[0m"
   exit -1
-fi
-
-# Ensure that JavaScript sources have been built.
-if [ ! -f "$DIR/../www/js/dist/uwsolar.js" ]; then
-  echo -e "\e[91mJavaScript archives not found. Run build.sh.\e[0m"
+elif [ ! -f "$DIR/../www/dist/uwsolar.js" ]; then
+  echo -e "\e[91mwww/dist/uwsolar.js not found. Run build.sh.\e[0m"
   exit -1
 fi
 

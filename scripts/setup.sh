@@ -12,15 +12,9 @@ eval set -- "${FLAGS_ARGV}"
 
 set -e
 
-# Install stylesheet dependencies.
-echo -e "\e[1;45mInstalling stylesheet dependencies...\e[0m"
-pushd www/css
-npm install
-popd
-
-# Install JavaScript dependencies.
-echo -e "\e[1;45mInstalling JavaScript dependencies...\e[0m"
-pushd www/js
+# Install frontend dependencies.
+echo -e "\e[1;45mInstalling frontend dependencies...\e[0m"
+pushd www
 npm install
 popd
 

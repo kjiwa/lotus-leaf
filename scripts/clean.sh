@@ -10,13 +10,8 @@ DEFINE_string "envroot" "$DIR/../env" "The environment root." "e"
 FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
 
-# Remove stylesheet artifacts.
-pushd www/css
-rm -rf dist node_modules
-popd
-
-# Remove JavaScript artifacts.
-pushd www/js
+# Remove frontend artifacts.
+pushd www
 rm -rf dist node_modules
 popd
 
@@ -27,4 +22,3 @@ find . -type f -name "*.pyc" -delete
 
 # Remove temporary files.
 find . -type f -name "*~" -delete
-find . -type f -name "package-lock.json" -delete
