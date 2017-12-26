@@ -30,7 +30,8 @@
     "@babel/preset-es2015": "^7.0.0-beta.35",
     "@babel/preset-react": "^7.0.0-beta.35",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2"
   },
   "main": "js/main.js"
 }
