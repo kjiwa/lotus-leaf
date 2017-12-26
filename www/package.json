@@ -12,18 +12,23 @@
     "url": "https://github.com/kjiwa/lotus-leaf/issues"
   },
   "devDependencies": {
+    "babel-loader": "^8.0.0-beta.0",
     "babel-minify-webpack-plugin": "^0.2.0",
+    "clean-webpack-plugin": "^0.1.17",
     "css-loader": "^0.28.7",
+    "eslint": "^4.14.0",
+    "eslint-loader": "^1.9.0",
+    "eslint-plugin-react": "^7.5.1",
     "html-loader": "^0.5.1",
     "html-webpack-plugin": "^2.30.1",
     "style-loader": "^0.19.1",
-    "webpack": "^3.10.0"
+    "webpack": "^3.10.0",
+    "webpack-merge": "^4.1.1"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-beta.35",
     "@babel/preset-es2015": "^7.0.0-beta.35",
     "@babel/preset-react": "^7.0.0-beta.35",
-    "babel-loader": "^8.0.0-beta.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"
   },

@@ -19,8 +19,9 @@ class WwwServer(object):
     # Define web application routes.
     routes = [
         _Route('GET', '/', WwwServer.root),
-        _Route('GET', '/index.html', WwwServer.index),
-        _Route('GET', '/uwsolar.js', WwwServer.uwsolarjs)
+        _Route('GET', '/uwsolar.js', WwwServer.uwsolarjs),
+        _Route('GET', '/uwsolar.js.map', WwwServer.uwsolarjsmap),
+        _Route('GET', '/<:re:.*>', WwwServer.redirect)
     ]
 
     # Initialize the WSGI application.
@@ -34,10 +35,6 @@ class WwwServer(object):
 
   @staticmethod
   def root():
-    bottle.redirect('/index.html', 301)
-
-  @staticmethod
-  def index():
     """Returns the contents of index.html.
 
     Returns:
@@ -57,3 +54,19 @@ class WwwServer(object):
     bottle.response.content_type = 'application/javascript'
     with open(_WWW_PATH + '/dist/uwsolar.js', 'r') as f:
       return f.read()
+
+  @staticmethod
+  def uwsolarjsmap():
+    """Returns the contents of uwsolar.js.map.
+
+    Returns:
+      A source map.
+    """
+    bottle.response.content_type = 'application/json'
+    with open(_WWW_PATH + '/dist/uwsolar.js.map', 'r') as f:
+      return f.read()
+
+  @staticmethod
+  def redirect():
+    """Redirects unmatched requests to /."""
+    bottle.redirect('/', 301)
