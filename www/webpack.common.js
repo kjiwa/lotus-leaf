@@ -95,7 +95,6 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
-        exclude: /node_modules/,
         use: 'url-loader'
       }
     ]

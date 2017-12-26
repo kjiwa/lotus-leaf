@@ -29,9 +29,13 @@
     "@babel/core": "^7.0.0-beta.35",
     "@babel/preset-es2015": "^7.0.0-beta.35",
     "@babel/preset-react": "^7.0.0-beta.35",
+    "material-ui": "^1.0.0-beta.25",
+    "material-ui-icons": "^1.0.0-beta.17",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-router-dom": "^4.2.2"
+    "react-router-dom": "^4.2.2",
+    "typeface-roboto": "0.0.45",
+    "url-loader": "^0.6.2"
   },
   "main": "js/main.js"
 }
