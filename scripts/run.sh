@@ -3,9 +3,17 @@
 # The script has several flags that can be used to control program behavior, as
 # well as convenience flags to automatically invoke the setup and build scripts.
 #
-# By default, the script will run setup.sh and build.sh and run the web server
-# so that an in-memory database with sample data is used and port 8080 is used
-# to listen for requests.
+# By default, the script will install dependencies, build the source code with
+# optimizations, and run the server. The web server will use an in-memory
+# database initialized with sample data, and listen for requests on port 8080.
+#
+# For new developers, it is recommended to run this script once without any
+# arguments to ensure that the application builds and runs correctly. Subsequent
+# invocations can skip steps such as dependency installation and optimization
+# to decrease the build time.
+#
+#   $ scripts/run.sh
+#   $ scripts/run.sh --noclean --nosetup --debug
 
 #!/bin/bash
 
@@ -13,9 +21,10 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${DIR}/shflags"
 
 DEFINE_string "envroot" "$DIR/../env" "The environment root." "e"
-DEFINE_boolean "debug" ${FLAGS_FALSE} "Whether to run the server in debug mode." "d"
-DEFINE_boolean "setup" ${FLAGS_TRUE} "Whether to run the setup script." "s"
-DEFINE_boolean "build" ${FLAGS_TRUE} "Whether to run the build script." "b"
+DEFINE_boolean "debug" ${FLAGS_FALSE} "Whether to build debuggable binaries and run the server in debug mode." "d"
+DEFINE_boolean "clean" ${FLAGS_TRUE} "Whether to clean build artifacts and temporary files." "c"
+DEFINE_boolean "setup" ${FLAGS_TRUE} "Whether to setup the runtime environment." "s"
+DEFINE_boolean "build" ${FLAGS_TRUE} "Whether to build application binaries." "b"
 DEFINE_integer "port" 8080 "The port on which to listen for requests." "p"
 DEFINE_string "db_type" "sqlite" "The type of database to use." "t"
 DEFINE_string "db_user" "uwsolar" "The database user." "u"
@@ -35,6 +44,11 @@ if [ ${FLAGS_debug} -eq ${FLAGS_TRUE} ]; then
 else
   BUILD_DEBUG_FLAG="--nodebug"
   SERVER_DEBUG_FLAG=""
+fi
+
+# Clean build artifacts.
+if [ ${FLAGS_clean} -eq ${FLAGS_TRUE} ]; then
+  $DIR/clean.sh
 fi
 
 # Install build and runtime dependencies.

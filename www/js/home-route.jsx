@@ -5,8 +5,15 @@ import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'ma
 import IconButton from 'material-ui/IconButton';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Topic } from './model.js';
 import Typography from 'material-ui/Typography';
+import { Topic } from './model.js';
+import { withStyles } from 'material-ui/styles';
+
+const styles = (theme) => ({
+  card: {
+    overflow: 'visible'
+  }
+});
 
 class HomeRoute extends React.Component {
   constructor(props) {
@@ -26,8 +33,9 @@ class HomeRoute extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
-      <Card>
+      <Card className={classes.card}>
         <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography type="subheading">Chart Options</Typography>
@@ -38,7 +46,8 @@ class HomeRoute extends React.Component {
               selectedTopicId={this.state.selectedTopicId}
               startDateTime={this.state.startDateTime}
               endDateTime={this.state.endDateTime}
-              onTopicChange={this.handleSelectedTopicChange.bind(this)} />
+              onTopicChange={this.handleSelectedTopicChange.bind(this)}
+              onDatesChange={this.handleDatesChange.bind(this)}/>
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Card>
@@ -87,12 +96,25 @@ class HomeRoute extends React.Component {
       });
   }
 
-  handleSelectedTopicChange(event, topicId) {
-    this.setState({ selectedTopicId: topicId });
+  handleSelectedTopicChange(event) {
+    this.setState({ selectedTopicId: event.target.value });
+  }
+
+  handleDatesChange(event) {
+    const dates = {};
+    if (event.startDate) {
+      dates.startDateTime = event.startDate.toDate();
+    }
+
+    if (event.endDate) {
+      dates.endDateTime = event.endDate.toDate();
+    }
+
+    this.setState(dates);
   }
 }
 
 HomeRoute.propTypes = {
 };
 
-export default HomeRoute;
+export default withStyles(styles)(HomeRoute);

@@ -12,14 +12,16 @@ eval set -- "${FLAGS_ARGV}"
 
 set -e
 
+echo -e "\e[1;45mSetting up build and runtime environment...\e[0m"
+
 # Install frontend dependencies.
-echo -e "\e[1;45mInstalling frontend dependencies...\e[0m"
+echo -e "\e[1;33mInstalling frontend dependencies...\e[0m"
 pushd www
 npm install
 popd
 
 # Install Python dependencies.
-echo -e "\e[1;45mInstalling Python dependencies...\e[0m"
+echo -e "\e[1;33mInstalling Python dependencies...\e[0m"
 python3 -m venv "${FLAGS_envroot}"
 source ${FLAGS_envroot}/bin/activate
 pip install -r requirements.txt

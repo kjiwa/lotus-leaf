@@ -1,4 +1,9 @@
+@import '~react-dates/lib/css/_datepicker.css';
 @import '~typeface-roboto/index.css';
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;

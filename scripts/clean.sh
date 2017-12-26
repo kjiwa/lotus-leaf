@@ -10,6 +10,8 @@ DEFINE_string "envroot" "$DIR/../env" "The environment root." "e"
 FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
 
+echo -e "\e[1;45mCleaning build artifacts...\e[0m"
+
 # Remove frontend artifacts.
 pushd www
 rm -rf dist node_modules

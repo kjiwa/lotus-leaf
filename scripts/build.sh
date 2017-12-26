@@ -12,13 +12,14 @@ eval set -- "${FLAGS_ARGV}"
 
 set -e
 
-if [ "${FLAGS_debug}" -eq "${FLAGS_TRUE}" ]; then
+echo -e "\e[1;45mBuilding frontend...\e[0m"
+
+if [ ${FLAGS_debug} -eq ${FLAGS_TRUE} ]; then
   CONFIG_FILE=webpack.development.js
 else
   CONFIG_FILE=webpack.production.js
 fi
 
-echo -e "\e[1;45mBuilding frontend...\e[0m"
 pushd $DIR/../www
 npm run webpack -- --progress --config $CONFIG_FILE
 popd
