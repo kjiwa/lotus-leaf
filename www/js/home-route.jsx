@@ -1,16 +1,32 @@
 import Card, { CardContent, CardHeader } from 'material-ui/Card';
+import ChartOptions from './chart-options.jsx';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
 import IconButton from 'material-ui/IconButton';
 import React from 'react';
+import { Topic } from './model.js';
 import Typography from 'material-ui/Typography';
-import { withStyles} from 'material-ui/styles';
-
-const styles = (theme) => ({});
 
 class HomeRoute extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { topics: [] };
+  }
+
+  componentDidMount() {
+    fetch('/_/topics')
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        const topics = data.map((e) => {
+          return new Topic(e[0], e[1]);
+        });
+        this.setState({ topics: topics });
+      });
+  }
+
   render() {
-    const { classes } = this.props;
     return (
       <Card>
         <ExpansionPanel defaultExpanded={true}>
@@ -18,7 +34,7 @@ class HomeRoute extends React.Component {
             <Typography type="subheading">Chart Options</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Typography>Lorem ipsum dolor sit amet.</Typography>
+            <ChartOptions topics={this.state.topics} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Card>
@@ -26,4 +42,4 @@ class HomeRoute extends React.Component {
   }
 }
 
-export default withStyles(styles)(HomeRoute);
+export default HomeRoute;

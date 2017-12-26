@@ -6,6 +6,7 @@ import PrimaryHeader from './primary-header.jsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
+import { withStyles } from 'material-ui/styles';
 
 const styles = (theme) => ({
   content: {
@@ -16,6 +17,7 @@ const styles = (theme) => ({
 
 class App extends React.Component {
   render() {
+    const { classes } = this.props;
     return (
       <BrowserRouter>
         <div>
@@ -29,4 +31,5 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+const AppWithStyles = withStyles(styles)(App);
+ReactDOM.render(<AppWithStyles />, document.getElementById('app'));
