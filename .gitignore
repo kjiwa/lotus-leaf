@@ -2,5 +2,7 @@
 **/*~
 **/__pycache__/
 env/
+scripts/shflags-real
 www/dist/
 www/node_modules/
+www/package-lock.json

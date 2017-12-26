@@ -37,6 +37,7 @@ FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
 
 set -e
+set -o posix
 
 if [ ${FLAGS_debug} -eq ${FLAGS_TRUE} ]; then
   BUILD_DEBUG_FLAG="--debug"
@@ -48,7 +49,7 @@ fi
 
 # Clean build artifacts.
 if [ ${FLAGS_clean} -eq ${FLAGS_TRUE} ]; then
-  $DIR/clean.sh
+  $DIR/clean.sh --nodelete_shflags
 fi
 
 # Install build and runtime dependencies.

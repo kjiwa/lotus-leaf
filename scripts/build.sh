@@ -11,6 +11,7 @@ FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
 
 set -e
+set -o posix
 
 echo -e "\e[1;45mBuilding frontend...\e[0m"
 

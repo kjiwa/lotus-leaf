@@ -11,6 +11,7 @@ FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
 
 set -e
+set -o posix
 
 echo -e "\e[1;45mSetting up build and runtime environment...\e[0m"
 
