@@ -60,7 +60,7 @@ class ApiServer(server.BaseServer):
     Returns:
       A JSON-encoded list of topic data.
     """
-    params = bottle.request.query.decode() # pylint: disable=no-member
+    params = bottle.request.query.decode()  # pylint: disable=no-member
     topic_id = int(params.get('topic_id', 0))
     start_dt_str = params.get('start_date_time')
     end_dt_str = params.get('end_date_time')
@@ -72,8 +72,8 @@ class ApiServer(server.BaseServer):
 
     start_dt = dateutil.parser.parse(start_dt_str)
     end_dt = dateutil.parser.parse(end_dt_str)
-    return json.dumps(
-        self._db.get_data(topic_id, start_dt, end_dt), cls=model.DatumEncoder)
+    result = self._db.get_data(topic_id, start_dt, end_dt)
+    return json.dumps(result, cls=model.DatumEncoder)
 
   def get_earliest_data_timestamp(self):
     """Returns the earliest timestamp for which there is solar panel activity.

@@ -59,7 +59,7 @@ class Database(object):
     s = sqlalchemy.orm.Session(self.engine)
     result = (s.query(model.Datum).filter(model.Datum.topic_id == topic_id)
               .filter(model.Datum.ts >= start_dt)
-              .filter(model.Datum.ts <= end_dt)).all()
+              .filter(model.Datum.ts <= end_dt).all())
     s.close()
     return result
 

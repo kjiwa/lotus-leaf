@@ -32,9 +32,9 @@ class Topic(BASE):
 class Datum(BASE):
   """An object containing the value for a given topic at a particular time."""
   __tablename__ = 'data'
-  ts = Column(DateTime)
+  ts = Column(DateTime, primary_key=True)
   topic_id = Column(Integer, primary_key=True)
-  value_string = Column(Text)
+  value_string = Column(Text, primary_key=True)
 
 
 class DatumEncoder(json.JSONEncoder):

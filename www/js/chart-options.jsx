@@ -19,7 +19,10 @@ const styles = (theme) => ({
   row: {
     margin: '16px 0'
   },
-  select: {
+  sampleGranularitySelect: {
+    width: '200px'
+  },
+  topicSelect: {
     width: '600px'
   }
 });
@@ -27,15 +30,21 @@ const styles = (theme) => ({
 class ChartOptions extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { focusedInput: null };
+    this.state = {
+      focusedInput: null,
+      sampleGranularityFieldError: false
+    };
   }
 
   render() {
     const { classes } = this.props;
+    const topicMenuItems = this.props.topics.map((e) => (
+      <MenuItem key={e['topic_id']} value={e['topic_id']}>{e['topic_name']}</MenuItem>
+    ));
 
-    const topicMenuItems = this.props.topics.map((e) => {
-      return <MenuItem key={e.id} value={e.id}>{e.name}</MenuItem>;
-    });
+    const sampleGranularityMenuItems = this.props.sampleGranularities.map((e) => (
+      <MenuItem key={e} value={e}>{e}</MenuItem>
+    ));
 
     return (
       <div>
@@ -44,7 +53,7 @@ class ChartOptions extends React.Component {
             <FormControl>
               <InputLabel>Topic</InputLabel>
               <Select
-                className={classes.select}
+                className={classes.topicSelect}
                 value={this.props.selectedTopicId}
                 onChange={this.props.onTopicChange}>
                 {topicMenuItems}
@@ -54,15 +63,26 @@ class ChartOptions extends React.Component {
           <div className={classes.row}>
             <InputLabel className={classes.dateRangeInputLabel}>Date Range</InputLabel>
             <DateRangePicker
-              initialVisibleMonth={() => new Moment(this.props.startDateTime)}
-              startDate={new Moment(this.props.startDateTime)}
-              endDate={new Moment(this.props.endDateTime)}
+              initialVisibleMonth={() => this.props.startDateTime}
+              startDate={this.props.startDateTime}
+              endDate={this.props.endDateTime}
               focusedInput={this.state.focusedInput}
               onDatesChange={this.props.onDatesChange}
               onFocusChange={this.handleFocusChange.bind(this)}
               startDateId="start_date"
               endDateId="end_date"
-              isOutsideRange={(date) => date.isBefore(this.props.startDateTime)} />
+              isOutsideRange={(moment) => false} />
+          </div>
+          <div className={classes.row}>
+            <FormControl>
+              <InputLabel>Sample Granularity</InputLabel>
+              <Select
+                className={classes.sampleGranularitySelect}
+                value={this.props.selectedSampleGranularity}
+                onChange={this.props.onSampleGranularityChange}>
+                {sampleGranularityMenuItems}
+              </Select>
+            </FormControl>
           </div>
           <div className={classes.row}>
             <Button
@@ -85,10 +105,13 @@ class ChartOptions extends React.Component {
 ChartOptions.propTypes = {
   topics: PropTypes.array.isRequired,
   selectedTopicId: PropTypes.number.isRequired,
-  startDateTime: PropTypes.instanceOf(Date).isRequired,
-  endDateTime: PropTypes.instanceOf(Date).isRequired,
-  onDatesChange: PropTypes.func.isRequired,
+  startDateTime: PropTypes.instanceOf(Moment).isRequired,
+  endDateTime: PropTypes.instanceOf(Moment).isRequired,
+  sampleGranularities: PropTypes.array.isRequired,
+  selectedSampleGranularity: PropTypes.string.isRequired,
   onTopicChange: PropTypes.func.isRequired,
+  onDatesChange: PropTypes.func.isRequired,
+  onSampleGranularityChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
 
