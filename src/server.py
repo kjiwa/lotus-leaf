@@ -3,7 +3,7 @@
 import collections
 import bottle
 
-Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
+Route = collections.namedtuple('Route', ['method', 'path', 'callback'])
 
 
 class BaseServer(object):

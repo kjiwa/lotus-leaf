@@ -38,14 +38,12 @@ class Database(object):
     model.BASE.metadata.create_all(self.engine)
 
     # Load test DB files and execute them.
-    c = self.engine.connect()
-    for sql in _SQLITE_SQL:
-      f = open(_SQLITE_SQL_PATH + sql, 'r')
-      statements = sqlparse.split(f.read())
-      for statement in statements:
-        c.execute(statement)
-      f.close()
-    c.close()
+    with self.engine.connect() as c:
+      for sql in _SQLITE_SQL:
+        with open(_SQLITE_SQL_PATH + sql, 'r') as f:
+          statements = sqlparse.split(f.read())
+          for statement in statements:
+            c.execute(statement)
 
   def get_earliest_data_timestamp(self):
     """Gets the earliest timestamp from the data table.
