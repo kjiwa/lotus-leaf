@@ -26,11 +26,6 @@ class Topic(BASE):
   topic_id = Column(Integer, primary_key=True)
   topic_name = Column(String(512))
 
-  def __init__(self, topic_id, name):
-    super()
-    self.topic_id = topic_id
-    self.name = name
-
 class Datum(BASE):
   """An object containing the value for a given topic at a particular time."""
   __tablename__ = 'data'
