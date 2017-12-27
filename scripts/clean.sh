@@ -1,6 +1,6 @@
-# A script that removes dependencies, build artifacts, and temporary files.
-
 #!/bin/bash
+
+# A script that removes dependencies, build artifacts, and temporary files.
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${DIR}/shflags"

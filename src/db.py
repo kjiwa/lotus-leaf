@@ -45,6 +45,24 @@ class Database(object):
           for statement in statements:
             c.execute(statement)
 
+  def get_data(self, topic_id, start_dt, end_dt):
+    """Gets time-series data for a given topic and date range.
+
+    Args:
+      topic_id: The topic to query.
+      start_dt: The start datetime.
+      end_dt: The end datetime.
+
+    Returns:
+      A list of time-series data objects.
+    """
+    s = sqlalchemy.orm.Session(self.engine)
+    result = (s.query(model.Datum).filter(model.Datum.topic_id == topic_id)
+              .filter(model.Datum.ts >= start_dt)
+              .filter(model.Datum.ts <= end_dt)).all()
+    s.close()
+    return result
+
   def get_earliest_data_timestamp(self):
     """Gets the earliest timestamp from the data table.
 

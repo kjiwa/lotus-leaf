@@ -37,12 +37,27 @@ class Datum(BASE):
   value_string = Column(Text)
 
 
+class DatumEncoder(json.JSONEncoder):
+  """A class that prepares Datum objects for JSON encoding."""
+
+  # pylint: disable=arguments-differ,method-hidden
+  def default(self, obj):
+    if isinstance(obj, Datum):
+      return {
+          'ts': obj.ts.isoformat(),
+          'topic_id': obj.topic_id,
+          'value_string': obj.value_string
+      }
+
+    return json.JSONEncoder.default(self, obj)
+
+
 class TopicEncoder(json.JSONEncoder):
-  """A class that prepares objects for JSON encoding."""
+  """A class that prepares Topic objects for JSON encoding."""
 
   # pylint: disable=arguments-differ,method-hidden
   def default(self, obj):
     if isinstance(obj, Topic):
-      return {'id': obj.topic_id, 'name': obj.topic_name}
+      return {'topic_id': obj.topic_id, 'topic_name': obj.topic_name}
 
     return json.JSONEncoder.default(self, obj)

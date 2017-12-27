@@ -1,6 +1,6 @@
-# A script that downloads shflags if it is not present and executes it.
-
 #!/bin/bash
+
+# A script that downloads shflags if it is not present and executes it.
 
 set -e
 set -o posix

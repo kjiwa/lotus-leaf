@@ -1,4 +1,5 @@
 import Card, { CardContent, CardHeader } from 'material-ui/Card';
+import Chart from './chart.jsx';
 import ChartOptions from './chart-options.jsx';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import ExpansionPanel, { ExpansionPanelDetails, ExpansionPanelSummary } from 'material-ui/ExpansionPanel';
@@ -10,8 +11,11 @@ import { Topic } from './model.js';
 import { withStyles } from 'material-ui/styles';
 
 const styles = (theme) => ({
-  card: {
+  chartOptionsCard: {
     overflow: 'visible'
+  },
+  chartCard: {
+    marginTop: '32px'
   }
 });
 
@@ -22,7 +26,8 @@ class HomeRoute extends React.Component {
       startDateTime: new Date(),
       endDateTime: new Date(),
       topics: [],
-      selectedTopicId: 0
+      selectedTopicId: 0,
+      data: []
     };
   }
 
@@ -34,23 +39,38 @@ class HomeRoute extends React.Component {
 
   render() {
     const { classes } = this.props;
+
+    let chart = null;
+    if (this.state.data.length > 0) {
+      chart = (
+        <Card className={classes.chartCard}>
+          <CardHeader title="Chart" />
+          <CardContent><Chart data={data} /></CardContent>
+        </Card>
+      );
+    }
+
     return (
-      <Card className={classes.card}>
-        <ExpansionPanel defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography type="subheading">Chart Options</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <ChartOptions
-              topics={this.state.topics}
-              selectedTopicId={this.state.selectedTopicId}
-              startDateTime={this.state.startDateTime}
-              endDateTime={this.state.endDateTime}
-              onTopicChange={this.handleSelectedTopicChange.bind(this)}
-              onDatesChange={this.handleDatesChange.bind(this)}/>
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      </Card>
+      <div>
+        <Card className={classes.chartOptionsCard}>
+          <ExpansionPanel defaultExpanded={true}>
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography type="headline">Chart Options</Typography>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+              <ChartOptions
+                topics={this.state.topics}
+                selectedTopicId={this.state.selectedTopicId}
+                startDateTime={this.state.startDateTime}
+                endDateTime={this.state.endDateTime}
+                onTopicChange={this.handleSelectedTopicChange.bind(this)}
+                onDatesChange={this.handleDatesChange.bind(this)}
+                onSubmit={this.handleOptionsSubmit.bind(this)} />
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        </Card>
+        {chart}
+      </div>
     );
   }
 
@@ -61,7 +81,7 @@ class HomeRoute extends React.Component {
       })
       .then((data) => {
         const topics = data.map((e) => {
-          return new Topic(e['id'], e['name']);
+          return new Topic(e['topic_id'], e['topic_name']);
         });
 
         let selectedTopicId = 0;
@@ -111,6 +131,9 @@ class HomeRoute extends React.Component {
     }
 
     this.setState(dates);
+  }
+
+  handleOptionsSubmit() {
   }
 }
 

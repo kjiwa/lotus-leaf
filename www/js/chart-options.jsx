@@ -1,3 +1,4 @@
+import Button from 'material-ui/Button';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -63,6 +64,14 @@ class ChartOptions extends React.Component {
               endDateId="end_date"
               isOutsideRange={(date) => date.isBefore(this.props.startDateTime)} />
           </div>
+          <div className={classes.row}>
+            <Button
+              raised
+              color="primary"
+              onClick={this.props.onSubmit.bind(this)}>
+              Submit
+            </Button>
+          </div>
         </form>
       </div>
     );
@@ -78,8 +87,9 @@ ChartOptions.propTypes = {
   selectedTopicId: PropTypes.number.isRequired,
   startDateTime: PropTypes.instanceOf(Date).isRequired,
   endDateTime: PropTypes.instanceOf(Date).isRequired,
+  onDatesChange: PropTypes.func.isRequired,
   onTopicChange: PropTypes.func.isRequired,
-  onDatesChange: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(ChartOptions);

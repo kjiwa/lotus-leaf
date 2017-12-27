@@ -31,6 +31,7 @@
     "@babel/core": "^7.0.0-beta.35",
     "@babel/preset-es2015": "^7.0.0-beta.35",
     "@babel/preset-react": "^7.0.0-beta.35",
+    "chart.js": "^2.7.1",
     "material-ui": "^1.0.0-beta.25",
     "material-ui-icons": "^1.0.0-beta.17",
     "moment": "^2.20.1",
@@ -39,7 +40,8 @@
     "react-dates": "^16.0.1",
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
-    "typeface-roboto": "0.0.45"
+    "typeface-roboto": "0.0.45",
+    "uuid": "^3.1.0"
   },
   "main": "js/main.js"
 }

@@ -1,6 +1,6 @@
-# A script that builds stylesheets and JavaScript sources.
-
 #!/bin/bash
+
+# A script that builds stylesheets and JavaScript sources.
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${DIR}/shflags"
@@ -34,6 +34,6 @@ fi
 if [ ${FLAGS_backend} -eq ${FLAGS_TRUE} ]; then
   echo -e "\e[1;33mBuilding backend...\e[0m"
   source ${FLAGS_envroot}/bin/activate
-  find src -type f -name "*.py" | xargs pylint --rcfile=$DIR/../pylintrc
+  find src -type f -name "*.py" | xargs pylint --rcfile=$DIR/../pylintrc --output-format=colorized || true
   deactivate
 fi

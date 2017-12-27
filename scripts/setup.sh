@@ -1,6 +1,6 @@
-# A script that installs build and runtime dependencies.
-
 #!/bin/bash
+
+# A script that installs build and runtime dependencies.
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${DIR}/shflags"

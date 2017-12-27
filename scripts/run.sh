@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # A script that sets up the environment and runs the web server.
 #
 # The script has several flags that can be used to control program behavior, as
@@ -14,8 +16,6 @@
 #
 #   $ scripts/run.sh
 #   $ scripts/run.sh --noclean --nosetup --debug
-
-#!/bin/bash
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${DIR}/shflags"
