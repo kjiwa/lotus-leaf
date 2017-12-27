@@ -3,7 +3,6 @@
 
 import argparse
 import logging
-
 import api_server
 import bottle
 import db
@@ -74,12 +73,9 @@ def initialize_db(db_type, db_user, db_password, db_host, db_name,
   Returns:
     A database accessor.
   """
-  db_options = db.DatabaseOptions(db_user, db_password, db_host, db_name,
-                                  db_pool_size)
-  if db_type == 'sqlite':
-    return db.SqliteDatabase(db_options)
-
-  return db.MysqlDatabase(db_options)
+  db_options = db.DatabaseOptions(db_type, db_user, db_password, db_host,
+                                  db_name, db_pool_size)
+  return db.Database(db_options)
 
 
 def main():

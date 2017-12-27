@@ -30,7 +30,7 @@ popd
 
 # Remove Python artifacts.
 rm -rf "${FLAGS_envroot}"
-find . -type d -name "__pycache__" -exec rm -rf {} \;
+find . -type d -name "__pycache__" -exec rm -rf {} \; || true
 find . -type f -name "*.pyc" -delete
 
 # Remove temporary files.

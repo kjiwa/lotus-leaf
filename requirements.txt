@@ -1,2 +1,5 @@
+SQLAlchemy
 bottle
 mysql-connector==2.1.6
+pylint
+sqlparse

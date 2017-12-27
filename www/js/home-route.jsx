@@ -61,7 +61,7 @@ class HomeRoute extends React.Component {
       })
       .then((data) => {
         const topics = data.map((e) => {
-          return new Topic(e[0], e[1]);
+          return new Topic(e['id'], e['name']);
         });
 
         let selectedTopicId = 0;

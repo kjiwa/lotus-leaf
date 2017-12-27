@@ -1,37 +1,36 @@
 """A UW Solar web server."""
 
-import collections
 import os.path
-
 import bottle
+import server
 
 _WWW_PATH = os.path.dirname(__file__) + '/../www'
 
-_Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
 
-
-class WwwServer(object):
+class WwwServer(server.BaseServer):
   """The UW Solar web server."""
 
   def __init__(self):
     """Initializes routes and WSGI application."""
+    super().__init__([
+        server.Route('GET', '/', WwwServer.root),
+        server.Route('GET', '/uwsolar.js', WwwServer.uwsolarjs),
+        server.Route('GET', '/uwsolar.js.map', WwwServer.uwsolarjsmap),
+        server.Route('GET', '/<:re:.*>', WwwServer.redirect)
+    ])
 
-    # Define web application routes.
-    routes = [
-        _Route('GET', '/', WwwServer.root),
-        _Route('GET', '/uwsolar.js', WwwServer.uwsolarjs),
-        _Route('GET', '/uwsolar.js.map', WwwServer.uwsolarjsmap),
-        _Route('GET', '/<:re:.*>', WwwServer.redirect)
-    ]
+  @staticmethod
+  def read_file(path):
+    """Reads a file and returns its contents.
 
-    # Initialize the WSGI application.
-    self._app = bottle.Bottle()
-    for route in routes:
-      self._app.route(route.path, method=route.method, callback=route.callback)
+    Args:
+      path: The path of the file to be read.
 
-  def app(self):
-    """Returns a reference to the WSGI application."""
-    return self._app
+    Returns:
+      A string containing the file contents.
+    """
+    with open(path, 'r') as f:
+      return f.read()
 
   @staticmethod
   def root():
@@ -41,8 +40,7 @@ class WwwServer(object):
       An HTML document.
     """
     bottle.response.content_type = 'text/html'
-    with open(_WWW_PATH + '/dist/index.html', 'r') as f:
-      return f.read()
+    return WwwServer.read_file(_WWW_PATH + '/dist/index.html')
 
   @staticmethod
   def uwsolarjs():
@@ -52,8 +50,7 @@ class WwwServer(object):
       A JavaScript script.
     """
     bottle.response.content_type = 'application/javascript'
-    with open(_WWW_PATH + '/dist/uwsolar.js', 'r') as f:
-      return f.read()
+    return WwwServer.read_file(_WWW_PATH + '/dist/uwsolar.js')
 
   @staticmethod
   def uwsolarjsmap():
@@ -63,8 +60,7 @@ class WwwServer(object):
       A source map.
     """
     bottle.response.content_type = 'application/json'
-    with open(_WWW_PATH + '/dist/uwsolar.js.map', 'r') as f:
-      return f.read()
+    return WwwServer.read_file(_WWW_PATH + '/dist/uwsolar.js.map')
 
   @staticmethod
   def redirect():

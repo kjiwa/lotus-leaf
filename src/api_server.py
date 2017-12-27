@@ -1,14 +1,11 @@
 """The UW Solar API server."""
 
-import collections
 import json
-
 import bottle
+import model
+import server
 
-_Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
-
-
-class ApiServer(object):
+class ApiServer(server.BaseServer):
   """The UW Solar API server."""
 
   def __init__(self, db):
@@ -17,28 +14,16 @@ class ApiServer(object):
     Args:
       db: A database accessor.
     """
+    super().__init__([
+        server.Route('GET', '/ping', ApiServer.ping),
+        server.Route('GET', '/data/timestamp/earliest',
+                     self.get_earliest_data_timestamp),
+        server.Route('GET', '/data/timestamp/latest',
+                     self.get_latest_data_timestamp),
+        server.Route('GET', '/topics', self.get_all_topics)
+    ])
 
     self._db = db
-    self._app = bottle.Bottle()
-
-    # Define web application routes.
-    routes = [
-        _Route('GET', '/ping', ApiServer.ping),
-        _Route('GET', '/data/dates', self.get_all_data_dates),
-        _Route('GET', '/data/timestamp/earliest',
-               self.get_earliest_data_timestamp),
-        _Route('GET', '/data/timestamp/latest',
-               self.get_latest_data_timestamp),
-        _Route('GET', '/meta', self.get_all_metadata),
-        _Route('GET', '/topics', self.get_all_topics)
-    ]
-
-    for route in routes:
-      self._app.route(route.path, method=route.method, callback=route.callback)
-
-  def app(self):
-    """Returns a reference to the WSGI application."""
-    return self._app
 
   @staticmethod
   def ping():
@@ -51,14 +36,6 @@ class ApiServer(object):
     """
     pass
 
-  def get_all_metadata(self):
-    """Returns a list of all metadata values.
-
-    A JSON-encoded list of metadata values.
-    """
-    bottle.response.content_type = 'application/json'
-    return json.dumps(self._db.get_all_metadata())
-
   def get_all_topics(self):
     """Returns a list of topic values.
 
@@ -66,18 +43,7 @@ class ApiServer(object):
       A JSON-encoded list of topic values.
     """
     bottle.response.content_type = 'application/json'
-    return json.dumps(self._db.get_all_topics())
-
-  def get_all_data_dates(self):
-    """Returns a list of dates for which there is solar panel activity.
-
-    Warning: This API is very slow. Use sparingly.
-
-    Returns:
-      A JSON-encoded list of ISO8601 dates.
-    """
-    bottle.response.content_type = 'application/json'
-    return json.dumps([i.isoformat() for i in self._db.get_all_data_dates()])
+    return json.dumps(self._db.get_all_topics(), cls=model.TopicEncoder)
 
   def get_earliest_data_timestamp(self):
     """Returns the earliest timestamp for which there is solar panel activity.
@@ -88,7 +54,7 @@ class ApiServer(object):
     bottle.response.content_type = 'application/json'
     result = self._db.get_earliest_data_timestamp()
     if not result:
-      return
+      return ''
 
     return json.dumps(result.isoformat())
 
@@ -99,8 +65,8 @@ class ApiServer(object):
       A JSON-encoded ISO8601 timestamp.
     """
     bottle.response.content_type = 'application/json'
-    result = self._db.get_earliest_data_timestamp()
+    result = self._db.get_latest_data_timestamp()
     if not result:
-      return
+      return ''
 
     return json.dumps(result.isoformat())
