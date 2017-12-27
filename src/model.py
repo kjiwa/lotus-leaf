@@ -6,11 +6,13 @@ from sqlalchemy.ext.declarative import declarative_base
 
 BASE = declarative_base()
 
+
 class Metadata(BASE):
   """An object describes that known metadata for a particular Topic."""
   __tablename__ = 'meta'
   topic_id = Column(Integer, primary_key=True)
   md = Column('metadata', Text, primary_key=True)
+
 
 class Topic(BASE):
   """An object that describes the name of a meter and an associated metric.
@@ -26,6 +28,7 @@ class Topic(BASE):
   topic_id = Column(Integer, primary_key=True)
   topic_name = Column(String(512))
 
+
 class Datum(BASE):
   """An object containing the value for a given topic at a particular time."""
   __tablename__ = 'data'
@@ -33,14 +36,13 @@ class Datum(BASE):
   topic_id = Column(Integer, primary_key=True)
   value_string = Column(Text)
 
+
 class TopicEncoder(json.JSONEncoder):
   """A class that prepares objects for JSON encoding."""
+
   # pylint: disable=arguments-differ,method-hidden
   def default(self, obj):
     if isinstance(obj, Topic):
-      return {
-          'id': obj.topic_id,
-          'name': obj.topic_name
-      }
+      return {'id': obj.topic_id, 'name': obj.topic_name}
 
     return json.JSONEncoder.default(self, obj)

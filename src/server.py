@@ -5,6 +5,7 @@ import bottle
 
 Route = collections.namedtuple('_Route', ['method', 'path', 'callback'])
 
+
 class BaseServer(object):
   """The server base class."""
 

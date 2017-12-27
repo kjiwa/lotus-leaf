@@ -5,6 +5,7 @@ import bottle
 import model
 import server
 
+
 class ApiServer(server.BaseServer):
   """The UW Solar API server."""
 

@@ -14,7 +14,8 @@ _SQLITE_SQL = [
 
 # An object containing database options.
 DatabaseOptions = collections.namedtuple(
-    'DatabaseOptions', ['db_type', 'user', 'password', 'host', 'database', 'pool_size'])
+    'DatabaseOptions',
+    ['db_type', 'user', 'password', 'host', 'database', 'pool_size'])
 
 
 class Database(object):
@@ -27,8 +28,8 @@ class Database(object):
       self._initialize_sqlite()
     elif opts.db_type == 'mysql':
       self.engine = sqlalchemy.create_engine(
-          'mysql+mysqlconnector://%s:%s@%s/%s' % (
-              opts.user, opts.password, opts.host, opts.database),
+          'mysql+mysqlconnector://%s:%s@%s/%s' % (opts.user, opts.password,
+                                                  opts.host, opts.database),
           pool_size=opts.pool_size)
 
   def _initialize_sqlite(self):
