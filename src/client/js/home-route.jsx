@@ -1,3 +1,7 @@
+/**
+ * A route component that queries and displays time-series data.
+ */
+
 import Card, { CardContent, CardHeader } from 'material-ui/Card';
 import Chart from './chart.jsx';
 import ChartOptions from './chart-options.jsx';
@@ -11,6 +15,9 @@ import Typography from 'material-ui/Typography';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 
+/**
+ * Granularities at which time series data can be sampled.
+ */
 const SAMPLE_GRANULARITIES = [
   'year',
   'month',
@@ -37,22 +44,43 @@ class HomeRoute extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // The start date and time of the query.
       startDateTime: new Moment(),
+
+      // The end date and time of the query.
       endDateTime: new Moment(),
+
+      // A list of known topics.
       topics: [],
+
+      // The currently selected topic.
       selectedTopicId: 0,
+
+      // The currently displayed data.
       data: [],
+
+      // The currently selected sample granularity.
       selectedSampleGranularity: 'hour',
+
+      // Whether the progress indicator should be shown.
       showProgressIndicator: false
     };
   }
 
+  /**
+   * Performs post-render tasks after properties updates.
+   * @returns {undefined}
+   */
   componentDidMount() {
     this.fetchTopics();
     this.fetchEarliestTimestamp();
     this.fetchLatestTimestamp();
   }
 
+  /**
+   * Renders the home route view.
+   * @returns {Object} A rendered JSX element.
+   */
   render() {
     const { classes } = this.props;
 
@@ -101,6 +129,10 @@ class HomeRoute extends React.Component {
     );
   }
 
+  /**
+   * Fetches topics from the backend.
+   * @returns {undefined}
+   */
   fetchTopics() {
     fetch('/_/topics')
       .then((response) => response.json())
@@ -112,6 +144,10 @@ class HomeRoute extends React.Component {
       });
   }
 
+  /**
+   * Fetches the earliest data timestamp from the backend.
+   * @returns {undefined}
+   */
   fetchEarliestTimestamp() {
     fetch('/_/data/timestamp/earliest')
       .then((response) => response.json())
@@ -120,6 +156,10 @@ class HomeRoute extends React.Component {
       });
   }
 
+  /**
+   * Fetches the latest data timestamp from the backend.
+   * @returns {undefined}
+   */
   fetchLatestTimestamp() {
     fetch('/_/data/timestamp/latest')
       .then((response) => response.json())
@@ -128,6 +168,10 @@ class HomeRoute extends React.Component {
       });
   }
 
+  /**
+   * Fetches data to be displayed in the chart.
+   * @returns {undefined}
+   */
   fetchData() {
     this.setState({ showProgressIndicator: true });
     const params = new URLSearchParams();
@@ -145,26 +189,56 @@ class HomeRoute extends React.Component {
       });
   }
 
+  /**
+   * Handles changes to the topic selection field.
+   * @param {Object} event The change event.
+   * @returns {undefined}
+   */
   handleSelectedTopicChange(event) {
     this.setState({ selectedTopicId: event.target.value });
   }
 
+  /**
+   * Handles changes to the start date and time field.
+   * @param {Moment} date The new start date and time.
+   * @returns {undefined}
+   */
   handleStartDateTimeChange(date) {
     this.setState({ startDateTime: date });
   }
 
+  /**
+   * Handles changes to the end date and time field.
+   * @param {Moment} date The new end date and time.
+   * @returns {undefined}
+   */
   handleEndDateTimeChange(date) {
     this.setState({ endDateTime: date });
   }
 
+  /**
+   * Handles changes to the sample granularity field.
+   * @param {Object} event The change event.
+   * @returns {undefined}
+   */
   handleSampleGranularityChange(event) {
     this.setState({ selectedSampleGranularity: event.target.value });
   }
 
+  /**
+   * Handles submissions of the chart options component.
+   * @returns {undefined}
+   */
   handleOptionsSubmit() {
     this.fetchData();
   }
 
+  /**
+   * Samples a set of data at the requested granularity.
+   * @param {Array} data The data to be sampled.
+   * @param {string} sampleGranularity The granularity at which the data should be sampled.
+   * @returns {Array} A sampled list of data.
+   */
   getSamples(data, sampleGranularity) {
     if (data.length == 0) {
       return [];
