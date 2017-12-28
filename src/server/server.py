@@ -1,4 +1,4 @@
-"""The UW Solar API server."""
+"""The base HTTP server."""
 
 import collections
 import bottle

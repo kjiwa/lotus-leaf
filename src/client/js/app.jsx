@@ -1,12 +1,13 @@
 import '../css/uwsolar.css';
 import 'react-dates/initialize';
 
+import AboutRoute from './about-route.jsx';
 import Button from 'material-ui/Button';
 import HomeRoute from './home-route.jsx';
 import PrimaryHeader from './primary-header.jsx';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { HashRouter, Link, Route } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme, withStyles } from 'material-ui/styles';
 import { UW_PRIMARY_PURPLE, UW_SECONDARY_LIGHT_GRAY } from './palette.js';
 
@@ -15,9 +16,7 @@ const theme = createMuiTheme({
     primary: UW_PRIMARY_PURPLE,
     secondary: UW_SECONDARY_LIGHT_GRAY
   },
-  typography: {
-    fontFamily: 'Open Sans'
-  },
+  typography: { fontFamily: 'Open Sans' },
   overrides: {
     // Allow overflow content to be displayed when it is expanded.
     // See https://github.com/mui-org/material-ui/issues/9483 for further
@@ -43,14 +42,18 @@ class App extends React.Component {
     const { classes } = this.props;
     return (
       <MuiThemeProvider theme={theme}>
-        <BrowserRouter>
+        <HashRouter>
           <div>
-            <PrimaryHeader title="Solar Power Monitor" />
+            <PrimaryHeader title="Solar Power Monitor">
+              <Button color="accent"><Link to="/">Home</Link></Button>
+              <Button color="accent" className="{classes.button}"><Link to="/about">About</Link></Button>
+            </PrimaryHeader>
             <div className={classes.content}>
               <Route exact path="/" component={HomeRoute} />
+              <Route exact path="/about" component={AboutRoute} />
             </div>
           </div>
-        </BrowserRouter>
+        </HashRouter>
       </MuiThemeProvider>
     );
   }

@@ -1,13 +1,19 @@
 @import '~react-dates/lib/css/_datepicker.css';
 @import '~typeface-open-sans/index.css';
 
+/* DateRangePicker expects this to be set globally. */
 * {
-  /* DateRangePicker expects this to be set globally. */
   box-sizing: border-box;
 }
 
+/* Override anchor styles so that buttons do not contain blue, underlined text. */
+button > span > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Allow the appbar to extend to the edges of the page. */
 body {
-  /* Allow the appbar to extend to the edges of the page. */
   margin: 0;
 }
 

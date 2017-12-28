@@ -7,6 +7,9 @@ import uwBlockWLogo from '../img/uw-block-w-logo.png';
 import { withStyles } from 'material-ui/styles';
 
 const styles = (theme) => ({
+  title: {
+    flex: 1
+  },
   uwBlockWLogo: {
     height: '100px',
     width: '150px'
@@ -20,7 +23,7 @@ class PrimaryHeader extends React.Component {
       <AppBar position="static">
         <Toolbar>
           <img src={uwBlockWLogo} className={classes.uwBlockWLogo} />
-          <Typography type="title" color="inherit">{this.props.title}</Typography>
+          <Typography type="title" color="inherit" className={classes.title}>{this.props.title}</Typography>
           {this.props.children}
         </Toolbar>
       </AppBar>

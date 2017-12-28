@@ -1,4 +1,4 @@
-"""A UW Solar web server."""
+"""The UW Solar web server."""
 
 import os.path
 import bottle
