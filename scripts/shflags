@@ -2,13 +2,15 @@
 
 # A script that downloads shflags if it is not present and executes it.
 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 set -e
 set -o posix
 
-if [ ! -f "$DIR/shflags-real" ]; then
+if [ ! -f "$ROOT/scripts/shflags-real" ]; then
   echo -e "\e[1;45mDownloading shflags...\e[0m"
-  wget https://github.com/kward/shflags/raw/master/lib/shflags -O $DIR/shflags-real
+  wget https://github.com/kward/shflags/raw/master/lib/shflags -O $ROOT/scripts/shflags-real
 fi
 
 set +e
-source "$DIR/shflags-real"
+source "$ROOT/scripts/shflags-real"

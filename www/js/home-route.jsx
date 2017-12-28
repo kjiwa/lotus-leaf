@@ -130,7 +130,7 @@ class HomeRoute extends React.Component {
     fetch('/_/data?' + params.toString())
       .then((response) => response.json())
       .then((data) => {
-        this.setState({ data: this.getSamples(data, this.state.sampleGranularity) });
+        this.setState({ data: this.getSamples(data, this.state.selectedSampleGranularity) });
       });
   }
 

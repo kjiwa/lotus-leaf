@@ -1,8 +1,8 @@
 **/*.pyc
 **/*~
 **/__pycache__/
+dist/
 env/
 scripts/shflags-real
-www/dist/
 www/node_modules/
 www/package-lock.json

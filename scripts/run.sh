@@ -17,10 +17,10 @@
 #   $ scripts/run.sh
 #   $ scripts/run.sh --noclean --nosetup --debug
 
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${DIR}/shflags"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${ROOT}/scripts/shflags"
 
-DEFINE_string "envroot" "$DIR/../env" "The environment root." "e"
+DEFINE_string "envroot" "${ROOT}/env" "The environment root." "e"
 DEFINE_boolean "debug" ${FLAGS_FALSE} "Whether to build debuggable binaries and run the server in debug mode." "d"
 DEFINE_boolean "clean" ${FLAGS_TRUE} "Whether to clean build artifacts and temporary files." "c"
 DEFINE_boolean "setup" ${FLAGS_TRUE} "Whether to setup the runtime environment." "s"
@@ -49,12 +49,12 @@ fi
 
 # Clean build artifacts.
 if [ ${FLAGS_clean} -eq ${FLAGS_TRUE} ]; then
-  $DIR/clean.sh --nodelete_shflags
+  $ROOT/scripts/clean.sh --nodelete_shflags
 fi
 
 # Install build and runtime dependencies.
 if [ ${FLAGS_setup} -eq ${FLAGS_TRUE} ]; then
-  $DIR/setup.sh
+  $ROOT/scripts/setup.sh
 fi
 
 # Ensure that Python dependencies have been installed.
@@ -65,23 +65,14 @@ fi
 
 # Build project.
 if [ ${FLAGS_build} -eq ${FLAGS_TRUE} ]; then
-  $DIR/build.sh $BUILD_DEBUG_FLAG
-fi
-
-# Ensure that frontend resources have been built.
-if [ ! -f "$DIR/../www/dist/index.html" ]; then
-  echo -e "\e[91mwww/dist/index.html not found. Run build.sh.\e[0m"
-  exit -1
-elif [ ! -f "$DIR/../www/dist/uwsolar.js" ]; then
-  echo -e "\e[91mwww/dist/uwsolar.js not found. Run build.sh.\e[0m"
-  exit -1
+  $ROOT/scripts/build.sh $BUILD_DEBUG_FLAG
 fi
 
 # Run the web server.
 echo -e "\e[1;45mRunning web server...\e[0m"
 python3 -m venv "${FLAGS_envroot}"
-source ${FLAGS_envroot}/bin/activate
-python src/main.py \
+source "${FLAGS_envroot}/bin/activate"
+PYTHONPATH="$ROOT/dist/proto/py" python $ROOT/src/main.py \
   $SERVER_DEBUG_FLAG \
   --port=${FLAGS_port} \
   --db_type=${FLAGS_db_type} \

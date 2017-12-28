@@ -4,7 +4,7 @@ import os.path
 import bottle
 import server
 
-_WWW_PATH = os.path.dirname(__file__) + '/../www'
+_WWW_PATH = os.path.dirname(__file__) + '/../dist/www'
 
 
 class WwwServer(server.BaseServer):
@@ -40,7 +40,7 @@ class WwwServer(server.BaseServer):
       An HTML document.
     """
     bottle.response.content_type = 'text/html'
-    return WwwServer.read_file(_WWW_PATH + '/dist/index.html')
+    return WwwServer.read_file(_WWW_PATH + '/index.html')
 
   @staticmethod
   def uwsolarjs():
@@ -50,7 +50,7 @@ class WwwServer(server.BaseServer):
       A JavaScript script.
     """
     bottle.response.content_type = 'application/javascript'
-    return WwwServer.read_file(_WWW_PATH + '/dist/uwsolar.js')
+    return WwwServer.read_file(_WWW_PATH + '/uwsolar.js')
 
   @staticmethod
   def uwsolarjsmap():
@@ -60,7 +60,7 @@ class WwwServer(server.BaseServer):
       A source map.
     """
     bottle.response.content_type = 'application/json'
-    return WwwServer.read_file(_WWW_PATH + '/dist/uwsolar.js.map')
+    return WwwServer.read_file(_WWW_PATH + '/uwsolar.js.map')
 
   @staticmethod
   def redirect():

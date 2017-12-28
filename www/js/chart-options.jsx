@@ -61,7 +61,9 @@ class ChartOptions extends React.Component {
             </FormControl>
           </div>
           <div className={classes.row}>
-            <InputLabel className={classes.dateRangeInputLabel}>Date Range</InputLabel>
+            <InputLabel className={classes.dateRangeInputLabel}>
+              <Typography type="caption">Date Range</Typography>
+            </InputLabel>
             <DateRangePicker
               initialVisibleMonth={() => this.props.startDateTime}
               startDate={this.props.startDateTime}
