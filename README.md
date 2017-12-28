@@ -2,7 +2,9 @@
 
 A web service to show data from solar panels deployed around the University of Washington.
 
-<img src="screenshot.png" width="640">
+<p align="center">
+  <img src="screenshot.png" width="640">
+</p>
 
 # Requirements
 

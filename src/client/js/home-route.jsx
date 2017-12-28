@@ -21,9 +21,6 @@ const SAMPLE_GRANULARITIES = [
 ];
 
 const styles = (theme) => ({
-  chartOptionsCard: {
-    overflow: 'visible'
-  },
   chartCard: {
     marginTop: '32px'
   }
@@ -160,12 +157,13 @@ class HomeRoute extends React.Component {
       return [];
     }
 
+    // TODO(kjiwa): Put this into a worker thread.
     data.sort((a, b) => (a['ts'] - b['ts']));
     const samples = [data[0]];
-    let ts = samples[0]['ts'];
+    let ts = new Moment(data[0]['ts']);
     for (let i = 1, j = data.length; i < j; ++i) {
       const now = new Moment(data[i]['ts']);
-      if (now.isSameOrBefore(ts, sampleGranularity)) {
+      if (now.isSame(ts, sampleGranularity)) {
         continue;
       }
 

@@ -25,6 +25,7 @@ class Chart extends React.Component {
     const { classes } = this.props;
     const canvas = document.getElementsByClassName(classes.canvas)[0];
 
+    // TODO(kjiwa): Put this into a worker thread.
     const data = this.props.data.map((e) => ({
       x: new Moment(e['ts']),
       y: parseFloat(e['value_string'])
