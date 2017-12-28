@@ -10,7 +10,6 @@ In order to build and run the web server, a few dependencies must be installed:
 
 * Bash (https://www.gnu.org/software/bash/)
 * Node.js (https://nodejs.org/en/)
-* Protocol Buffers Compiler (https://github.com/google/protobuf)
 * Python 3 (https://www.python.org/download/releases/3.0/)
 
 # Download
