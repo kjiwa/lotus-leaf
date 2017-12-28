@@ -1,3 +1,13 @@
+/**
+ * A component containing chart options.
+ *
+ * The component displays the following options:
+ *   - topic
+ *   - start date and time
+ *   - end date and time
+ *   - sample granularity
+ */
+
 import Button from 'material-ui/Button';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
@@ -28,20 +38,31 @@ const styles = (theme) => ({
 });
 
 class ChartOptions extends React.Component {
+  /**
+   * Creates a new ChartOptions component.
+   * @param {Object} props The component's properties.
+   */
   constructor(props) {
     super(props);
     this.state = {
-      focusedInput: null,
-      sampleGranularityFieldError: false
+      // The currently focused entry in the DateRangePicker.
+      focusedInput: null
     };
   }
 
+  /**
+   * Renders the component.
+   * @returns {Object} A rendered JSX element.
+   */
   render() {
     const { classes } = this.props;
+
+    // Create topic menu items.
     const topicMenuItems = this.props.topics.map((e) => (
       <MenuItem key={e['topic_id']} value={e['topic_id']}>{e['topic_name']}</MenuItem>
     ));
 
+    // Create sample granularity menu items.
     const sampleGranularityMenuItems = this.props.sampleGranularities.map((e) => (
       <MenuItem key={e} value={e}>{e}</MenuItem>
     ));
@@ -99,6 +120,11 @@ class ChartOptions extends React.Component {
     );
   }
 
+  /**
+   * Handles changes to the DateRangePicker component's focused input.
+   * @param {string} focusedInput the currently focused input.
+   * @returns {undefined}
+   */
   handleFocusChange(focusedInput) {
     this.setState({ focusedInput: focusedInput });
   }
