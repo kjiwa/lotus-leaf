@@ -40,7 +40,7 @@ if [ ${FLAGS_backend} -eq ${FLAGS_TRUE} ]; then
   echo -e "\e[1;33mBuilding backend...\e[0m"
   source "${FLAGS_envroot}/bin/activate"
   find "$ROOT/src/server" -type f -name "*.py" | xargs pylint \
-    --rcfile="$ROOT/pylintrc" \
+    --rcfile="$ROOT/src/server/pylintrc" \
     --output-format=colorized || true
   deactivate
 fi

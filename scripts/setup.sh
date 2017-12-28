@@ -25,5 +25,5 @@ popd
 echo -e "\e[1;33mInstalling Python dependencies...\e[0m"
 python3 -m venv "${FLAGS_envroot}"
 source "${FLAGS_envroot}/bin/activate"
-pip install -r "$ROOT/requirements.txt"
+pip install -r "$ROOT/src/server/requirements.txt"
 deactivate
