@@ -24,7 +24,7 @@ $ git clone https://github.com/kjiwa/lotus-leaf.git
 
 # Quick Start
 
-Use ```run.sh``` to execute an optimized web server with sample data.
+Use ```run.sh``` to execute an optimized web server with sample data. This script will download additional dependencies, build the source code, and run the server.
 
 ```bash
 $ pushd lotus-leaf
@@ -32,9 +32,7 @@ $ scripts/run.sh
 $ popd
 ```
 
-The run script will download additional dependencies, build the source code, and run the server.
-
-The server can be configured to connect to read data from a MySQL installation.
+The server can be configured to connect to and read data from a MySQL installation.
 
 ```bash
 $ pushd lotus-leaf
