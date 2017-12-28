@@ -8,6 +8,7 @@ import Moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Typography from 'material-ui/Typography';
+import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 
 const SAMPLE_GRANULARITIES = [
@@ -23,6 +24,12 @@ const SAMPLE_GRANULARITIES = [
 const styles = (theme) => ({
   chartCard: {
     marginTop: '32px'
+  },
+  linearProgress: {
+    left: '0',
+    position: 'fixed',
+    top: '100px',
+    width: '100%'
   }
 });
 
@@ -35,7 +42,8 @@ class HomeRoute extends React.Component {
       topics: [],
       selectedTopicId: 0,
       data: [],
-      selectedSampleGranularity: 'hour'
+      selectedSampleGranularity: 'hour',
+      showProgressIndicator: false
     };
   }
 
@@ -68,6 +76,7 @@ class HomeRoute extends React.Component {
 
     return (
       <div>
+        {this.state.showProgressIndicator && <LinearProgress mode="query" className={classes.linearProgress} />}
         <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography type="headline">Chart Options</Typography>
@@ -120,6 +129,7 @@ class HomeRoute extends React.Component {
   }
 
   fetchData() {
+    this.setState({ showProgressIndicator: true });
     const params = new URLSearchParams();
     params.set('topic_id', this.state.selectedTopicId);
     params.set('start_date_time', this.state.startDateTime.toISOString());
@@ -128,7 +138,10 @@ class HomeRoute extends React.Component {
     fetch('/_/data?' + params.toString())
       .then((response) => response.json())
       .then((data) => {
-        this.setState({ data: this.getSamples(data, this.state.selectedSampleGranularity) });
+        this.setState({
+          data: this.getSamples(data, this.state.selectedSampleGranularity),
+          showProgressIndicator: false
+        });
       });
   }
 
