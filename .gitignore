@@ -4,5 +4,5 @@
 dist/
 env/
 scripts/shflags-real
-www/node_modules/
-www/package-lock.json
+src/client/node_modules/
+src/client/package-lock.json

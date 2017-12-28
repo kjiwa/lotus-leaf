@@ -57,12 +57,6 @@ if [ ${FLAGS_setup} -eq ${FLAGS_TRUE} ]; then
   $ROOT/scripts/setup.sh
 fi
 
-# Ensure that Python dependencies have been installed.
-if [ ! -d "${FLAGS_envroot}" ]; then
-  echo -e "\e[91mNo environment directory found. Run setup.sh.\e[0m"
-  exit -1
-fi
-
 # Build project.
 if [ ${FLAGS_build} -eq ${FLAGS_TRUE} ]; then
   $ROOT/scripts/build.sh $BUILD_DEBUG_FLAG
@@ -72,7 +66,7 @@ fi
 echo -e "\e[1;45mRunning web server...\e[0m"
 python3 -m venv "${FLAGS_envroot}"
 source "${FLAGS_envroot}/bin/activate"
-PYTHONPATH="$ROOT/dist/proto/py" python $ROOT/src/main.py \
+python $ROOT/src/server/main.py \
   $SERVER_DEBUG_FLAG \
   --port=${FLAGS_port} \
   --db_type=${FLAGS_db_type} \

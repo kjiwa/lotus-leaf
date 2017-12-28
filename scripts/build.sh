@@ -30,7 +30,7 @@ if [ ${FLAGS_frontend} -eq ${FLAGS_TRUE} ]; then
     CONFIG_FILE=webpack.production.js
   fi
 
-  pushd "$ROOT/www"
+  pushd "$ROOT/src/client"
   npm run webpack -- --progress --config $CONFIG_FILE
   popd
 fi
@@ -39,7 +39,7 @@ fi
 if [ ${FLAGS_backend} -eq ${FLAGS_TRUE} ]; then
   echo -e "\e[1;33mBuilding backend...\e[0m"
   source "${FLAGS_envroot}/bin/activate"
-  find "$ROOT/src" -type f -name "*.py" | xargs pylint \
+  find "$ROOT/src/server" -type f -name "*.py" | xargs pylint \
     --rcfile="$ROOT/pylintrc" \
     --output-format=colorized || true
   deactivate

@@ -5,7 +5,7 @@
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT}/scripts/shflags"
 
-DEFINE_string "envroot" "$DIR/../env" "The environment root." "e"
+DEFINE_string "envroot" "$ROOT/env" "The environment root." "e"
 DEFINE_boolean "delete_shflags" ${FLAGS_TRUE} "Whether to delete shflags." "s"
 
 FLAGS "$@" || exit $?
@@ -26,13 +26,13 @@ fi
 # Remove build artifacts.
 rm -rf "$ROOT/dist"
 
-pushd "$ROOT/www"
+pushd "$ROOT/src/client"
 rm -rf node_modules package-lock.json
 popd
 
 # Remove Python artifacts.
 rm -rf "${FLAGS_envroot}"
-find "$ROOT" -type d -name "__pycache__" -exec rm -rf {} \; || true
+find "$ROOT" -type d -name "__pycache__" -exec rm -rf {} \; 2> /dev/null || true
 find "$ROOT" -type f -name "*.pyc" -delete
 
 # Remove temporary files.

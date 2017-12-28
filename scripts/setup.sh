@@ -17,7 +17,7 @@ echo -e "\e[1;45mSetting up build and runtime environment...\e[0m"
 
 # Install frontend dependencies.
 echo -e "\e[1;33mInstalling frontend dependencies...\e[0m"
-pushd "$ROOT/www"
+pushd "$ROOT/src/client"
 npm install
 popd
 
