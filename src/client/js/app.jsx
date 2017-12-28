@@ -8,11 +8,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme, withStyles } from 'material-ui/styles';
-import { UW_PRIMARY_PURPLE } from './palette.js';
+import { UW_PRIMARY_PURPLE, UW_SECONDARY_LIGHT_GRAY } from './palette.js';
 
 const theme = createMuiTheme({
   palette: {
-    primary: UW_PRIMARY_PURPLE
+    primary: UW_PRIMARY_PURPLE,
+    secondary: UW_SECONDARY_LIGHT_GRAY
   },
   typography: {
     fontFamily: 'Open Sans'
