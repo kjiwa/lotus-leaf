@@ -4,7 +4,7 @@ import os.path
 import bottle
 import server
 
-_WWW_PATH = os.path.dirname(__file__) + '/../dist/www'
+_WWW_PATH = os.path.dirname(__file__) + '/../../dist/www'
 
 
 class WwwServer(server.BaseServer):

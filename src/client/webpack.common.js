@@ -1,4 +1,3 @@
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
@@ -6,7 +5,7 @@ const webpack = require('webpack');
 module.exports = {
   entry: './js/app.jsx',
   output: {
-    path: path.resolve(__dirname, '../dist/www'),
+    path: path.resolve(__dirname, '../../dist/www'),
     filename: 'uwsolar.js'
   },
   devtool: 'cheap-module-source-map',
@@ -101,7 +100,6 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.ModuleConcatenationPlugin(),
-    new CleanWebpackPlugin(['../dist/www']),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'html/index.html'

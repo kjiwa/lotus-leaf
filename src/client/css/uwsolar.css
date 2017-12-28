@@ -1,6 +1,5 @@
 @import '~react-dates/lib/css/_datepicker.css';
 @import '~typeface-open-sans/index.css';
-@import '~typeface-roboto/index.css';
 
 * {
   /* DateRangePicker expects this to be set globally. */

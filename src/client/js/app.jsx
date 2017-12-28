@@ -44,7 +44,7 @@ class App extends React.Component {
       <MuiThemeProvider theme={theme}>
         <BrowserRouter>
           <div>
-            <PrimaryHeader title="UW Solar Power Monitor" />
+            <PrimaryHeader title="Solar Power Monitor" />
             <div className={classes.content}>
               <Route exact path="/" component={HomeRoute} />
             </div>
