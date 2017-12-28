@@ -15,14 +15,14 @@ import React from 'react';
 import Select from 'material-ui/Select';
 import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
-import { DateRangePicker } from 'react-dates';
 import { FormControl } from 'material-ui/Form';
 import { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
+import { SingleDatePicker } from 'react-dates';
 import { withStyles } from 'material-ui/styles';
 
 const styles = (theme) => ({
-  dateRangeInputLabel: {
+  dateInputLabel: {
     display: 'block',
     marginBottom: '8px'
   },
@@ -45,8 +45,11 @@ class ChartOptions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // The currently focused entry in the DateRangePicker.
-      focusedInput: null
+      // Whether the start date SingleDatePicker is focused.
+      startDatePickerFocused: false,
+
+      // Whether the end date SingleDatePicker is focused.
+      endDatePickerFocused: false
     };
   }
 
@@ -82,18 +85,27 @@ class ChartOptions extends React.Component {
             </FormControl>
           </div>
           <div className={classes.row}>
-            <InputLabel className={classes.dateRangeInputLabel}>
-              <Typography type="caption">Date Range</Typography>
+            <InputLabel className={classes.dateInputLabel}>
+              <Typography type="caption">Start Date</Typography>
             </InputLabel>
-            <DateRangePicker
+            <SingleDatePicker
+              date={this.props.startDateTime}
+              focused={this.state.startDatePickerFocused}
+              onDateChange={this.props.onStartDateChange}
+              onFocusChange={this.handleStartDateFocusChange.bind(this)}
               initialVisibleMonth={() => this.props.startDateTime}
-              startDate={this.props.startDateTime}
-              endDate={this.props.endDateTime}
-              focusedInput={this.state.focusedInput}
-              onDatesChange={this.props.onDatesChange}
-              onFocusChange={this.handleFocusChange.bind(this)}
-              startDateId="start_date"
-              endDateId="end_date"
+              isOutsideRange={(moment) => false} />
+          </div>
+          <div className={classes.row}>
+            <InputLabel className={classes.dateInputLabel}>
+              <Typography type="caption">End Date</Typography>
+            </InputLabel>
+            <SingleDatePicker
+              date={this.props.endDateTime}
+              focused={this.state.endDatePickerFocused}
+              onDateChange={this.props.onEndDateChange}
+              onFocusChange={this.handleEndDateFocusChange.bind(this)}
+              initialVisibleMonth={() => this.props.endDateTime}
               isOutsideRange={(moment) => false} />
           </div>
           <div className={classes.row}>
@@ -121,12 +133,21 @@ class ChartOptions extends React.Component {
   }
 
   /**
-   * Handles changes to the DateRangePicker component's focused input.
-   * @param {string} focusedInput the currently focused input.
+   * Handles changes to the start date component's focused input.
+   * @param {boolean} focused the currently focused input.
    * @returns {undefined}
    */
-  handleFocusChange(focusedInput) {
-    this.setState({ focusedInput: focusedInput });
+  handleStartDateFocusChange({ focused }) {
+    this.setState({ startDatePickerFocused: focused });
+  }
+
+  /**
+   * Handles changes to the end date component's focused input.
+   * @param {boolean} focused the currently focused input.
+   * @returns {undefined}
+   */
+  handleEndDateFocusChange({ focused }) {
+    this.setState({ endDatePickerFocused: focused });
   }
 }
 
@@ -138,7 +159,8 @@ ChartOptions.propTypes = {
   sampleGranularities: PropTypes.array.isRequired,
   selectedSampleGranularity: PropTypes.string.isRequired,
   onTopicChange: PropTypes.func.isRequired,
-  onDatesChange: PropTypes.func.isRequired,
+  onStartDateChange: PropTypes.func.isRequired,
+  onEndDateChange: PropTypes.func.isRequired,
   onSampleGranularityChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };

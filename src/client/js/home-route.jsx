@@ -84,7 +84,8 @@ class HomeRoute extends React.Component {
               sampleGranularities={SAMPLE_GRANULARITIES}
               selectedSampleGranularity={this.state.selectedSampleGranularity}
               onTopicChange={this.handleSelectedTopicChange.bind(this)}
-              onDatesChange={this.handleDatesChange.bind(this)}
+              onStartDateChange={this.handleStartDateChange.bind(this)}
+              onEndDateChange={this.handleEndDateChange.bind(this)}
               onSampleGranularityChange={this.handleSampleGranularityChange.bind(this)}
               onSubmit={this.handleOptionsSubmit.bind(this)} />
           </ExpansionPanelDetails>
@@ -138,17 +139,12 @@ class HomeRoute extends React.Component {
     this.setState({ selectedTopicId: event.target.value });
   }
 
-  handleDatesChange(event) {
-    const dates = {};
-    if (event.startDate) {
-      dates.startDateTime = event.startDate;
-    }
+  handleStartDateChange(date) {
+    this.setState({ startDateTime: date });
+  }
 
-    if (event.endDate) {
-      dates.endDateTime = event.endDate;
-    }
-
-    this.setState(dates);
+  handleEndDateChange(date) {
+    this.setState({ endDateTime: date });
   }
 
   handleSampleGranularityChange(event) {
