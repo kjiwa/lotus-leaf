@@ -84,8 +84,8 @@ class HomeRoute extends React.Component {
               sampleGranularities={SAMPLE_GRANULARITIES}
               selectedSampleGranularity={this.state.selectedSampleGranularity}
               onTopicChange={this.handleSelectedTopicChange.bind(this)}
-              onStartDateChange={this.handleStartDateChange.bind(this)}
-              onEndDateChange={this.handleEndDateChange.bind(this)}
+              onStartDateTimeChange={this.handleStartDateTimeChange.bind(this)}
+              onEndDateTimeChange={this.handleEndDateTimeChange.bind(this)}
               onSampleGranularityChange={this.handleSampleGranularityChange.bind(this)}
               onSubmit={this.handleOptionsSubmit.bind(this)} />
           </ExpansionPanelDetails>
@@ -139,11 +139,11 @@ class HomeRoute extends React.Component {
     this.setState({ selectedTopicId: event.target.value });
   }
 
-  handleStartDateChange(date) {
+  handleStartDateTimeChange(date) {
     this.setState({ startDateTime: date });
   }
 
-  handleEndDateChange(date) {
+  handleEndDateTimeChange(date) {
     this.setState({ endDateTime: date });
   }
 
@@ -160,6 +160,7 @@ class HomeRoute extends React.Component {
       return [];
     }
 
+    data.sort((a, b) => (a['ts'] - b['ts']));
     const samples = [data[0]];
     let ts = samples[0]['ts'];
     for (let i = 1, j = data.length; i < j; ++i) {

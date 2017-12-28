@@ -7,6 +7,16 @@
 }
 
 body {
-  /* Allows the appbar to extend to the edges of the page. */
+  /* Allow the appbar to extend to the edges of the page. */
   margin: 0;
+}
+
+/* SingleDatePicker style customizations. */
+.DateInput_input__small {
+  font-size: 16px;
+  padding: 8px 8px 2px 8px;
+}
+
+.DateInput__small {
+  width: 100px;
 }
