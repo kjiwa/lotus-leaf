@@ -8,8 +8,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { MuiThemeProvider, createMuiTheme, withStyles } from 'material-ui/styles';
+import { UW_PRIMARY_PURPLE } from './palette.js';
 
 const theme = createMuiTheme({
+  palette: {
+    primary: UW_PRIMARY_PURPLE
+  },
+  typography: {
+    fontFamily: 'Open Sans'
+  },
   overrides: {
     // Allow overflow content to be displayed when it is expanded.
     // See https://github.com/mui-org/material-ui/issues/9483 for further

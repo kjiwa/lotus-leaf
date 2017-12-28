@@ -1,10 +1,13 @@
 @import '~react-dates/lib/css/_datepicker.css';
+@import '~typeface-open-sans/index.css';
 @import '~typeface-roboto/index.css';
 
 * {
+  /* DateRangePicker expects this to be set globally. */
   box-sizing: border-box;
 }
 
 body {
+  /* Allows the appbar to extend to the edges of the page. */
   margin: 0;
 }
