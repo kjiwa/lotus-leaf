@@ -1,5 +1,4 @@
 import '../css/uwsolar.css';
-import 'react-dates/initialize';
 
 import AboutRoute from './about-route.jsx';
 import Button from 'material-ui/Button';

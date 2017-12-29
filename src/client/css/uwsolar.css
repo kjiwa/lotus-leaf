@@ -1,10 +1,4 @@
-@import '~react-dates/lib/css/_datepicker.css';
 @import '~typeface-open-sans/index.css';
-
-/* DateRangePicker expects this to be set globally. */
-* {
-  box-sizing: border-box;
-}
 
 /* Override anchor styles so that buttons do not contain blue, underlined text. */
 button > span > a {
@@ -15,14 +9,4 @@ button > span > a {
 /* Allow the appbar to extend to the edges of the page. */
 body {
   margin: 0;
-}
-
-/* SingleDatePicker style customizations. */
-.DateInput_input__small {
-  font-size: 16px;
-  padding: 8px 8px 2px 8px;
-}
-
-.DateInput__small {
-  width: 100px;
 }
