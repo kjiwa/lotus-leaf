@@ -5,7 +5,7 @@
  *   - topic
  *   - start date and time
  *   - end date and time
- *   - sample granularity
+ *   - sample rate
  */
 
 import Button from 'material-ui/Button';
@@ -26,9 +26,6 @@ const styles = (theme) => ({
   dateInputLabel: {
     display: 'block',
     marginBottom: '8px'
-  },
-  sampleGranularitySelect: {
-    width: '200px'
   },
   topicSelect: {
     width: '600px'
@@ -53,7 +50,10 @@ class ChartOptions extends React.Component {
       startTimeFieldError: false,
 
       // Whether there is an error in the end time text field.
-      endTimeFieldError: false
+      endTimeFieldError: false,
+
+      // Whether there is an error in the sample rate text field.
+      sampleRateFieldError: false
     };
   }
 
@@ -67,11 +67,6 @@ class ChartOptions extends React.Component {
     // Create topic menu items.
     const topicMenuItems = this.props.topics.map((e) => (
       <MenuItem key={e['topic_id']} value={e['topic_id']}>{e['topic_name']}</MenuItem>
-    ));
-
-    // Create sample granularity menu items.
-    const sampleGranularityMenuItems = this.props.sampleGranularities.map((e) => (
-      <MenuItem key={e} value={e}>{e}</MenuItem>
     ));
 
     return (
@@ -103,10 +98,8 @@ class ChartOptions extends React.Component {
                 small={true} />
             </Grid>
             <Grid xs={11} item key={'start-time-' + this.props.startDateTime}>
-              <InputLabel className={classes.dateInputLabel}>
-                <Typography type="caption">Start Time</Typography>
-              </InputLabel>
               <TextField
+                label="Start Time"
                 className={classes.startTimeTextField}
                 defaultValue={this.props.startDateTime.format('HH:mm:ss.SSS')}
                 onChange={this.handleStartTimeChange.bind(this)}
@@ -137,13 +130,11 @@ class ChartOptions extends React.Component {
             </Grid>
             <Grid xs={12} item>
               <FormControl>
-                <InputLabel>Sample Granularity</InputLabel>
-                <Select
-                  className={classes.sampleGranularitySelect}
-                  value={this.props.selectedSampleGranularity}
-                  onChange={this.props.onSampleGranularityChange}>
-                  {sampleGranularityMenuItems}
-                </Select>
+                <TextField
+                  label="Sample Rate"
+                  defaultValue={this.props.selectedSampleRate.toString()}
+                  onChange={this.handleSampleRateChange.bind(this)}
+                  error={this.state.sampleRateFieldError} />
               </FormControl>
             </Grid>
             <Grid xs={12} item>
@@ -249,6 +240,30 @@ class ChartOptions extends React.Component {
     dt.milliseconds(moment.milliseconds());
     this.props.onEndDateTimeChange(dt);
   }
+
+  /**
+   * Handles changes to the sample rate.
+   * @param {Object} event The change event.
+   * @returns {undefined}
+   */
+  handleSampleRateChange(event) {
+    // Check that the sample rate value is a number.
+    let value = event.target.value;
+    if (!/^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(value)) {
+      this.setState({ sampleRateFieldError: true });
+      return;
+    }
+
+    // Check that the sample rate is in the range [0, 1].
+    value = new Number(value);
+    if (value < 0 || value > 1) {
+      this.setState({ sampleRateFieldError: true });
+      return;
+    }
+
+    this.setState({ sampleRateFieldError: false });
+    this.props.onSampleRateChange(new Number(value));
+  }
 }
 
 ChartOptions.propTypes = {
@@ -256,12 +271,11 @@ ChartOptions.propTypes = {
   selectedTopicId: PropTypes.number.isRequired,
   startDateTime: PropTypes.instanceOf(Moment).isRequired,
   endDateTime: PropTypes.instanceOf(Moment).isRequired,
-  sampleGranularities: PropTypes.array.isRequired,
-  selectedSampleGranularity: PropTypes.string.isRequired,
+  selectedSampleRate: PropTypes.number.isRequired,
   onTopicChange: PropTypes.func.isRequired,
   onStartDateTimeChange: PropTypes.func.isRequired,
   onEndDateTimeChange: PropTypes.func.isRequired,
-  onSampleGranularityChange: PropTypes.func.isRequired,
+  onSampleRateChange: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
 

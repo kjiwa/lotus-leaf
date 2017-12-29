@@ -53,26 +53,41 @@ class ApiServer(server.BaseServer):
 
     This method expects the query string to contain the following parameters:
 
-      * topic_id
-      * start_date_time
-      * end_date_time
+      * topic_id: The topic ID being queried.
+      * start_date_time: The start of the date range being queried.
+      * end_date_time: The end of the date range being queried.
+      * sample_rate: The sample rate, between 0 and 1 (inclusive).
+
+
 
     Returns:
       A JSON-encoded list of topic data.
     """
     params = bottle.request.query.decode()  # pylint: disable=no-member
-    topic_id = int(params.get('topic_id', 0))
-    start_dt_str = params.get('start_date_time')
-    end_dt_str = params.get('end_date_time')
 
-    if not (topic_id != 0 and 'start_date_time' in params
-            and 'end_date_time' in params):
-      raise bottle.HTTPError(
-          400, 'A topic ID and start and end times are required.')
+    # Validate topic ID.
+    try:
+      topic_id = int(params.get('topic_id'))
+    except ValueError:
+      raise bottle.HTTPError(400, 'A valid topic ID is required.')
 
-    start_dt = dateutil.parser.parse(start_dt_str)
-    end_dt = dateutil.parser.parse(end_dt_str)
-    result = self._db.get_data(topic_id, start_dt, end_dt)
+    # Validate start and end times.
+    try:
+      start_dt = dateutil.parser.parse(params.get('start_date_time'))
+      end_dt = dateutil.parser.parse(params.get('end_date_time'))
+    except ValueError:
+      raise bottle.HTTPError(400, 'Valid start and end times are required.')
+
+    # Validate sample rate.
+    try:
+      sample_rate = float(params.get('sample_rate'))
+      if sample_rate < 0 or sample_rate > 1:
+        raise bottle.HTTPError(400, 'A valid sample rate is required.')
+    except ValueError:
+      raise bottle.HTTPError(400, 'A valid sample rate is required.')
+
+    # Query database.
+    result = self._db.get_data(topic_id, start_dt, end_dt, sample_rate)
     return json.dumps(result, cls=model.DatumEncoder)
 
   def get_earliest_data_timestamp(self):

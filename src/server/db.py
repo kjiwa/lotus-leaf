@@ -45,13 +45,14 @@ class Database(object):
           for statement in statements:
             c.execute(statement)
 
-  def get_data(self, topic_id, start_dt, end_dt):
+  def get_data(self, topic_id, start_dt, end_dt, sample_rate):
     """Gets time-series data for a given topic and date range.
 
     Args:
       topic_id: The topic to query.
       start_dt: The start datetime.
       end_dt: The end datetime.
+      sample_rate: A sample rate, between 0 and 1 inclusive.
 
     Returns:
       A list of time-series data objects.
@@ -59,7 +60,8 @@ class Database(object):
     s = sqlalchemy.orm.Session(self.engine)
     result = (s.query(model.Datum).filter(model.Datum.topic_id == topic_id)
               .filter(model.Datum.ts >= start_dt)
-              .filter(model.Datum.ts <= end_dt).all())
+              .filter(model.Datum.ts <= end_dt)
+              .filter(sqlalchemy.sql.functions.random() <= sample_rate).all())
     s.close()
     return result
 

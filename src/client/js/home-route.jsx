@@ -15,19 +15,6 @@ import Typography from 'material-ui/Typography';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 
-/**
- * Granularities at which time series data can be sampled.
- */
-const SAMPLE_GRANULARITIES = [
-  'year',
-  'month',
-  'date',
-  'hour',
-  'minute',
-  'second',
-  'millisecond'
-];
-
 const styles = (theme) => ({
   chartCard: {
     marginTop: '32px'
@@ -59,8 +46,8 @@ class HomeRoute extends React.Component {
       // The currently displayed data.
       data: [],
 
-      // The currently selected sample granularity.
-      selectedSampleGranularity: 'hour',
+      // The currently selected sample rate.
+      selectedSampleRate: 0.05,
 
       // Whether the progress indicator should be shown.
       showProgressIndicator: false
@@ -115,12 +102,11 @@ class HomeRoute extends React.Component {
               selectedTopicId={this.state.selectedTopicId}
               startDateTime={this.state.startDateTime}
               endDateTime={this.state.endDateTime}
-              sampleGranularities={SAMPLE_GRANULARITIES}
-              selectedSampleGranularity={this.state.selectedSampleGranularity}
+              selectedSampleRate={this.state.selectedSampleRate}
               onTopicChange={this.handleSelectedTopicChange.bind(this)}
               onStartDateTimeChange={this.handleStartDateTimeChange.bind(this)}
               onEndDateTimeChange={this.handleEndDateTimeChange.bind(this)}
-              onSampleGranularityChange={this.handleSampleGranularityChange.bind(this)}
+              onSampleRateChange={this.handleSampleRateChange.bind(this)}
               onSubmit={this.handleOptionsSubmit.bind(this)} />
           </ExpansionPanelDetails>
         </ExpansionPanel>
@@ -178,12 +164,13 @@ class HomeRoute extends React.Component {
     params.set('topic_id', this.state.selectedTopicId);
     params.set('start_date_time', this.state.startDateTime.toISOString());
     params.set('end_date_time', this.state.endDateTime.toISOString());
+    params.set('sample_rate', this.state.selectedSampleRate);
 
     fetch('/_/data?' + params.toString())
       .then((response) => response.json())
       .then((data) => {
         this.setState({
-          data: this.getSamples(data, this.state.selectedSampleGranularity),
+          data: data,
           showProgressIndicator: false
         });
       });
@@ -217,12 +204,12 @@ class HomeRoute extends React.Component {
   }
 
   /**
-   * Handles changes to the sample granularity field.
-   * @param {Object} event The change event.
+   * Handles changes to the sample rate field.
+   * @param {number} value The new sample rate.
    * @returns {undefined}
    */
-  handleSampleGranularityChange(event) {
-    this.setState({ selectedSampleGranularity: event.target.value });
+  handleSampleRateChange(value) {
+    this.setState({ selectedSampleRate: value });
   }
 
   /**
@@ -231,34 +218,6 @@ class HomeRoute extends React.Component {
    */
   handleOptionsSubmit() {
     this.fetchData();
-  }
-
-  /**
-   * Samples a set of data at the requested granularity.
-   * @param {Array} data The data to be sampled.
-   * @param {string} sampleGranularity The granularity at which the data should be sampled.
-   * @returns {Array} A sampled list of data.
-   */
-  getSamples(data, sampleGranularity) {
-    if (data.length == 0) {
-      return [];
-    }
-
-    // TODO(kjiwa): Put this into a worker thread.
-    data.sort((a, b) => (a['ts'] - b['ts']));
-    const samples = [data[0]];
-    let ts = new Moment(data[0]['ts']);
-    for (let i = 1, j = data.length; i < j; ++i) {
-      const now = new Moment(data[i]['ts']);
-      if (now.isSame(ts, sampleGranularity)) {
-        continue;
-      }
-
-      samples.push(data[i]);
-      ts = now;
-    }
-
-    return samples;
   }
 }
 
