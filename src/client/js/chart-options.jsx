@@ -19,14 +19,9 @@ import Typography from 'material-ui/Typography';
 import { FormControl } from 'material-ui/Form';
 import { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
-import { SingleDatePicker } from 'react-dates';
 import { withStyles } from 'material-ui/styles';
 
 const styles = (theme) => ({
-  dateInputLabel: {
-    display: 'block',
-    marginBottom: '8px'
-  },
   topicSelect: {
     width: '600px'
   }
@@ -40,17 +35,11 @@ class ChartOptions extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // Whether the start date SingleDatePicker is focused.
-      startDatePickerFocused: false,
-
-      // Whether the end date SingleDatePicker is focused.
-      endDatePickerFocused: false,
-
       // Whether there is an error in the start time text field.
-      startTimeFieldError: false,
+      startDateTimeFieldError: false,
 
       // Whether there is an error in the end time text field.
-      endTimeFieldError: false,
+      endDateTimeFieldError: false,
 
       // Whether there is an error in the sample rate text field.
       sampleRateFieldError: false
@@ -84,49 +73,25 @@ class ChartOptions extends React.Component {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid xs={1} item>
-              <InputLabel className={classes.dateInputLabel}>
-                <Typography type="caption">Start Date</Typography>
-              </InputLabel>
-              <SingleDatePicker
-                date={this.props.startDateTime}
-                focused={this.state.startDatePickerFocused}
-                onDateChange={this.handleStartDateChange.bind(this)}
-                onFocusChange={this.handleStartDateFocusChange.bind(this)}
-                initialVisibleMonth={() => this.props.startDateTime}
-                isOutsideRange={(moment) => false}
-                small={true} />
+            <Grid xs={12} item key={'start-date-time=' + this.props.startDateTime.milliseconds()}>
+              <FormControl>
+                <TextField
+                  label="Start Date and Time"
+                  type="datetime-local"
+                  defaultValue={this.props.startDateTime.format('YYYY-MM-DD[T]HH:mm:ss.SSS')}
+                  onChange={this.handleStartDateTimeChange.bind(this)}
+                  InputLabelProps={{ shrink: true }} />
+              </FormControl>
             </Grid>
-            <Grid xs={11} item key={'start-time-' + this.props.startDateTime}>
-              <TextField
-                label="Start Time"
-                className={classes.startTimeTextField}
-                defaultValue={this.props.startDateTime.format('HH:mm:ss.SSS')}
-                onChange={this.handleStartTimeChange.bind(this)}
-                error={this.state.startTimeFieldError} />
-            </Grid>
-            <Grid xs={1} item>
-              <InputLabel className={classes.dateInputLabel}>
-                <Typography type="caption">End Date</Typography>
-              </InputLabel>
-              <SingleDatePicker
-                date={this.props.endDateTime}
-                focused={this.state.endDatePickerFocused}
-                onDateChange={this.handleEndDateChange.bind(this)}
-                onFocusChange={this.handleEndDateFocusChange.bind(this)}
-                initialVisibleMonth={() => this.props.endDateTime}
-                isOutsideRange={(moment) => false}
-                small={true} />
-            </Grid>
-            <Grid xs={11} item key={'end-time-' + this.props.endDateTime}>
-              <InputLabel className={classes.dateInputLabel}>
-                <Typography type="caption">End Time</Typography>
-              </InputLabel>
-              <TextField
-                className={classes.endTimeTextField}
-                defaultValue={this.props.endDateTime.format('HH:mm:ss.SSS')}
-                onChange={this.handleEndTimeChange.bind(this)}
-                error={this.state.endTimeFieldError} />
+            <Grid xs={12} item key={'end-date-time=' + this.props.endDateTime.milliseconds()}>
+              <FormControl>
+                <TextField
+                  label="End Date and Time"
+                  type="datetime-local"
+                  defaultValue={this.props.endDateTime.format('YYYY-MM-DD[T]HH:mm:ss.SSS')}
+                  onChange={this.handleEndDateTimeChange.bind(this)}
+                  InputLabelProps={{ shrink: true }} />
+              </FormControl>
             </Grid>
             <Grid xs={12} item>
               <FormControl>
@@ -152,93 +117,35 @@ class ChartOptions extends React.Component {
   }
 
   /**
-   * Handles changes to the start date component's focused input.
-   * @param {boolean} focused the currently focused input.
-   * @returns {undefined}
-   */
-  handleStartDateFocusChange({ focused }) {
-    this.setState({ startDatePickerFocused: focused });
-  }
-
-  /**
-   * Handles changes to the end date component's focused input.
-   * @param {boolean} focused the currently focused input.
-   * @returns {undefined}
-   */
-  handleEndDateFocusChange({ focused }) {
-    this.setState({ endDatePickerFocused: focused });
-  }
-
-  /**
    * Handles changes to the start date component.
-   * @param {Moment} date The new start date.
+   * @param {Object} event The change event.
    * @returns {undefined}
    */
-  handleStartDateChange(date) {
-    // Merge time into the date.
-    date.hours(this.props.startDateTime.hours());
-    date.minutes(this.props.startDateTime.minutes());
-    date.seconds(this.props.startDateTime.seconds());
-    date.milliseconds(this.props.startDateTime.milliseconds());
-    this.props.onStartDateTimeChange(date);
+  handleStartDateTimeChange(event) {
+    const value = new Moment(event.target.value);
+    if (!value.isValid()) {
+      this.setState({ startDateTimeFieldError: true });
+      return;
+    }
+
+    this.setState({ startDateTimeFieldError: false });
+    this.props.onStartDateTimeChange(value);
   }
 
   /**
    * Handles changes to the end date component.
-   * @param {Moment} date The new end date.
+   * @param {Object} event The change event.
    * @returns {undefined}
    */
-  handleEndDateChange(date) {
-    // Merge time into the date.
-    date.hours(this.props.endDateTime.hours());
-    date.minutes(this.props.endDateTime.minutes());
-    date.seconds(this.props.endDateTime.seconds());
-    date.milliseconds(this.props.endDateTime.milliseconds());
-    this.props.onEndDateTimeChange(date);
-  }
-
-  /**
-   * Handles changes to the start time component.
-   * @param {Object} event The event object
-   * @returns {undefined}
-   */
-  handleStartTimeChange(event) {
-    const moment = new Moment('1970-01-01T' + event.target.value);
-    if (!moment.isValid()) {
-      this.setState({ startTimeFieldError: true  });
+  handleEndDateTimeChange(event) {
+    const value = new Moment(event.target.value);
+    if (!value.isValid()) {
+      this.setState({ endDateTimeFieldError: true });
       return;
     }
 
-    this.setState({ startTimeFieldError: false });
-
-    const dt = this.props.startDateTime;
-    dt.hours(moment.hours());
-    dt.minutes(moment.minutes());
-    dt.seconds(moment.seconds());
-    dt.milliseconds(moment.milliseconds());
-    this.props.onStartDateTimeChange(dt);
-  }
-
-  /**
-   * Handles changes to the end time component.
-   * @param {Object} event The event object
-   * @returns {undefined}
-   */
-  handleEndTimeChange(event) {
-    const moment = new Moment('1970-01-01T' + event.target.value);
-    if (!moment.isValid()) {
-      this.setState({ endTimeFieldError: true  });
-      return;
-    }
-
-    this.setState({ endTimeFieldError: false });
-
-    const dt = this.props.endDateTime;
-    dt.hours(moment.hours());
-    dt.minutes(moment.minutes());
-    dt.seconds(moment.seconds());
-    dt.milliseconds(moment.milliseconds());
-    this.props.onEndDateTimeChange(dt);
+    this.setState({ endDateTimeFieldError: false });
+    this.props.onEndDateTimeChange(value);
   }
 
   /**
@@ -255,14 +162,14 @@ class ChartOptions extends React.Component {
     }
 
     // Check that the sample rate is in the range [0, 1].
-    value = new Number(value);
+    value = parseFloat(value);
     if (value < 0 || value > 1) {
       this.setState({ sampleRateFieldError: true });
       return;
     }
 
     this.setState({ sampleRateFieldError: false });
-    this.props.onSampleRateChange(new Number(value));
+    this.props.onSampleRateChange(value);
   }
 }
 
