@@ -12,6 +12,8 @@ import Moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Typography from 'material-ui/Typography';
+import msgpack from 'msgpack5';
+import { Datum, Topic } from './model.js';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 
@@ -30,6 +32,8 @@ const styles = (theme) => ({
 class HomeRoute extends React.Component {
   constructor(props) {
     super(props);
+
+    this.msgpack = msgpack();
     this.state = {
       // The start date and time of the query.
       startDateTime: new Moment(),
@@ -74,7 +78,7 @@ class HomeRoute extends React.Component {
     let chart = null;
     if (this.state.data.length > 0) {
       const selectedTopic = this.state.topics.find((e) => (
-        e['topic_id'] == this.state.selectedTopicId
+        e.topicId == this.state.selectedTopicId
       ));
 
       chart = (
@@ -83,7 +87,7 @@ class HomeRoute extends React.Component {
           <CardContent>
             <Chart
               data={this.state.data}
-              label={selectedTopic['topic_name']} />
+              label={selectedTopic.topicName} />
           </CardContent>
         </Card>
       );
@@ -121,11 +125,13 @@ class HomeRoute extends React.Component {
    */
   fetchTopics() {
     fetch('/_/topics')
-      .then((response) => response.json())
+      .then((response) => response.arrayBuffer())
+      .then((msg) => this.msgpack.decode(msg))
       .then((data) => {
+        const topics = data.map((e) => (new Topic(e[0], e[1])));
         this.setState({
-          topics: data,
-          selectedTopicId: (data.length > 0 ? data[0]['topic_id'] : 0)
+          topics: topics,
+          selectedTopicId: (topics.length > 0 ? topics[0].topicId : 0)
         });
       });
   }
@@ -136,7 +142,8 @@ class HomeRoute extends React.Component {
    */
   fetchEarliestTimestamp() {
     fetch('/_/data/timestamp/earliest')
-      .then((response) => response.json())
+      .then((response) => response.arrayBuffer())
+      .then((msg) => this.msgpack.decode(msg))
       .then((data) => {
         this.setState({ startDateTime: new Moment(data) });
       });
@@ -148,7 +155,8 @@ class HomeRoute extends React.Component {
    */
   fetchLatestTimestamp() {
     fetch('/_/data/timestamp/latest')
-      .then((response) => response.json())
+      .then((response) => response.arrayBuffer())
+      .then((msg) => this.msgpack.decode(msg))
       .then((data) => {
         this.setState({ endDateTime: new Moment(data) });
       });
@@ -160,6 +168,7 @@ class HomeRoute extends React.Component {
    */
   fetchData() {
     this.setState({ showProgressIndicator: true });
+
     const params = new URLSearchParams();
     params.set('topic_id', this.state.selectedTopicId);
     params.set('start_date_time', this.state.startDateTime.toISOString());
@@ -167,10 +176,11 @@ class HomeRoute extends React.Component {
     params.set('sample_rate', this.state.selectedSampleRate);
 
     fetch('/_/data?' + params.toString())
-      .then((response) => response.json())
+      .then((response) => response.arrayBuffer())
+      .then((msg) => this.msgpack.decode(msg))
       .then((data) => {
         this.setState({
-          data: data,
+          data: data.map((e) => (new Datum(new Moment(e[0]), e[1], e[2]))),
           showProgressIndicator: false
         });
       });

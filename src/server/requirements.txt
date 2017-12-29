@@ -1,5 +1,6 @@
 SQLAlchemy
 bottle
+msgpack-python
 mysql-connector==2.1.6
 pylint
 python-dateutil

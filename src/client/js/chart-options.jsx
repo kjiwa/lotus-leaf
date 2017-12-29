@@ -55,7 +55,7 @@ class ChartOptions extends React.Component {
 
     // Create topic menu items.
     const topicMenuItems = this.props.topics.map((e) => (
-      <MenuItem key={e['topic_id']} value={e['topic_id']}>{e['topic_name']}</MenuItem>
+      <MenuItem key={e.topicId} value={e.topicId}>{e.topicName}</MenuItem>
     ));
 
     return (

@@ -1,6 +1,5 @@
 """A module containing object used throughout the UW Solar application."""
 
-import json
 from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -35,29 +34,3 @@ class Datum(BASE):
   ts = Column(DateTime, primary_key=True)
   topic_id = Column(Integer, primary_key=True)
   value_string = Column(Text, primary_key=True)
-
-
-class DatumEncoder(json.JSONEncoder):
-  """A class that prepares Datum objects for JSON encoding."""
-
-  # pylint: disable=arguments-differ,method-hidden
-  def default(self, obj):
-    if isinstance(obj, Datum):
-      return {
-          'ts': obj.ts.isoformat(),
-          'topic_id': obj.topic_id,
-          'value_string': obj.value_string
-      }
-
-    return json.JSONEncoder.default(self, obj)
-
-
-class TopicEncoder(json.JSONEncoder):
-  """A class that prepares Topic objects for JSON encoding."""
-
-  # pylint: disable=arguments-differ,method-hidden
-  def default(self, obj):
-    if isinstance(obj, Topic):
-      return {'topic_id': obj.topic_id, 'topic_name': obj.topic_name}
-
-    return json.JSONEncoder.default(self, obj)

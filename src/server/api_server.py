@@ -1,9 +1,9 @@
 """The UW Solar API server."""
 
-import json
 import dateutil.parser
+import msgpack
 import bottle
-import model
+import codec
 import server
 
 
@@ -45,8 +45,8 @@ class ApiServer(server.BaseServer):
     Returns:
       A JSON-encoded list of topic values.
     """
-    bottle.response.content_type = 'application/json'
-    return json.dumps(self._db.get_all_topics(), cls=model.TopicEncoder)
+    bottle.response.content_type = 'application/octet-stream'
+    return msgpack.packb(self._db.get_all_topics(), default=codec.encode_topic)
 
   def get_data(self):
     """Returns time-series data for a topic.
@@ -57,8 +57,6 @@ class ApiServer(server.BaseServer):
       * start_date_time: The start of the date range being queried.
       * end_date_time: The end of the date range being queried.
       * sample_rate: The sample rate, between 0 and 1 (inclusive).
-
-
 
     Returns:
       A JSON-encoded list of topic data.
@@ -87,8 +85,9 @@ class ApiServer(server.BaseServer):
       raise bottle.HTTPError(400, 'A valid sample rate is required.')
 
     # Query database.
+    bottle.response.content_type = 'application/octet-stream'
     result = self._db.get_data(topic_id, start_dt, end_dt, sample_rate)
-    return json.dumps(result, cls=model.DatumEncoder)
+    return msgpack.packb(result, default=codec.encode_datum)
 
   def get_earliest_data_timestamp(self):
     """Returns the earliest timestamp for which there is solar panel activity.
@@ -96,12 +95,12 @@ class ApiServer(server.BaseServer):
     Returns:
       A JSON-encoded ISO8601 timestamp.
     """
-    bottle.response.content_type = 'application/json'
+    bottle.response.content_type = 'application/octet-stream'
     result = self._db.get_earliest_data_timestamp()
     if not result:
       return ''
 
-    return json.dumps(result.isoformat())
+    return msgpack.packb(result.isoformat())
 
   def get_latest_data_timestamp(self):
     """Returns the latest timestamp for which there is solar panel activity.
@@ -109,9 +108,9 @@ class ApiServer(server.BaseServer):
     Returns:
       A JSON-encoded ISO8601 timestamp.
     """
-    bottle.response.content_type = 'application/json'
+    bottle.response.content_type = 'application/octet-stream'
     result = self._db.get_latest_data_timestamp()
     if not result:
       return ''
 
-    return json.dumps(result.isoformat())
+    return msgpack.packb(result.isoformat())
