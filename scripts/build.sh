@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # A script that builds stylesheets and JavaScript sources.
 
@@ -32,7 +32,7 @@ if [ ${FLAGS_frontend} -eq ${FLAGS_TRUE} ]; then
   fi
 
   pushd "$ROOT/src/client"
-  npm run webpack -- --progress --config $CONFIG_FILE
+  npm run webpack -- --config $CONFIG_FILE
   popd
 
   # Copy static resources.

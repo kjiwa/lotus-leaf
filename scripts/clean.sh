@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # A script that removes dependencies, build artifacts, and temporary files.
 

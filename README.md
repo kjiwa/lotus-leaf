@@ -8,11 +8,16 @@ A web service to show data from solar panels deployed around the University of W
 
 # Requirements
 
-In order to build and run the web server, a few dependencies must be installed:
+In order to build and run the web server, a few dependencies must be present:
 
 * Bash (https://www.gnu.org/software/bash/)
 * Node.js (https://nodejs.org/en/)
 * Python 3 (https://www.python.org/download/releases/3.0/)
+* wget (https://www.gnu.org/software/wget/)
+
+```bash
+$sudo
+```
 
 # Download
 
