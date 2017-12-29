@@ -13,10 +13,33 @@ In order to build and run the web server, a few dependencies must be present:
 * Bash (https://www.gnu.org/software/bash/)
 * Node.js (https://nodejs.org/en/)
 * Python 3 (https://www.python.org/download/releases/3.0/)
-* wget (https://www.gnu.org/software/wget/)
+* Wget (https://www.gnu.org/software/wget/)
+
+## Getopt
+
+Some users (such as those running FreeBSD or MacOS) may notice issues related to getopt.
 
 ```bash
-$sudo
+$ scripts/run.sh
+flags:WARN getopt: illegal option -- -
+getopt: illegal option -- n
+getopt: illegal option -- o
+getopt: illegal option -- d
+-e lete_shflags --
+flags:FATAL unable to parse provided options with getopt.
+```
+
+ These platforms do not ship with a version of getopt that supports long command arguments, so a replacement must be installed.
+
+### FreeBSD
+
+A replacement getopt may be installed from the Ports Collection (https://svnweb.freebsd.org/ports/head/misc/getopt/).
+
+```bash
+$ sudo pkg install getopt
+$ pushd lotus-leaf
+$ PATH=/usr/local/bin:$PATH scripts/run.sh
+$ popd
 ```
 
 # Download
