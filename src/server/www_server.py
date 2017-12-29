@@ -14,23 +14,35 @@ class WwwServer(server.BaseServer):
     """Initializes routes and WSGI application."""
     super().__init__([
         server.Route('GET', '/', WwwServer.root),
+        server.Route('GET', '/favicon.ico', WwwServer.faviconico),
         server.Route('GET', '/uwsolar.js', WwwServer.uwsolarjs),
         server.Route('GET', '/uwsolar.js.map', WwwServer.uwsolarjsmap),
         server.Route('GET', '/<:re:.*>', WwwServer.redirect)
     ])
 
   @staticmethod
-  def read_file(path):
+  def read_file(path, open_mode='r'):
     """Reads a file and returns its contents.
 
     Args:
       path: The path of the file to be read.
+      open_mode: The mode to use when opening the file.
 
     Returns:
       A string containing the file contents.
     """
-    with open(path, 'r') as f:
+    with open(path, open_mode) as f:
       return f.read()
+
+  @staticmethod
+  def faviconico():
+    """Returns the contents of favicon.ico.
+
+    Returns:
+      An icon image.
+    """
+    bottle.response.content_type = 'image/x-icon'
+    return WwwServer.read_file(_WWW_PATH + '/favicon.ico', open_mode='rb')
 
   @staticmethod
   def root():

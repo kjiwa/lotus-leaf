@@ -23,6 +23,7 @@ echo -e "\e[1;45mBuilding application...\e[0m"
 
 # Build frontend.
 if [ ${FLAGS_frontend} -eq ${FLAGS_TRUE} ]; then
+  # Run webpack.
   echo -e "\e[1;33mBuilding frontend...\e[0m"
   if [ ${FLAGS_debug} -eq ${FLAGS_TRUE} ]; then
     CONFIG_FILE=webpack.development.js
@@ -33,6 +34,9 @@ if [ ${FLAGS_frontend} -eq ${FLAGS_TRUE} ]; then
   pushd "$ROOT/src/client"
   npm run webpack -- --progress --config $CONFIG_FILE
   popd
+
+  # Copy static resources.
+  cp "$ROOT/src/client/img/favicon.ico" "$ROOT/dist/www"
 fi
 
 # Build backend.
@@ -40,7 +44,6 @@ if [ ${FLAGS_backend} -eq ${FLAGS_TRUE} ]; then
   echo -e "\e[1;33mBuilding backend...\e[0m"
   source "${FLAGS_envroot}/bin/activate"
   find "$ROOT/src/server" -type f -name "*.py" | xargs pylint \
-    --rcfile="$ROOT/src/server/pylintrc" \
-    --output-format=colorized || true
+    --rcfile="$ROOT/src/server/pylintrc" || true
   deactivate
 fi

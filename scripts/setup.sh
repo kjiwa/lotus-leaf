@@ -18,12 +18,12 @@ echo -e "\e[1;45mSetting up build and runtime environment...\e[0m"
 # Install frontend dependencies.
 echo -e "\e[1;33mInstalling frontend dependencies...\e[0m"
 pushd "$ROOT/src/client"
-npm install
+npm install -q
 popd
 
 # Install Python dependencies.
 echo -e "\e[1;33mInstalling Python dependencies...\e[0m"
 python3 -m venv "${FLAGS_envroot}"
 source "${FLAGS_envroot}/bin/activate"
-pip install -r "$ROOT/src/server/requirements.txt"
+pip install -q -r "$ROOT/src/server/requirements.txt"
 deactivate
