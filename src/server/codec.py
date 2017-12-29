@@ -2,6 +2,7 @@
 
 import model
 
+
 def encode_topic(obj):
   """Encodes a Topic object for msgpack serialization.
 
@@ -17,6 +18,7 @@ def encode_topic(obj):
   if isinstance(obj, model.Topic):
     return [obj.topic_id, obj.topic_name]
   raise TypeError('Unknown type: %r' % obj)
+
 
 def encode_datum(obj):
   """Encodes a Datum object for msgpack serialization.

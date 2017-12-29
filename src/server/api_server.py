@@ -43,7 +43,7 @@ class ApiServer(server.BaseServer):
     """Returns a list of topic values.
 
     Returns:
-      A JSON-encoded list of topic values.
+      A MessagePack-encoded list of topic values.
     """
     bottle.response.content_type = 'application/octet-stream'
     return msgpack.packb(self._db.get_all_topics(), default=codec.encode_topic)
@@ -59,7 +59,7 @@ class ApiServer(server.BaseServer):
       * sample_rate: The sample rate, between 0 and 1 (inclusive).
 
     Returns:
-      A JSON-encoded list of topic data.
+      A MessagePack-encoded list of topic data.
     """
     params = bottle.request.query.decode()  # pylint: disable=no-member
 
@@ -93,7 +93,7 @@ class ApiServer(server.BaseServer):
     """Returns the earliest timestamp for which there is solar panel activity.
 
     Returns:
-      A JSON-encoded ISO8601 timestamp.
+      A MessagePack-encoded ISO8601 timestamp.
     """
     bottle.response.content_type = 'application/octet-stream'
     result = self._db.get_earliest_data_timestamp()
@@ -106,7 +106,7 @@ class ApiServer(server.BaseServer):
     """Returns the latest timestamp for which there is solar panel activity.
 
     Returns:
-      A JSON-encoded ISO8601 timestamp.
+      A MessagePack-encoded ISO8601 timestamp.
     """
     bottle.response.content_type = 'application/octet-stream'
     result = self._db.get_latest_data_timestamp()
