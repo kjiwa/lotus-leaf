@@ -1,6 +1,7 @@
 **/*.pyc
 **/*~
 **/__pycache__/
+db/env/
 dist/
 env/
 scripts/shflags-real
