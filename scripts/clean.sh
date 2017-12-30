@@ -6,6 +6,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT}/scripts/shflags"
 
 DEFINE_string "envroot" "$ROOT/env" "The environment root." "e"
+DEFINE_string "db_envroot" "$ROOT/db/env" "The DB migrations environment root." "d"
 DEFINE_boolean "delete_shflags" ${FLAGS_TRUE} "Whether to delete shflags." "s"
 
 FLAGS "$@" || exit $?
@@ -32,6 +33,7 @@ popd
 
 # Remove Python artifacts.
 rm -rf "${FLAGS_envroot}"
+rm -rf "${FLAGS_db_envroot}"
 find "$ROOT" -type d -name "__pycache__" -exec rm -rf {} \; 2> /dev/null || true
 find "$ROOT" -type f -name "*.pyc" -delete
 

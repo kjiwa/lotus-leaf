@@ -17,6 +17,7 @@ depends_on = None
 
 
 def upgrade():
+  """Creates the initial uwsolar tables."""
   # volttron_table_definitions
   op.create_table(
       'volttron_table_definitions',
@@ -60,6 +61,7 @@ def upgrade():
 
 
 def downgrade():
+  """Drops the uwsolar tables."""
   op.drop_table('volttron_table_definitions')
   op.drop_table('topics')
   op.drop_table('meta')
