@@ -1,7 +1,7 @@
 """The UW Solar API server."""
 
+import json
 import dateutil.parser
-import msgpack
 import bottle
 import codec
 import server
@@ -43,10 +43,10 @@ class ApiServer(server.BaseServer):
     """Returns a list of topic values.
 
     Returns:
-      A MessagePack-encoded list of topic values.
+      A JSON-encoded list of topic values.
     """
     bottle.response.content_type = 'application/octet-stream'
-    return msgpack.packb(self._db.get_all_topics(), default=codec.encode_topic)
+    return json.dumps(self._db.get_all_topics(), cls=codec.TopicEncoder)
 
   def get_data(self):
     """Returns time-series data for a topic.
@@ -59,7 +59,7 @@ class ApiServer(server.BaseServer):
       * sample_rate: The sample rate, between 0 and 1 (inclusive).
 
     Returns:
-      A MessagePack-encoded list of topic data.
+      A JSON-encoded list of topic data.
     """
     params = bottle.request.query.decode()  # pylint: disable=no-member
 
@@ -87,30 +87,30 @@ class ApiServer(server.BaseServer):
     # Query database.
     bottle.response.content_type = 'application/octet-stream'
     result = self._db.get_data(topic_id, start_dt, end_dt, sample_rate)
-    return msgpack.packb(result, default=codec.encode_datum)
+    return json.dumps(result, cls=codec.DatumEncoder)
 
   def get_earliest_data_timestamp(self):
     """Returns the earliest timestamp for which there is solar panel activity.
 
     Returns:
-      A MessagePack-encoded ISO8601 timestamp.
+      A JSON-encoded ISO8601 timestamp.
     """
     bottle.response.content_type = 'application/octet-stream'
     result = self._db.get_earliest_data_timestamp()
     if not result:
       return ''
 
-    return msgpack.packb(result.isoformat())
+    return json.dumps(result.isoformat())
 
   def get_latest_data_timestamp(self):
     """Returns the latest timestamp for which there is solar panel activity.
 
     Returns:
-      A MessagePack-encoded ISO8601 timestamp.
+      A JSON-encoded ISO8601 timestamp.
     """
     bottle.response.content_type = 'application/octet-stream'
     result = self._db.get_latest_data_timestamp()
     if not result:
       return ''
 
-    return msgpack.packb(result.isoformat())
+    return json.dumps(result.isoformat())

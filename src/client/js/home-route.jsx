@@ -12,7 +12,6 @@ import Moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Typography from 'material-ui/Typography';
-import msgpack from 'msgpack5';
 import { Datum, Topic } from './model.js';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
@@ -33,7 +32,6 @@ class HomeRoute extends React.Component {
   constructor(props) {
     super(props);
 
-    this.msgpack = msgpack();
     this.state = {
       // The start date and time of the query.
       startDateTime: new Moment(),
@@ -125,8 +123,7 @@ class HomeRoute extends React.Component {
    */
   fetchTopics() {
     fetch('/_/topics')
-      .then((response) => response.arrayBuffer())
-      .then((msg) => this.msgpack.decode(msg))
+      .then((response) => response.json())
       .then((data) => {
         const topics = data.map((e) => (new Topic(e[0], e[1])));
         this.setState({
@@ -142,8 +139,7 @@ class HomeRoute extends React.Component {
    */
   fetchEarliestTimestamp() {
     fetch('/_/data/timestamp/earliest')
-      .then((response) => response.arrayBuffer())
-      .then((msg) => this.msgpack.decode(msg))
+      .then((response) => response.json())
       .then((data) => {
         this.setState({ startDateTime: new Moment(data) });
       });
@@ -155,8 +151,7 @@ class HomeRoute extends React.Component {
    */
   fetchLatestTimestamp() {
     fetch('/_/data/timestamp/latest')
-      .then((response) => response.arrayBuffer())
-      .then((msg) => this.msgpack.decode(msg))
+      .then((response) => response.json())
       .then((data) => {
         this.setState({ endDateTime: new Moment(data) });
       });
@@ -176,8 +171,7 @@ class HomeRoute extends React.Component {
     params.set('sample_rate', this.state.selectedSampleRate);
 
     fetch('/_/data?' + params.toString())
-      .then((response) => response.arrayBuffer())
-      .then((msg) => this.msgpack.decode(msg))
+      .then((response) => response.json())
       .then((data) => {
         this.setState({
           data: data.map((e) => (new Datum(new Moment(e[0]), e[1], e[2]))),

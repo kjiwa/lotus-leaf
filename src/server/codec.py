@@ -1,37 +1,46 @@
 """Encoders and decoders for model objects."""
 
+import json
 import model
 
 
-def encode_topic(obj):
-  """Encodes a Topic object for msgpack serialization.
+class TopicEncoder(json.JSONEncoder):
+  """A Topic to JSON encoder."""
 
-  Args:
-    obj: The object being serialized.
+  # pylint: disable=arguments-differ,method-hidden
+  def default(self, obj):
+    """Encodes a Topic object for JSON serialization.
 
-  Returns:
-    A list containing Topic properties.
+    Args:
+      obj: The object being serialized.
 
-  Raises:
-    TypeError: When the object is not a Topic.
-  """
-  if isinstance(obj, model.Topic):
-    return [obj.topic_id, obj.topic_name]
-  raise TypeError('Unknown type: %r' % obj)
+    Returns:
+      A list containing Topic properties.
+
+    Raises:
+      TypeError: When the object is not a Topic.
+    """
+    if isinstance(obj, model.Topic):
+      return [obj.topic_id, obj.topic_name]
+    return super().default(obj)
 
 
-def encode_datum(obj):
-  """Encodes a Datum object for msgpack serialization.
+class DatumEncoder(json.JSONEncoder):
+  """A Topic to JSON encoder."""
 
-  Args:
-    obj: The object being serialized.
+  # pylint: disable=arguments-differ,method-hidden
+  def default(self, obj):
+    """Encodes a Datum object for JSON serialization.
 
-  Returns:
-    A list containing Datum properties.
+    Args:
+      obj: The object being serialized.
 
-  Raises:
-    TypeError: When the object is not a Datum.
-  """
-  if isinstance(obj, model.Datum):
-    return [obj.ts.isoformat(), obj.topic_id, obj.value_string]
-  raise TypeError('Unknown type: %r' % obj)
+    Returns:
+      A list containing Datum properties.
+
+    Raises:
+      TypeError: When the object is not a Datum.
+    """
+    if isinstance(obj, model.Datum):
+      return [obj.ts.isoformat(), obj.topic_id, obj.value_string]
+    return super().default(obj)
