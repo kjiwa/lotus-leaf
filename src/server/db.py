@@ -7,7 +7,7 @@ import sqlalchemy.orm
 import sqlparse
 import model
 
-_SQLITE_SQL_PATH = os.path.dirname(__file__) + '/../../test/db/'
+_SQLITE_SQL_PATH = os.path.dirname(__file__) + '/../../db/test/'
 _SQLITE_SQL = [
     'meta.sql', 'topics.sql', 'data.sql', 'volttron_table_definitions.sql'
 ]

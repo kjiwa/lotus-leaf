@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT}/scripts/shflags"
 
 DEFINE_boolean "debug" ${FLAGS_TRUE} "Whether to build debuggable artifacts." "d"
-DEFINE_string "envroot" "${ROOT}/env" "The environment root." "e"
+DEFINE_string "envroot" "${ROOT}/src/server/env" "The server environment root." "e"
 DEFINE_string "db_envroot" "$ROOT/db/env" "The DB migrations environment root." "g"
 DEFINE_boolean "frontend" ${FLAGS_TRUE} "Whether to build the frontend." "f"
 DEFINE_boolean "backend" ${FLAGS_TRUE} "Whether to build the backend." "b"
@@ -33,7 +33,7 @@ if [ ${FLAGS_frontend} -eq ${FLAGS_TRUE} ]; then
   fi
 
   pushd "$ROOT/src/client"
-  npm run webpack -- --config $CONFIG_FILE
+  npm run webpack -- --progress --config $CONFIG_FILE
   popd
 
   # Copy static resources.
@@ -44,13 +44,13 @@ fi
 if [ ${FLAGS_backend} -eq ${FLAGS_TRUE} ]; then
   echo -e "\e[1;33mLinting DB migrations scripts...\e[0m"
   source "${FLAGS_db_envroot}/bin/activate"
-  find "$ROOT/db/alembic" -type f -name "*.py" | xargs pylint \
+  find "$ROOT/db/alembic" -not -path "${FLAGS_db_envroot}/*" -type f -name "*.py" | xargs pylint \
     --rcfile="$ROOT/db/pylintrc" || true
   deactivate
 
   echo -e "\e[1;33mLinting backend...\e[0m"
   source "${FLAGS_envroot}/bin/activate"
-  find "$ROOT/src/server" -type f -name "*.py" | xargs pylint \
+  find "$ROOT/src/server" -not -path "${FLAGS_envroot}/*" -type f -name "*.py" | xargs pylint \
     --rcfile="$ROOT/src/server/pylintrc" || true
   deactivate
 fi

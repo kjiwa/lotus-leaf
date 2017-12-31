@@ -20,7 +20,7 @@
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT}/scripts/shflags"
 
-DEFINE_string "envroot" "${ROOT}/env" "The environment root." "e"
+DEFINE_string "envroot" "${ROOT}/src/server/env" "The server environment root." "e"
 DEFINE_boolean "debug" ${FLAGS_FALSE} "Whether to build debuggable binaries and run the server in debug mode." "d"
 DEFINE_boolean "clean" ${FLAGS_TRUE} "Whether to clean build artifacts and temporary files." "c"
 DEFINE_boolean "setup" ${FLAGS_TRUE} "Whether to setup the runtime environment." "s"

@@ -5,7 +5,7 @@
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT}/scripts/shflags"
 
-DEFINE_string "envroot" "$ROOT/env" "The environment root." "e"
+DEFINE_string "envroot" "$ROOT/src/server/env" "The server environment root." "e"
 DEFINE_string "db_envroot" "$ROOT/db/env" "The DB migrations environment root." "d"
 DEFINE_boolean "delete_shflags" ${FLAGS_TRUE} "Whether to delete shflags." "s"
 
