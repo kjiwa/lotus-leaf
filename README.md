@@ -6,7 +6,7 @@ A web service to show data from solar panels deployed around the University of W
   <img src="screenshot.png" width="640">
 </p>
 
-# Requirements
+### Requirements
 
 In order to build and run the web server, a few dependencies must be present:
 
@@ -15,7 +15,7 @@ In order to build and run the web server, a few dependencies must be present:
 * Python 3 (https://www.python.org/download/releases/3.0/)
 * Wget (https://www.gnu.org/software/wget/)
 
-## Getopt
+#### Getopt
 
 Some users (such as those running FreeBSD or MacOS) may notice issues related to getopt.
 
@@ -31,7 +31,7 @@ flags:FATAL unable to parse provided options with getopt.
 
  These platforms do not ship with a version of getopt that supports long command arguments, so a replacement must be installed.
 
-### FreeBSD
+##### FreeBSD
 
 A replacement getopt may be installed from the Ports Collection (https://svnweb.freebsd.org/ports/head/misc/getopt/).
 
@@ -42,7 +42,7 @@ $ PATH=/usr/local/bin:$PATH scripts/run.sh
 $ popd
 ```
 
-# Download
+### Download
 
 Git (https://git-scm.com) is required to download the source code.
 
@@ -50,7 +50,7 @@ Git (https://git-scm.com) is required to download the source code.
 $ git clone https://github.com/kjiwa/lotus-leaf.git
 ```
 
-# Quick Start
+### Quick Start
 
 Use ```run.sh``` to execute an optimized web server with sample data. This script will download additional dependencies, build the source code, and run the server.
 
@@ -68,7 +68,7 @@ $ scripts/run.sh --db_type=mysql --db_host=localhost --db_name=uwsolar
 $ popd
 ```
 
-# Supported Options
+### Supported Options
 
 ```bash
 $ scripts/run.sh --help
