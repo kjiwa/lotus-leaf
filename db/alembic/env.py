@@ -12,24 +12,20 @@ from sqlalchemy import engine_from_config, pool
 
 TEMPLATE_ROOT = os.path.dirname(__file__) + '/..'
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# This is the Alembic Config object, which provides access to the values within
+# the .ini file in use.
 config = context.config
 
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
+# Interpret the config file for Python logging. This line sets up loggers.
 fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
+# Add any model MetaData objects here for autogenerate support.
+#from myapp import mymodel
+#target_metadata = mymodel.Base.metadata
 target_metadata = None
 
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
+# Other values from the config, defined by the needs of env.py, can be acquired:
+#my_important_option = config.get_main_option("my_important_option")
 
 
 def run_migrations_offline():
