@@ -64,7 +64,7 @@ The server can be configured to connect to and read data from a MySQL installati
 
 ```bash
 $ pushd lotus-leaf
-$ scripts/run.sh --db_type=mysql --db_user=uwsolar_ro --db_host=localhost --db_name=uwsolar
+$ scripts/run.sh --db_type=mysql --db_host=localhost --db_name=uwsolar
 $ popd
 ```
 
