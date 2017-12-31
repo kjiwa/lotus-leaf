@@ -2,24 +2,24 @@
 
 ## Database Migration Scripts
 
-Database migration scripts allow changes to database schemas to be rolled out incrementally and gracefully. We use the Alembic toolkit (http://alembic.zzzcomputing.com/en/latest/).
+Database migration scripts allow changes to database schemas to be rolled out incrementally and gracefully. We use the Alembic toolkit (http://alembic.zzzcomputing.com/en/latest/) for changes to the uwsolar schema.
 
 ### Requirements
 
 The following dependencies must be present before DB migration can occur:
 
-* MySQL (or MariaDB)
-* Python 3
+* MariaDB (https://mariadb.org/) or MySQL (https://www.mysql.com/)
+* Python 3 (https://www.python.org/)
 
 ### Quick Start
 
-If there is an existing MySQL installation, it must be prepared for use with Alembic by executing the expressions in init.sql.
+If there is an existing MySQL installation, it must be prepared for use with Alembic by executing the expressions in ```init.sql```.
 
 ```bash
 $ mysql -u uwsolar uwsolar < init.sql
 ```
 
-For subsequent invocations, first ensure that a a Python environment with the dependencies listed in requirements.txt is available.
+The commands in ```init.sql``` create a table called ```alembic_versions``` and add a row that sets the current database version. For subsequent invocations, first ensure that a Python environment with the dependencies listed in ```requirements.txt``` is available (this can be created by running `setup.sh`).
 
 ```bash
 $ pushd lotus-leaf/db
@@ -33,7 +33,7 @@ The key command being executed is ```alembic upgrade head```, which inspects the
 
 ### Options
 
-By default, the DB migration scripts are configured to connect to MySQL with the following connection string: "uwsolar@localhost/uwsolar." This string can be controlled with the following variables:
+By default, the DB migration scripts are configured to connect to MySQL with the following connection string: "${db_user}:${db_password}@${db_host}:${db_port}/${db_name}."
 
 * db_user: The database user, uwsolar by default.
 * db_password: The database password, blank by default.
@@ -44,5 +44,5 @@ By default, the DB migration scripts are configured to connect to MySQL with the
 To set these variables, run Alembic with the following flags:
 
 ```bash
-(env) $ alembic -x db_user=uwsolar_ro db_name=uwsolar_test upgrade head
+(env) $ alembic -x db_user=uwsolar_ro -x db_name=uwsolar_test upgrade head
 ```
