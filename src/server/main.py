@@ -1,5 +1,11 @@
 #!/usr/bin/python3
-"""A program that launches the UW Solar web server."""
+"""A program that launches the UW Solar web server.
+
+This launcher should only be used for development purposes. It is not suitable
+for production deployments. A WSGI container such as Green Unicorn or uWSGI, or
+a PaaS such as Amazon Elastic Beanstalk or Google App Engine should be used to
+deploy the application for production purposes.
+"""
 
 import argparse
 import logging

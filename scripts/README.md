@@ -13,7 +13,7 @@
 
 Removes temporary files, runtime environments, and build artifacts from the source directory.
 
-Run ```clean.sh --help``` to view configuration options.
+Run ```clean.sh --help``` to view additional configuration options.
 
 ### setup.sh
 
@@ -23,7 +23,7 @@ Installs build and runtime dependencies for the frontend and backend components 
 2. Install backend dependencies specified in ```src/server/requirements.txt```.
 3. Install DB migration dependencies specified in ```db/requirements.txt```.
 
-Run ```setup.sh --help``` to view configuration options.
+Run ```setup.sh --help``` to view additional configuration options.
 
 ### build.sh
 
@@ -33,7 +33,7 @@ When ```--nodebug``` is set (the default), build optimizations are enabled. Java
 
 When ```--debug``` is set, build optimizations are disabled. This option should be used when developing source code so that it can be more easily debugged.
 
-Run ```build.sh --help``` to view configuration options.
+Run ```build.sh --help``` to view additional configuration options.
 
 ### run.sh
 
@@ -54,4 +54,4 @@ The ```--debug``` flag should also be used when developing so that errors can be
 scripts/run.sh --noclean --nosetup --debug
 ```
 
-Run ```run.sh --help``` to view configuration options.
+Run ```run.sh --help``` to view additional configuration options.

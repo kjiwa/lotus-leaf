@@ -7,7 +7,7 @@ source "${ROOT}/scripts/shflags"
 
 DEFINE_boolean "debug" ${FLAGS_TRUE} "Whether to build debuggable artifacts." "d"
 DEFINE_string "envroot" "${ROOT}/src/server/env" "The server environment root." "e"
-DEFINE_string "db_envroot" "$ROOT/db/env" "The DB migrations environment root." "g"
+DEFINE_string "db_envroot" "$ROOT/db/env" "The DB migrations environment root." "D"
 DEFINE_boolean "frontend" ${FLAGS_TRUE} "Whether to build the frontend." "f"
 DEFINE_boolean "backend" ${FLAGS_TRUE} "Whether to build the backend." "b"
 
@@ -42,9 +42,9 @@ fi
 
 # Build backend.
 if [ ${FLAGS_backend} -eq ${FLAGS_TRUE} ]; then
-  echo -e "\e[1;33mLinting DB migrations scripts...\e[0m"
+  echo -e "\e[1;33mLinting database scripts...\e[0m"
   source "${FLAGS_db_envroot}/bin/activate"
-  find "$ROOT/db/alembic" -not -path "${FLAGS_db_envroot}/*" -type f -name "*.py" | xargs pylint \
+  find "$ROOT/db" -not -path "${FLAGS_db_envroot}/*" -type f -name "*.py" | xargs pylint \
     --rcfile="$ROOT/db/pylintrc" || true
   deactivate
 

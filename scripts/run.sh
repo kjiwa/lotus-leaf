@@ -28,10 +28,10 @@ DEFINE_boolean "build" ${FLAGS_TRUE} "Whether to build application binaries." "b
 DEFINE_integer "port" 8080 "The port on which to listen for requests." "p"
 DEFINE_string "db_type" "sqlite" "The type of database to use." "t"
 DEFINE_string "db_user" "uwsolar" "The database user." "u"
-DEFINE_string "db_password" "" "The database password." "q"
-DEFINE_string "db_host" ":memory:" "The database host." "o"
+DEFINE_string "db_password" "" "The database password." "P"
+DEFINE_string "db_host" ":memory:" "The database host." "H"
 DEFINE_string "db_name" "uwsolar" "The database name." "n"
-DEFINE_integer "db_pool_size" 3 "The database connection pool size." "r"
+DEFINE_integer "db_pool_size" 3 "The database connection pool size." "q"
 
 FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
