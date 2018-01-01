@@ -62,7 +62,7 @@ $ popd
 
 #### Populating a Sample SQLite Database
 
-For practical development, an in-memory database is not very useful, since no tables or data are present inside of it, and there is no way to fill it with data from the web application itself. Instead, the server can be configured to create a file-based SQLite database by setting the ```--db_host``` parameter to be a file path. Afterwards, the database file can be filled with randomly generated data by using ```db/gendata/gendata.py```.
+For practical development, an in-memory database is not very useful, since no tables or data are present inside of it, and there is no way to fill it with data from the web application itself. Instead, the server can be configured to create a file-based SQLite database by setting the ```--db_host``` parameter to be a file path. Afterwards, the database schema can be created and filled with randomly generated data by using ```db/gendata/gendata.py```.
 
 First, run the server and set the SQLite database path:
 
@@ -70,12 +70,22 @@ First, run the server and set the SQLite database path:
 $ scripts/run.sh --db_host=/path/to/sqlite.db
 ```
 
-Then, run ```gendata``` to populate the database.
+Now, create the schema by using the DB migration scripts:
 
 ```bash
 $ pushd lotus-leaf/db
 $ source env/bin/activate
-(env) $ python gendata/gendata.py --db_type=sqlite --db_host=/path/to/sqlite.db --migrate --input_file=gendata/sample-square.json
+(env) $ alembic -x db_type=sqlite -x db_host=/path/to/sqlite.db upgrade head
+(env) $ deactivate
+$ popd
+```
+
+Finally, run ```gendata``` to populate the database:
+
+```bash
+$ pushd lotus-leaf/db
+$ source env/bin/activate
+(env) $ python gendata/gendata.py --db_type=sqlite --db_host=/path/to/sqlite.db --input_file=gendata/sample-square.json
 (env) $ deactivate
 $ popd
 ```
