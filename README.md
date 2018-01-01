@@ -52,7 +52,7 @@ $ git clone https://github.com/kjiwa/lotus-leaf.git
 
 ### Quick Start
 
-Use ```run.sh``` to execute an optimized web server with sample data. This script will download additional dependencies, build the source code, and run the server.
+Use ```run.sh``` to execute an optimized web server with an empty in-memory SQLite database. This script will download additional dependencies, build the source code, and run the server.
 
 ```bash
 $ pushd lotus-leaf
@@ -60,11 +60,35 @@ $ scripts/run.sh
 $ popd
 ```
 
-The server can be configured to connect to and read data from a MySQL installation.
+#### Populating a Sample SQLite Database
+
+For practical development, an in-memory database is not very useful, since no tables or data are present inside of it, and there is no way to fill it with data from the web application itself. Instead, the server can be configured to create a file-based SQLite database by setting the ```--db_host``` parameter to be a file path. Afterwards, the database file can be filled with randomly generated data by using ```db/gendata/gendata.py```.
+
+First, run the server and set the SQLite database path:
+
+```bash
+$ scripts/run.sh --db_host=/path/to/sqlite.db
+```
+
+Then, run ```gendata``` to populate the database.
+
+```bash
+$ pushd lotus-leaf/db
+$ source env/bin/activate
+(env) $ python gendata/gendata.py --db_type=sqlite --db_host=/path/to/sqlite.db --migrate --input_file=gendata/sample-square.json
+(env) $ deactivate
+$ popd
+```
+
+See the ```gendata``` documentation for more details about how this tool works and can be customized.
+
+#### Connecting to a MySQL Database
+
+The server can be configured to connect to and read data from an existing MySQL installation.
 
 ```bash
 $ pushd lotus-leaf
-$ scripts/run.sh --db_type=mysql --db_host=localhost --db_name=uwsolar
+$ scripts/run.sh --db_type=mysql+mysqlconnector --db_host=localhost --db_name=uwsolar
 $ popd
 ```
 
