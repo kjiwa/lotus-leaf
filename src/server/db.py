@@ -56,10 +56,15 @@ class Database(object):
       A datetime object for the earliest data entry.
     """
     s = sqlalchemy.orm.Session(self.engine)
-    result = s.query(model.Datum).order_by(model.Datum.ts.asc())
-    datum = result.first()
-    s.close()
-    return datum.ts
+    try:
+      result = s.query(model.Datum).order_by(model.Datum.ts.asc())
+      if result.count() == 0:
+        return None
+
+      datum = result.first()
+      return datum.ts
+    finally:
+      s.close()
 
   def get_latest_data_timestamp(self):
     """Gets the latest timestamp from the data table.
@@ -68,10 +73,15 @@ class Database(object):
       A datetime object for the earliest data entry.
     """
     s = sqlalchemy.orm.Session(self.engine)
-    result = s.query(model.Datum).order_by(model.Datum.ts.desc())
-    datum = result.first()
-    s.close()
-    return datum.ts
+    try:
+      result = s.query(model.Datum).order_by(model.Datum.ts.desc())
+      if result.count() == 0:
+        return None
+
+      datum = result.first()
+      return datum.ts
+    finally:
+      s.close()
 
   def get_all_topics(self):
     """Gets a list of topic values.

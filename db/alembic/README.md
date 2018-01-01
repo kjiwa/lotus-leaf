@@ -33,8 +33,9 @@ The key command being executed is ```alembic upgrade head```, which inspects the
 
 ### Options
 
-By default, the DB migration scripts are configured to connect to MySQL with the following connection string: "${db_user}:${db_password}@${db_host}:${db_port}/${db_name}."
+By default, the DB migration scripts are configured to connect to MySQL with the following connection string: "${db_type}://${db_user}:${db_password}@${db_host}:${db_port}/${db_name}."
 
+* db_type: The database protocol and driver, mysql+mysqlconnector by default.
 * db_user: The database user, uwsolar by default.
 * db_password: The database password, blank by default.
 * db_host: The database hostname, localhost by default.

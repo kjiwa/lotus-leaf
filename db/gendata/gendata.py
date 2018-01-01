@@ -47,9 +47,6 @@ import math
 import os.path
 import random
 import sys
-import alembic.config
-import alembic.runtime.environment
-import alembic.script
 import dateutil.parser
 import jsmin
 import sqlalchemy
@@ -120,10 +117,6 @@ def parse_arguments():
       '--db_host', default=':memory:', help='The database host.')
   db_group.add_argument(
       '--db_name', default='uwsolar', help='The database name.')
-  db_group.add_argument(
-      '--migrate',
-      action='store_true',
-      help='Whether to run migration scripts on the database.')
 
   return parser.parse_args()
 
@@ -261,21 +254,6 @@ def generate_data(data, options):
     cur += delta
 
 
-def db_tables_exist(engine):
-  """Determines whether database tables have been created.
-
-  Returns:
-    True if the database is up to date.
-  """
-  cfg = alembic.config.Config()
-  cfg.set_main_option('script_location', ALEMBIC_ROOT)
-  script = alembic.script.ScriptDirectory.from_config(cfg)
-  env = alembic.runtime.environment.EnvironmentContext(cfg, script)
-  with engine.connect() as conn:
-    env.configure(conn)
-    return env.get_context().get_current_revision()
-
-
 def write_to_db(args, options, topics, data):
   """"Writes topics and data to the database.
 
@@ -292,22 +270,18 @@ def write_to_db(args, options, topics, data):
   engine = sqlalchemy.create_engine(dsn)
   session = sqlalchemy.orm.Session(engine)
 
-  # Check that tables exist, or create them.
-  if not db_tables_exist(engine) and args.migrate:
-    model.BASE.metadata.create_all(engine)
-
   # Write topics.
   for topic in topics.values():
     session.merge(topic)
 
   # Delete any existing data values.
   for i in options:
-    session.query(model.Datum).filter(model.Datum.ts >= i.start).filter(
-        model.Datum.ts <= i.end).delete(synchronize_session=False)
+    q = session.query(model.Datum).filter(model.Datum.ts >= i.start).filter(model.Datum.ts <= i.end)
+    logging.info('Replacing %d existing records.', q.count())
+    q.delete(synchronize_session=False)
 
   # Write data.
   session.add_all(data.values())
-
   session.commit()
   session.close()
 

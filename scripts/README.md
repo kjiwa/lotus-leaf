@@ -42,16 +42,14 @@ Sets up build and runtime environments, builds source code, and runs the web app
 New developers should run this script with its default options the first time so that the development environment can be setup and to ensure that the system is configured correctly to run the application.
 
 ```bash
-# Builds and runs an optimized web application with sample data.
-scripts/run.sh
+$ scripts/run.sh # Builds and runs an optimized web application with sample data.
 ```
 While developing, running this script with its default configuration can become time-consuming and cumbersome. This is because the setup stage is always executed. Skipping this step can cause a significant reduction in the time required to build and run the application. Use the ```--noclean``` and ```--nosetup``` options to prevent the clean and setup stages from executing.
 
 The ```--debug``` flag should also be used when developing so that errors can be more easily debugged.
 
 ```bash
-# Builds and runs a debuggable web application with sample data, and skips the setup stage.
-scripts/run.sh --noclean --nosetup --debug
+$ scripts/run.sh --noclean --nosetup --debug # Builds and runs a debuggable web application with sample data, and skips the setup stage.
 ```
 
 Run ```run.sh --help``` to view additional configuration options.
