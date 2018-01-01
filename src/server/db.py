@@ -1,16 +1,10 @@
 """A module containing a SQL database connection handler."""
 
 import collections
-import os.path
 import sqlalchemy
 import sqlalchemy.orm
-import sqlparse
+import sqlalchemy.sql.expression
 import model
-
-_SQLITE_SQL_PATH = os.path.dirname(__file__) + '/../../db/test/'
-_SQLITE_SQL = [
-    'meta.sql', 'topics.sql', 'data.sql', 'volttron_table_definitions.sql'
-]
 
 # An object containing database options.
 DatabaseOptions = collections.namedtuple(
@@ -24,29 +18,19 @@ class Database(object):
   def __init__(self, opts):
     """Initializes the database handler."""
     if opts.db_type == 'sqlite':
-      self.engine = sqlalchemy.create_engine('sqlite:///:memory:')
-      self._initialize_sqlite()
-    elif opts.db_type == 'mysql':
       self.engine = sqlalchemy.create_engine(
-          'mysql+mysqlconnector://%s:%s@%s/%s' % (opts.user, opts.password,
-                                                  opts.host, opts.database),
-          pool_size=opts.pool_size)
+          '%s:///%s' % (opts.db_type, opts.host))
+      return
 
-  def _initialize_sqlite(self):
-    """Creates tables and loads sample data."""
-    # Create tables.
-    model.BASE.metadata.create_all(self.engine)
-
-    # Load test DB files and execute them.
-    with self.engine.connect() as c:
-      for sql in _SQLITE_SQL:
-        with open(_SQLITE_SQL_PATH + sql, 'r') as f:
-          statements = sqlparse.split(f.read())
-          for statement in statements:
-            c.execute(statement)
+    self.engine = sqlalchemy.create_engine(
+        '%s://%s:%s@%s/%s' % (opts.db_type, opts.user, opts.password,
+                              opts.host, opts.database),
+        pool_size=opts.pool_size)
 
   def get_data(self, topic_id, start_dt, end_dt, sample_rate):
     """Gets time-series data for a given topic and date range.
+
+    NOTE: Sampling does not work when using a SQLite backend.
 
     Args:
       topic_id: The topic to query.

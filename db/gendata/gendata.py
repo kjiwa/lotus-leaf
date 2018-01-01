@@ -1,27 +1,39 @@
 """Generates and loads sample solar data.
 
 The input is expected to be a JSON file containing a list of date ranges and
-data generation options. Options currently supported include:
+data generation options. This script generates sinusoidal data for each series,
+according to the following expression:
+
+  value = A_cos*cos(2*pi*t/period) + A_sin*sin(2*pi*t/period)
+
+Since this expression is one term from the Fourier series, any desired curve can
+be approximated by adding a sufficient number of time series options. See
+sample-cos.json, sample-sawtooth.json, and sample-square.json for examples that
+generate cosine, sawtooth, and square waves, respectively.
+
+Options currently supported include:
 
   - start: The start of the date range, as an ISO-8601 string.
   - end: The end of the date range, as an ISO-8601 string.
-  - topic_id: The topic for which data is being generated.
-  - sample_rate: The number of samples to generate. Defaults to 0.01, or one
-        sample every 100 seconds.
-  - period: The sinusoid periodin seconds. Defaults to 86400 (one day).
+  - topic_id: The topic ID for which data is being generated.
+  - topic_name: The topic name for which data is being generated.
+  - sample_rate: The number of samples to generate per second. Defaults to 0.01,
+        or one sample every 100 seconds.
+  - period: The sinusoid period in seconds. Defaults to 86400 (one day).
   - amplitude_cos: The cosine amplitude. Defaults to 0.
   - amplitude_sin: The sine amplitude. Defaults to 0.
   - amplitude_offset: The amplitude offset. Defaults to 0.
   - spread: A measure of how spread apart the data can be. Defaults to 0.05.
 
-An example configuration that generates data for one day is:
+An example configuration that generates the line, y = 1 +/- 0.1, for one day is:
 
 [
   {
     "start": "2017-12-30T00:00:00.0000Z",
     "end": "2017-12-30T23:59:59.99999Z",
     "topic_id": 14,
-    "amplitude": 1.273,
+    "topic_name": "Test Topic #14",
+    "amplitude_offset": 1,
     "spread": 0.1
   }
 ]
@@ -35,7 +47,9 @@ import math
 import os.path
 import random
 import sys
-
+import alembic.config
+import alembic.runtime.environment
+import alembic.script
 import dateutil.parser
 import jsmin
 import sqlalchemy
@@ -44,6 +58,7 @@ import sqlalchemy
 sys.path.append(os.path.dirname(__file__) + '/../../src/server')
 import model  # pylint: disable=import-error,wrong-import-position
 
+ALEMBIC_ROOT = os.path.dirname(__file__) + '/../alembic'
 DEFAULT_SAMPLE_RATE = 0.01
 DEFAULT_PERIOD = 86400
 DEFAULT_AMPLITUDE_COS = 0
@@ -52,8 +67,8 @@ DEFAULT_AMPLITUDE_OFFSET = 0
 DEFAULT_SPREAD = 0.05
 
 DataOptions = collections.namedtuple('DataOptions', [
-    'start', 'end', 'topic_id', 'sample_rate', 'period', 'amplitude_cos',
-    'amplitude_sin', 'amplitude_offset', 'spread'
+    'start', 'end', 'topic_id', 'topic_name', 'sample_rate', 'period',
+    'amplitude_cos', 'amplitude_sin', 'amplitude_offset', 'spread'
 ])
 
 
@@ -77,6 +92,9 @@ def parse_arguments():
       '--topic_id',
       type=int,
       help='Override the topic ID to use during data generation.')
+  data_group.add_argument(
+      '--topic_name',
+      help='Override the topic name to use during data generation.')
   data_group.add_argument(
       '--sample_rate',
       type=float,
@@ -102,16 +120,25 @@ def parse_arguments():
       '--db_host', default=':memory:', help='The database host.')
   db_group.add_argument(
       '--db_name', default='uwsolar', help='The database name.')
+  db_group.add_argument(
+      '--migrate',
+      action='store_true',
+      help='Whether to run migration scripts on the database.')
 
   return parser.parse_args()
 
 
-def config_options_from_json(obj, topic_id_override=None, sample_rate_override=None, spread_override=None):
+def config_options_from_json(obj,
+                             topic_id_override=None,
+                             topic_name_override=None,
+                             sample_rate_override=None,
+                             spread_override=None):
   """Creates data generation configuration entries from a JSON object.
 
   Args:
     obj: The JSON object to be converted.
     topic_id_override: An override for the topic ID value.
+    topic_name_override: An override for the topic name value.
     sample_rate_override: An override for the sample rate value.
     spread_override: An override for the spread value.
 
@@ -126,11 +153,14 @@ def config_options_from_json(obj, topic_id_override=None, sample_rate_override=N
     if not ('topic_id' in item or topic_id_override):
       raise Exception('A topic ID is required.')
 
+    if not ('topic_name' in item or topic_name_override):
+      raise Exception('A topic name is required.')
+
     start = dateutil.parser.parse(item.get('start'))
     end = dateutil.parser.parse(item.get('end'))
-    topic_id = item.get('topic_id'. topic_id_override)
-    sample_rate = float(item.get('sample_rate', DEFAULT_SAMPLE_RATE))
-    period = int(item.get('period', DEFAULT_PERIOD))
+    topic_id = item.get('topic_id', topic_id_override)
+    topic_name = item.get('topic_name', topic_name_override)
+    period = float(item.get('period', DEFAULT_PERIOD))
     amplitude_cos = float(item.get('amplitude_cos', DEFAULT_AMPLITUDE_COS))
     amplitude_sin = float(item.get('amplitude_sin', DEFAULT_AMPLITUDE_SIN))
     amplitude_offset = float(
@@ -140,17 +170,39 @@ def config_options_from_json(obj, topic_id_override=None, sample_rate_override=N
     if topic_id_override:
       topic_id = topic_id_override
 
+    if topic_name_override:
+      topic_name = topic_name_override
+
     if sample_rate_override:
       sample_rate = sample_rate_override
+    else:
+      sample_rate = item.get('sample_rate', DEFAULT_SAMPLE_RATE)
 
     if spread_override:
       spread = spread_override
+    else:
+      spread = item.get('spread', DEFAULT_SPREAD)
 
     options.append(
-        DataOptions(start, end, topic_id, sample_rate, period, amplitude_cos,
-                    amplitude_sin, amplitude_offset, spread))
+        DataOptions(start, end, topic_id, topic_name, sample_rate, period,
+                    amplitude_cos, amplitude_sin, amplitude_offset, spread))
 
   return options
+
+
+def generate_topic(topics, options):
+  """Generates a topic for the given data generation options.
+
+  Args:
+    topics: A dictionary of existing topics, keyed by the topic ID.
+  """
+  if options.topic_id in topics:
+    return
+
+  topic = model.Topic()
+  topic.topic_id = options.topic_id
+  topic.topic_name = options.topic_name
+  topics[options.topic_id] = topic
 
 
 def generate_value(options, ts):
@@ -209,6 +261,57 @@ def generate_data(data, options):
     cur += delta
 
 
+def db_tables_exist(engine):
+  """Determines whether database tables have been created.
+
+  Returns:
+    True if the database is up to date.
+  """
+  cfg = alembic.config.Config()
+  cfg.set_main_option('script_location', ALEMBIC_ROOT)
+  script = alembic.script.ScriptDirectory.from_config(cfg)
+  env = alembic.runtime.environment.EnvironmentContext(cfg, script)
+  with engine.connect() as conn:
+    env.configure(conn)
+    return env.get_context().get_current_revision()
+
+
+def write_to_db(args, options, topics, data):
+  """"Writes topics and data to the database.
+
+  Args:
+    args: Arguments containing DB connectivity options.
+    topics: A list of topics to be written.
+    data: A list of data to be written.
+  """
+  if args.db_type == 'sqlite':
+    dsn = '%s:///%s' % (args.db_type, args.db_host)
+  else:
+    dsn = '%s://%s:%s@%s/%s' % (args.db_type, args.db_user, args.db_password,
+                                args.db_host, args.db_name)
+  engine = sqlalchemy.create_engine(dsn)
+  session = sqlalchemy.orm.Session(engine)
+
+  # Check that tables exist, or create them.
+  if not db_tables_exist(engine) and args.migrate:
+    model.BASE.metadata.create_all(engine)
+
+  # Write topics.
+  for topic in topics.values():
+    session.merge(topic)
+
+  # Delete any existing data values.
+  for i in options:
+    session.query(model.Datum).filter(model.Datum.ts >= i.start).filter(
+        model.Datum.ts <= i.end).delete(synchronize_session=False)
+
+  # Write data.
+  session.add_all(data.values())
+
+  session.commit()
+  session.close()
+
+
 def main():
   """Parses the command line, generates data, and adds it into the database."""
   args = parse_arguments()
@@ -218,24 +321,22 @@ def main():
   with open(args.input_file, 'r') as f:
     # jsmin strips comments from the JSON file.
     config = json.loads(jsmin.jsmin(f.read()))
-    options = config_options_from_json(config, args.topic_id, args.sample_rate, args.spread)
-    if not options:
-      return
-
+    options = config_options_from_json(config, args.topic_id, args.topic_name,
+                                       args.sample_rate, args.spread)
   # Generate data.
   data = {}
+  topics = {}
   for i in options:
     logging.info('Generating data with the following options: %s', i)
+    generate_topic(topics, i)
     generate_data(data, i)
 
+  logging.info('Topics generated: %d, data generated: %d', len(topics),
+               len(data))
+
   # Write data to database.
-  dsn = '%s://%s:%s@%s/%s' % (args.db_type, args.db_user, args.db_password,
-                              args.db_host, args.db_name)
-  engine = sqlalchemy.create_engine(dsn)
-  session = sqlalchemy.orm.Session(engine)
-  session.add_all(data.values())
-  session.commit()
-  session.close()
+  if topics or data:
+    write_to_db(args, options, topics, data)
 
 
 if __name__ == '__main__':

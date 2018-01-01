@@ -32,6 +32,7 @@ DEFINE_string "db_password" "" "The database password." "P"
 DEFINE_string "db_host" ":memory:" "The database host." "H"
 DEFINE_string "db_name" "uwsolar" "The database name." "n"
 DEFINE_integer "db_pool_size" 3 "The database connection pool size." "q"
+DEFINE_string "log_level" "INFO" "The logging threshold." "l"
 
 FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
@@ -49,24 +50,24 @@ fi
 
 # Clean build artifacts.
 if [ ${FLAGS_clean} -eq ${FLAGS_TRUE} ]; then
-  $ROOT/scripts/clean.sh --nodelete_shflags
+  "$ROOT/scripts/clean.sh" --nodelete_shflags
 fi
 
 # Install build and runtime dependencies.
 if [ ${FLAGS_setup} -eq ${FLAGS_TRUE} ]; then
-  $ROOT/scripts/setup.sh
+  "$ROOT/scripts/setup.sh"
 fi
 
 # Build project.
 if [ ${FLAGS_build} -eq ${FLAGS_TRUE} ]; then
-  $ROOT/scripts/build.sh $BUILD_DEBUG_FLAG
+  "$ROOT/scripts/build.sh" $BUILD_DEBUG_FLAG
 fi
 
 # Run the web server.
 echo -e "\e[1;45mRunning web server...\e[0m"
 python3 -m venv "${FLAGS_envroot}"
 source "${FLAGS_envroot}/bin/activate"
-python $ROOT/src/server/main.py \
+python "$ROOT/src/server/main.py" \
   $SERVER_DEBUG_FLAG \
   --port=${FLAGS_port} \
   --db_type=${FLAGS_db_type} \
@@ -74,5 +75,6 @@ python $ROOT/src/server/main.py \
   --db_password=${FLAGS_db_password} \
   --db_host=${FLAGS_db_host} \
   --db_name=${FLAGS_db_name} \
-  --db_pool_size=${FLAGS_db_pool_size}
+  --db_pool_size=${FLAGS_db_pool_size} \
+  --log_level=${FLAGS_log_level}
 deactivate

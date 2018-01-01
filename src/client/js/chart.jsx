@@ -15,6 +15,14 @@ const styles = (theme) => ({ canvas: {} });
  * A chart component for rendering timeseries data.
  */
 class Chart extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // The chart.js object.
+      chart: null
+    };
+  }
+
   /**
    * Handles post-render page processing after the initial render.
    * @returns {undefined}
@@ -73,9 +81,6 @@ class Chart extends React.Component {
    * @returns {undefined}
    */
   refreshChart() {
-    const { classes } = this.props;
-    const canvas = document.getElementsByClassName(classes.canvas)[0];
-
     // TODO(kjiwa): Put this into a worker thread.
     const data = this.props.data.map((e) => ({
       x: new Moment(e.ts),
@@ -102,7 +107,13 @@ class Chart extends React.Component {
       }
     };
 
-    new ChartJs(canvas.getContext('2d'), args);
+    if (this.state.chart) {
+      this.state.chart.destroy();
+    }
+
+    const { classes } = this.props;
+    const canvas = document.getElementsByClassName(classes.canvas)[0];
+    this.state.chart = new ChartJs(canvas.getContext('2d'), args);
   }
 }
 

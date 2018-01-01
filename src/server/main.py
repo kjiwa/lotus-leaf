@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 """A program that launches the UW Solar web server.
 
 This launcher should only be used for development purposes. It is not suitable
@@ -47,7 +46,7 @@ def parse_arguments():
                                        'Database connectivity arguments.')
   db_group.add_argument(
       '--db_type',
-      choices=['mysql', 'sqlite'],
+      choices=['mysql+mysqlconnector', 'sqlite'],
       default='sqlite',
       help='Which database type should be used.')
   db_group.add_argument(
