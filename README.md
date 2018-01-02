@@ -29,7 +29,7 @@ getopt: illegal option -- d
 flags:FATAL unable to parse provided options with getopt.
 ```
 
- These platforms do not ship with a version of getopt that supports long command arguments, so a replacement must be installed.
+These platforms do not ship with a version of getopt that supports long command arguments, so a replacement must be installed.
 
 ##### FreeBSD
 
@@ -75,7 +75,7 @@ Now, create the schema by using the DB migration scripts:
 ```bash
 $ pushd lotus-leaf/db
 $ source env/bin/activate
-(env) $ alembic -x db_type=sqlite -x db_host=/path/to/sqlite.db upgrade head
+(env) $ alembic -c migration/alembic.ini -x db_type=sqlite -x db_host=/path/to/sqlite.db upgrade head
 (env) $ deactivate
 $ popd
 ```
