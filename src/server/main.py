@@ -63,26 +63,6 @@ def parse_arguments():
   return parser.parse_args()
 
 
-def initialize_db(db_type, db_user, db_password, db_host, db_name,
-                  db_pool_size):
-  """Initializes the database connection.
-
-  Args:
-    db_type: The type of database to which to connect.
-    db_user: The database user.
-    db_password: The database password.
-    db_host: The database host.
-    db_name: The database name.
-    db_pool_size: The database pool size.
-
-  Returns:
-    A database accessor.
-  """
-  db_options = db.DatabaseOptions(db_type, db_user, db_password, db_host,
-                                  db_name, db_pool_size)
-  return db.Database(db_options)
-
-
 def main():
   """Parses command-line arguments and initializes the server."""
   args = parse_arguments()
@@ -91,8 +71,10 @@ def main():
   logging.basicConfig(level=logging.getLevelName(args.log_level))
 
   # Initialize the database connection.
-  db_accessor = initialize_db(args.db_type, args.db_user, args.db_password,
-                              args.db_host, args.db_name, args.db_pool_size)
+  db_options = db.DatabaseOptions(args.db_type, args.db_user, args.db_password,
+                                  args.db_host, args.db_name,
+                                  args.db_pool_size)
+  db_accessor = db.Database(db_options)
 
   # Initialize and start the web application.
   app = www_server.WwwServer().app()

@@ -4,3 +4,6 @@ mysql-connector==2.1.6
 pylint
 python-dateutil
 sqlparse
+
+# Test dependencies.
+coverage

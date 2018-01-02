@@ -6,8 +6,8 @@ the value of sqlalchemy.url.
 
 from __future__ import with_statement
 from logging.config import fileConfig
-from alembic import context
 from sqlalchemy import engine_from_config, pool
+from alembic import context
 
 # This is the Alembic Config object, which provides access to the values within
 # the .ini file in use.
@@ -83,7 +83,8 @@ def set_sqlalchemy_url():
   if db_type == 'sqlite':
     url = '%s:///%s' % (db_type, db_host)
   else:
-    url = '%s://%s:%s@%s:%d/%s' % (db_type, db_user, db_password, db_host, db_port, db_name)
+    url = '%s://%s:%s@%s:%d/%s' % (db_type, db_user, db_password, db_host,
+                                   db_port, db_name)
 
   config.set_main_option('sqlalchemy.url', url)
 

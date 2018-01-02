@@ -46,14 +46,10 @@ import logging
 import math
 import os.path
 import random
-import sys
 import dateutil.parser
 import jsmin
 import sqlalchemy
-
-# Add $ROOT/src/server so that we can use model.py.
-sys.path.append(os.path.dirname(__file__) + '/../../src/server')
-import model  # pylint: disable=import-error,wrong-import-position
+import model
 
 ALEMBIC_ROOT = os.path.dirname(__file__) + '/../alembic'
 DEFAULT_SAMPLE_RATE = 0.01
@@ -276,7 +272,8 @@ def write_to_db(args, options, topics, data):
 
   # Delete any existing data values.
   for i in options:
-    q = session.query(model.Datum).filter(model.Datum.ts >= i.start).filter(model.Datum.ts <= i.end)
+    q = session.query(model.Datum).filter(model.Datum.ts >= i.start).filter(
+        model.Datum.ts <= i.end)
     logging.info('Replacing %d existing records.', q.count())
     q.delete(synchronize_session=False)
 

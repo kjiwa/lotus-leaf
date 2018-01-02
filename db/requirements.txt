@@ -1,5 +1,9 @@
-alembic
-jsmin
 mysql-connector==2.1.6
 pylint
 sqlalchemy
+
+# Migration dependencies.
+alembic
+
+# Gendata dependencies.
+jsmin

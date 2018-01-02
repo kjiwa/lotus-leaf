@@ -24,18 +24,13 @@ if [ ${FLAGS_delete_shflags} -eq ${FLAGS_TRUE} ]; then
   popd
 fi
 
-# Remove build artifacts.
 rm -rf "$ROOT/dist"
-
-pushd "$ROOT/src/client"
-rm -rf node_modules package-lock.json
-popd
-
-# Remove Python artifacts.
+rm -rf "$ROOT/src/client/node_modules" "$ROOT/src/client/package-lock.json"
 rm -rf "${FLAGS_envroot}"
 rm -rf "${FLAGS_db_envroot}"
+
 find "$ROOT" -type d -name "__pycache__" -exec rm -rf {} \; 2> /dev/null || true
 find "$ROOT" -type f -name "*.pyc" -delete
-
-# Remove temporary files.
 find "$ROOT" -type f -name "*~" -delete
+rm -f .coverage
+rm -f sqlite.db

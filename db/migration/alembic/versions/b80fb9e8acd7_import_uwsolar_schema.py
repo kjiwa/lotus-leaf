@@ -5,9 +5,9 @@ Revises:
 Create Date: 2017-12-30 13:11:53.458998
 
 """
-from alembic import op
 import sqlalchemy as sa
 import sqlalchemy.dialects.mysql as samysql
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision = 'b80fb9e8acd7'

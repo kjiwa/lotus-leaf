@@ -66,14 +66,14 @@ class ApiServer(server.BaseServer):
     # Validate topic ID.
     try:
       topic_id = int(params.get('topic_id'))
-    except ValueError:
+    except (TypeError, ValueError):
       raise bottle.HTTPError(400, 'A valid topic ID is required.')
 
     # Validate start and end times.
     try:
       start_dt = dateutil.parser.parse(params.get('start_date_time'))
       end_dt = dateutil.parser.parse(params.get('end_date_time'))
-    except ValueError:
+    except (TypeError, ValueError):
       raise bottle.HTTPError(400, 'Valid start and end times are required.')
 
     # Validate sample rate.
@@ -81,7 +81,7 @@ class ApiServer(server.BaseServer):
       sample_rate = float(params.get('sample_rate'))
       if sample_rate < 0 or sample_rate > 1:
         raise bottle.HTTPError(400, 'A valid sample rate is required.')
-    except ValueError:
+    except (TypeError, ValueError):
       raise bottle.HTTPError(400, 'A valid sample rate is required.')
 
     # Query database.
