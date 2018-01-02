@@ -1,10 +1,10 @@
 SQLAlchemy
 bottle
 mysql-connector==2.1.6
-pylint
 python-dateutil
 sqlparse
 
-# Test dependencies.
+# Build and test dependencies.
 boddle
 coverage
+pylint

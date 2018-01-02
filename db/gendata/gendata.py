@@ -44,14 +44,12 @@ import datetime
 import json
 import logging
 import math
-import os.path
 import random
 import dateutil.parser
 import jsmin
 import sqlalchemy
 import model
 
-ALEMBIC_ROOT = os.path.dirname(__file__) + '/../alembic'
 DEFAULT_SAMPLE_RATE = 0.01
 DEFAULT_PERIOD = 86400
 DEFAULT_AMPLITUDE_COS = 0

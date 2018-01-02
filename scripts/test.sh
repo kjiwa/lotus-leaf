@@ -7,6 +7,7 @@ source "${ROOT}/scripts/shflags"
 
 DEFINE_boolean "debug" ${FLAGS_FALSE} "Whether to run unit tests in a debugger." "d"
 DEFINE_string "envroot" "${ROOT}/src/server/env" "The server environment root." "e"
+DEFINE_string "db_envroot" "${ROOT}/db/env" "The DB environment root." "D"
 DEFINE_string "coverage_output_dir" "${ROOT}/dist/test/coverage" "The directory where coverage reports will be written." "c"
 
 FLAGS "$@" || exit $?
@@ -23,13 +24,18 @@ source "${FLAGS_envroot}/bin/activate"
 
 if [ ${FLAGS_debug} -eq ${FLAGS_TRUE} ]; then
   # Run tests in a debugger.
-  PYTHONPATH="$ROOT/src/server" python -m pdb test/server/suite.py
+  python -m pdb test/server/suite.py
 else
   # Run tests with code coverage.
-  PYTHONPATH="$ROOT/src/server" \
-      coverage run --omit="src/server/env/*,src/server/*_test.py,src/server/test*.py" \
+  coverage run --omit="src/server/env/*,src/server/*_test.py,src/server/test*.py" \
       src/server/testsuite.py
-  coverage html -d "${FLAGS_coverage_output_dir}"
 fi
 
+# Run DB tests.
+echo -e "\e[1;33mRunning DB tests...\e[0m"
+source "${FLAGS_db_envroot}/bin/activate"
+PYTHONPATH="$ROOT/src/server" \
+    coverage run -a --omit="db/env/*,db/gendata/*_test.py" \
+        db/gendata/gendata_test.py
+coverage html -d "${FLAGS_coverage_output_dir}"
 deactivate
