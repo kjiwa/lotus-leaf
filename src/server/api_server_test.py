@@ -5,33 +5,37 @@ import json
 import os
 import tempfile
 import unittest
-import bottle
 import sqlalchemy
+import boddle
+import bottle
 import api_server
+import model
 import testdb
 
 
 class ApiServerTestCase(unittest.TestCase):
   """A test case for API server operations."""
 
-  # pylint: disable=missing-docstring
   def setUp(self):
+    """Creates a temporary file for data storage and creates a server instance."""
     _, self.db_file = tempfile.mkstemp()
     self.engine = testdb.create_engine(self.db_file)
     self.server = api_server.ApiServer(testdb.create_accessor(self.db_file))
 
-  # pylint: disable=missing-docstring
   def tearDown(self):
+    """Removes the temporary database file."""
     os.unlink(self.db_file)
 
   def test_all_topics_empty(self):
+    """Tests that an empty list is returned when there are no topics."""
     actual = json.loads(self.server.get_all_topics())
     expected = []
     self.assertEqual(expected, actual)
 
   def test_all_topics(self):
+    """Tests that all topics in the DB are returned."""
     # Insert a sample topic.
-    topic = testdb.new_topic(18, 'Sample Topic')
+    topic = model.Topic(18, 'Sample Topic')
     session = sqlalchemy.orm.Session(bind=self.engine)
     session.add(topic)
     session.commit()
@@ -44,10 +48,11 @@ class ApiServerTestCase(unittest.TestCase):
     session.close()
 
   def test_earliest_data_timestamp(self):
+    """Tests that the earliest known timestamp in the DB is returned."""
     # Insert two data objects.
-    first = testdb.new_datum(
+    first = model.Datum(
         datetime.datetime(2018, 1, 1), 18, 'first value string')
-    second = testdb.new_datum(
+    second = model.Datum(
         datetime.datetime(2018, 1, 2), 18, 'second value string')
 
     session = sqlalchemy.orm.Session(bind=self.engine)
@@ -64,10 +69,11 @@ class ApiServerTestCase(unittest.TestCase):
     session.close()
 
   def test_latest_data_timestamp(self):
+    """Tests that the most recent known timestamp in the DB is returned."""
     # Insert two data objects.
-    first = testdb.new_datum(
+    first = model.Datum(
         datetime.datetime(2018, 1, 1), 18, 'first value string')
-    second = testdb.new_datum(
+    second = model.Datum(
         datetime.datetime(2018, 1, 2), 18, 'second value string')
 
     session = sqlalchemy.orm.Session(bind=self.engine)
@@ -84,33 +90,38 @@ class ApiServerTestCase(unittest.TestCase):
     session.close()
 
   def test_earliest_data_timestamp_empty(self):
+    """Test that nothing is returned when no data is in the DB."""
     dt = self.server.get_earliest_data_timestamp()
     self.assertEqual('', dt)
 
   def test_latest_data_timestamp_empty(self):
+    """Test that nothing is returned when no data is in the DB."""
     dt = self.server.get_latest_data_timestamp()
     self.assertEqual('', dt)
 
   def test_data_empty(self):
+    """Tests that an empty list is returned when there is no data in the DB."""
     start = datetime.datetime.now()
     end = start + datetime.timedelta(days=1)
+    params = {
+        'start_date_time': start.isoformat(),
+        'end_date_time': end.isoformat(),
+        'topic_id': '18',
+        'sample_rate': '1'
+    }
 
-    bottle.request.query['start_date_time'] = start.isoformat()
-    bottle.request.query['end_date_time'] = end.isoformat()
-    bottle.request.query['topic_id'] = '18'
-    bottle.request.query['sample_rate'] = '1'
-    data = json.loads(self.server.get_data())
+    with boddle.boddle(params=params):
+      data = json.loads(self.server.get_data())
 
     self.assertEqual([], data)
 
   def test_data(self):
+    """Tests that the correct amount of data is returned."""
     # Generate 24 data points, one per hour.
-    cur = datetime.datetime(2018, 1, 1)
+    start = datetime.datetime(2018, 1, 1)
     end = datetime.datetime(2018, 1, 1, 23, 59)
-    expected = []
-    while cur < end:
-      expected.append(testdb.new_datum(cur, 18, 'value'))
-      cur += datetime.timedelta(hours=1)
+    expected = testdb.new_data(
+        start, end, 18, 'value', datetime.timedelta(hours=1))
 
     session = sqlalchemy.orm.Session(bind=self.engine)
     session.add_all(expected)
@@ -118,11 +129,15 @@ class ApiServerTestCase(unittest.TestCase):
 
     # Query half of the data set.
     start = end - datetime.timedelta(hours=12)
-    bottle.request.query['start_date_time'] = start.isoformat()
-    bottle.request.query['end_date_time'] = end.isoformat()
-    bottle.request.query['topic_id'] = '18'
-    bottle.request.query['sample_rate'] = '1'
-    actual = json.loads(self.server.get_data())
+    params = {
+        'start_date_time': start.isoformat(),
+        'end_date_time': end.isoformat(),
+        'topic_id': '18',
+        'sample_rate': '1'
+    }
+
+    with boddle.boddle(params=params):
+      actual = json.loads(self.server.get_data())
 
     self.assertEqual(len(expected) / 2, len(actual))
     for i in range(0, 12):
@@ -134,52 +149,68 @@ class ApiServerTestCase(unittest.TestCase):
     session.close()
 
   def test_data_no_topic_id(self):
-    start = datetime.datetime.now()
-    bottle.request.query['start_date_time'] = start.isoformat()
-    bottle.request.query['end_date_time'] = start.isoformat()
-    bottle.request.query['topic_id'] = None
-    bottle.request.query['sample_rate'] = '1'
+    """Tests that an error occurs when there is no topic ID present."""
+    params = {
+        'start_date_time': datetime.datetime.now().isoformat(),
+        'end_date_time': datetime.datetime.now().isoformat(),
+        'sample_rate': '1'
+    }
+
     try:
-      self.server.get_data()
+      with boddle.boddle(params=params):
+        self.server.get_data()
+
       self.fail('Expected a server error.')
     except bottle.HTTPError:
       # expected
       pass
 
   def test_data_no_start_date(self):
-    start = datetime.datetime.now()
-    bottle.request.query['start_date_time'] = None
-    bottle.request.query['end_date_time'] = start.isoformat()
-    bottle.request.query['topic_id'] = '18'
-    bottle.request.query['sample_rate'] = '1'
+    """Tests that an error occurs when there is no start date present."""
+    params = {
+        'end_date_time': datetime.datetime.now().isoformat(),
+        'topic_id': '18',
+        'sample_rate': '1'
+    }
+
     try:
-      self.server.get_data()
+      with boddle.boddle(params=params):
+        self.server.get_data()
+
       self.fail('Expected a server error.')
     except bottle.HTTPError:
       # expected
       pass
 
   def test_data_no_end_date(self):
-    start = datetime.datetime.now()
-    bottle.request.query['start_date_time'] = start.isoformat()
-    bottle.request.query['end_date_time'] = None
-    bottle.request.query['topic_id'] = '18'
-    bottle.request.query['sample_rate'] = '1'
+    """Tests that an error occurs when there is no end date present."""
+    params = {
+        'start_date_time': datetime.datetime.now().isoformat(),
+        'topic_id': '18',
+        'sample_rate': '1'
+    }
+
     try:
-      self.server.get_data()
+      with boddle.boddle(params=params):
+        self.server.get_data()
+
       self.fail('Expected a server error.')
     except bottle.HTTPError:
       # expected
       pass
 
   def test_data_no_sample_rate(self):
-    start = datetime.datetime.now()
-    bottle.request.query['start_date_time'] = start.isoformat()
-    bottle.request.query['end_date_time'] = start.isoformat()
-    bottle.request.query['topic_id'] = '18'
-    bottle.request.query['sample_rate'] = None
+    """Tests that an error occurs when there is no sample rate present."""
+    params = {
+        'start_date_time': datetime.datetime.now().isoformat(),
+        'end_date_time': datetime.datetime.now().isoformat(),
+        'topic_id': '18'
+    }
+
     try:
-      self.server.get_data()
+      with boddle.boddle(params=params):
+        self.server.get_data()
+
       self.fail('Expected a server error.')
     except bottle.HTTPError:
       # expected

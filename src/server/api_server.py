@@ -61,7 +61,7 @@ class ApiServer(server.BaseServer):
     Returns:
       A JSON-encoded list of topic data.
     """
-    params = bottle.request.query.decode()  # pylint: disable=no-member
+    params = bottle.request.params.decode()  # pylint: disable=no-member
 
     # Validate topic ID.
     try:

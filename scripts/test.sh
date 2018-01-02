@@ -5,6 +5,7 @@
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT}/scripts/shflags"
 
+DEFINE_boolean "debug" ${FLAGS_FALSE} "Whether to run unit tests in a debugger." "d"
 DEFINE_string "envroot" "${ROOT}/src/server/env" "The server environment root." "e"
 DEFINE_string "coverage_output_dir" "${ROOT}/dist/test/coverage" "The directory where coverage reports will be written." "c"
 
@@ -14,19 +15,21 @@ eval set -- "${FLAGS_ARGV}"
 set -e
 set -o posix
 
-echo -e "\e[1;45mTesting server...\e[0m"
+echo -e "\e[1;45mRunning tests...\e[0m"
 
-# Run the tests and produce a code coverage report.
+# Run server tests.
+echo -e "\e[1;33mRunning server tests...\e[0m"
 source "${FLAGS_envroot}/bin/activate"
-PYTHONPATH="$ROOT/src/server" \
-    coverage run \
-    --omit="src/server/env/*,test/server/*" \
-    test/server/suite.py
-coverage html -d "${FLAGS_coverage_output_dir}"
-deactivate
 
-# Run the following commands instead of those above to run unit tests in the
-# Python debugger (pdb).
-#source "${FLAGS_envroot}/bin/activate"
-#PYTHONPATH="$ROOT/src/server" python -m pdb test/server/suite.py
-#deactivate
+if [ ${FLAGS_debug} -eq ${FLAGS_TRUE} ]; then
+  # Run tests in a debugger.
+  PYTHONPATH="$ROOT/src/server" python -m pdb test/server/suite.py
+else
+  # Run tests with code coverage.
+  PYTHONPATH="$ROOT/src/server" \
+      coverage run --omit="src/server/env/*,src/server/*_test.py,src/server/test*.py" \
+      src/server/testsuite.py
+  coverage html -d "${FLAGS_coverage_output_dir}"
+fi
+
+deactivate

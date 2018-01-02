@@ -188,27 +188,8 @@ def generate_topic(topics, options):
   if options.topic_id in topics:
     return
 
-  topic = model.Topic()
-  topic.topic_id = options.topic_id
-  topic.topic_name = options.topic_name
+  topic = model.Topic(options.topic_id, options.topic_name)
   topics[options.topic_id] = topic
-
-
-def generate_value(options, ts):
-  """Generates a data point value.
-
-  Args:
-    options: The configuration options for the current data generation run.
-    ts: The time for which the value should be generated.
-  """
-  # value = offset + A_cos * cos(omega * t) + A_sin * sin(omega * t) + fuzz factor
-  omega = 2 * math.pi / options.period
-  seconds = (ts - options.start).total_seconds()
-  fuzz = random.uniform(-options.spread, options.spread)
-  x = omega * seconds
-  value = (options.amplitude_offset + options.amplitude_cos * math.cos(x) +
-           options.amplitude_sin * math.sin(x) + fuzz)
-  return value
 
 
 def generate_datum(options, ts):
@@ -221,10 +202,15 @@ def generate_datum(options, ts):
   Returns:
     A populated datum object, ready for insertion.
   """
-  datum = model.Datum()
-  datum.ts = ts
-  datum.topic_id = options.topic_id
-  datum.value_string = str(generate_value(options, ts))
+  # value = offset + A_cos * cos(omega * t) + A_sin * sin(omega * t) + fuzz factor
+  omega = 2 * math.pi / options.period
+  seconds = (ts - options.start).total_seconds()
+  fuzz = random.uniform(-options.spread, options.spread)
+  x = omega * seconds
+  value = (options.amplitude_offset + options.amplitude_cos * math.cos(x) +
+           options.amplitude_sin * math.sin(x) + fuzz)
+
+  datum = model.Datum(ts, options.topic_id, str(value))
   return datum
 
 

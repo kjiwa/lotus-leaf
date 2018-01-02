@@ -27,6 +27,16 @@ class Topic(BASE):
   topic_id = Column(Integer, primary_key=True)
   topic_name = Column(String(512))
 
+  def __init__(self, topic_id, topic_name):
+    """Creates a new topic.
+
+    Args:
+      topic_id: The topic ID.
+      topic_name: The topic name.
+    """
+    self.topic_id = topic_id
+    self.topic_name = topic_name
+
 
 class Datum(BASE):
   """An object containing the value for a given topic at a particular time."""
@@ -34,3 +44,15 @@ class Datum(BASE):
   ts = Column(DateTime, primary_key=True)
   topic_id = Column(Integer, primary_key=True)
   value_string = Column(Text, primary_key=True)
+
+  def __init__(self, ts, topic_id, value_string):
+    """Creates a new datum object.
+
+    Args:
+      ts: The timestamp.
+      topic_id: The topic ID.
+      value_string: The value string.
+    """
+    self.ts = ts
+    self.topic_id = topic_id
+    self.value_string = value_string

@@ -25,7 +25,8 @@ class Database(object):
       dsn = '%s:///%s' % (opts.db_type, opts.host)
       self.engine = sqlalchemy.create_engine(dsn)
     else:
-      dsn = '%s://%s:%s@%s/%s' % (opts.db_type, opts.user, opts.password, opts.host, opts.database)
+      dsn = '%s://%s:%s@%s/%s' % (opts.db_type, opts.user, opts.password,
+                                  opts.host, opts.database)
       self.engine = sqlalchemy.create_engine(dsn, pool_size=opts.pool_size)
 
   def get_data(self, topic_id, start_dt, end_dt, sample_rate):

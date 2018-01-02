@@ -11,7 +11,6 @@ DEFINE_string "db_envroot" "$ROOT/db/env" "The DB migrations environment root." 
 DEFINE_boolean "frontend" ${FLAGS_TRUE} "Whether to build the frontend." "f"
 DEFINE_boolean "backend" ${FLAGS_TRUE} "Whether to build the backend." "b"
 DEFINE_boolean "db" ${FLAGS_TRUE} "Whether to build the DB scripts." "E"
-DEFINE_boolean "tests" ${FLAGS_TRUE} "Whether to build the tests." "t"
 
 FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
@@ -43,46 +42,22 @@ if [ ${FLAGS_frontend} -eq ${FLAGS_TRUE} ]; then
 fi
 
 # Build backend.
+# TODO(kjiwa) Package the server using a tool like pex.
 if [ ${FLAGS_backend} -eq ${FLAGS_TRUE} ]; then
   echo -e "\e[1;33mLinting backend...\e[0m"
   source "${FLAGS_envroot}/bin/activate"
 
   SCRIPTS=$(find "$ROOT/src/server" -not -path "${FLAGS_envroot}/*" -type f -name "*.py")
-  PYTHONPATH="$ROOT/src/server"\
-":${FLAGS_envroot}/lib/python3.6/site-packages"\
-      pylint \
-          --rcfile="$ROOT/src/server/pylintrc" \
-          $SCRIPTS|| true
+  pylint --rcfile="$ROOT/src/server/pylintrc" $SCRIPTS || true
   deactivate
 fi
 
 # Build DB scripts.
+# TODO(kjiwa) Package these tools using a tool like pex.
 if [ ${FLAGS_db} -eq ${FLAGS_TRUE} ]; then
   echo -e "\e[1;33mLinting database scripts...\e[0m"
   source "${FLAGS_db_envroot}/bin/activate"
-
   SCRIPTS=$(find "$ROOT/db" -not -path "${FLAGS_db_envroot}/*" -type f -name "*.py")
-  PYTHONPATH="$ROOT/db/gendata"\
-":$ROOT/db/migration"\
-":$ROOT/src/server"\
-":${FLAGS_envroot}/lib/python3.6/site-packages"\
-      pylint \
-          --rcfile="$ROOT/db/pylintrc" \
-          ${SCRIPTS}|| true
-  deactivate
-fi
-
-# Build tests.
-if [ ${FLAGS_tests} -eq ${FLAGS_TRUE} ]; then
-  echo -e "\e[1;33mLinting tests...\e[0m"
-
-  # Python tests.
-  source "${FLAGS_db_envroot}/bin/activate"
-  SCRIPTS=$(find "$ROOT/test/server" -type f -name "*.py")
-  PYTHONPATH="$ROOT/src/server"\
-":${FLAGS_envroot}/lib/python3.6/site-packages"\
-      pylint \
-          --rcfile="$ROOT/test/pylintrc" \
-          $SCRIPTS|| true
+  PYTHONPATH="$ROOT/src/server" pylint --rcfile="$ROOT/db/pylintrc" ${SCRIPTS} || true
   deactivate
 fi
