@@ -176,6 +176,34 @@ class GendataTestCase(unittest.TestCase):
     gendata.create_topic(topics, option)
     self.assertEqual('New Topic', topics[1].topic_name)
 
+  def test_create_data(self):
+    """Tests that timeseries data can be generated."""
+    option = self.default_data_options(
+        datetime.datetime(2018, 1, 1), datetime.datetime(2018, 1, 1, 1), 1,
+        'New Topic')
+    expected_samples = (
+        option.end - option.start).total_seconds() * option.sample_rate
+
+    actual = {}
+    gendata.create_data(actual, option)
+    self.assertEqual(expected_samples, len(actual.keys()))
+    for i in actual.values():
+      self.assertLessEqual(option.start, i.ts)
+      self.assertGreaterEqual(option.end, i.ts)
+
+  def test_create_data_appends_to_existing_data(self):
+    """Tests that existing data is incremented instead of replaced."""
+    # Create 1 sample with the value 1.
+    option = gendata.DataOptions(
+        datetime.datetime(2018, 1, 1), datetime.datetime(2018, 1, 1, 0, 0, 1),
+        1, 'New Topic', 1, 1, 0, 0, 1, 0)
+    expected = {option.start: model.Datum(option.start, 1, '2.0')}
+    actual = {option.start: model.Datum(option.start, 1, '1.0')}
+    gendata.create_data(actual, option)
+    self.assertEqual(len(expected), len(actual))
+    self.assertEqual(expected[option.start].value_string,
+                     actual[option.start].value_string)
+
   @staticmethod
   def default_data_options(start, end, topic_id, topic_name):
     """Creates a DataOptions object filled with as many defaults as possible.

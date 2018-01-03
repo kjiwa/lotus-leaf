@@ -193,8 +193,8 @@ def create_topic(topics, options):
   topics[options.topic_id] = topic
 
 
-def generate_datum(options, ts):
-  """Generates a datum object for the given timestamp and topic.
+def create_datum(options, ts):
+  """Creates a datum object for the given timestamp and topic.
 
   Args:
     options: The configuration options for the current data generation run.
@@ -228,7 +228,7 @@ def create_data(data, options):
   samples = math.floor(
       (options.end - options.start).total_seconds() * options.sample_rate)
   for _ in range(0, samples):
-    datum = generate_datum(options, cur)
+    datum = create_datum(options, cur)
     if cur in data:
       datum.value_string = str(
           float(datum.value_string) + float(data[cur].value_string))
