@@ -18,24 +18,39 @@ set -o posix
 
 echo -e "\e[1;45mRunning tests...\e[0m"
 
+rm -f "$ROOT/.coverage"
+
 # Run server tests.
 echo -e "\e[1;33mRunning server tests...\e[0m"
-source "${FLAGS_envroot}/bin/activate"
 
+source "${FLAGS_envroot}/bin/activate"
 if [ ${FLAGS_debug} -eq ${FLAGS_TRUE} ]; then
   # Run tests in a debugger.
-  python -m pdb test/server/suite.py
+  python -m pdb src/server/testsuite.py
 else
   # Run tests with code coverage.
-  coverage run --omit="src/server/env/*,src/server/*_test.py,src/server/test*.py" \
+  coverage run -a --omit="src/server/env/*,src/server/*_test.py,src/server/test*.py" \
       src/server/testsuite.py
 fi
+deactivate
 
 # Run DB tests.
 echo -e "\e[1;33mRunning DB tests...\e[0m"
+
 source "${FLAGS_db_envroot}/bin/activate"
-PYTHONPATH="$ROOT/src/server" \
-    coverage run -a --omit="db/env/*,db/gendata/*_test.py" \
-        db/gendata/gendata_test.py
+if [ ${FLAGS_debug} -eq ${FLAGS_TRUE} ]; then
+  # Run tests in a debugger.
+  PYTHONPATH="$ROOT/src/server" \
+      python -m pdb db/gendata/testsuite.py
+else
+  # Run tests with code coverage.
+  PYTHONPATH="$ROOT/src/server" \
+      coverage run -a --omit="db/env/*,db/gendata/*_test.py,db/gendata/test*.py,src/server/test*.py" \
+          db/gendata/testsuite.py
+fi
+deactivate
+
+# Generate coverage report.
+source "${FLAGS_envroot}/bin/activate"
 coverage html -d "${FLAGS_coverage_output_dir}"
 deactivate
