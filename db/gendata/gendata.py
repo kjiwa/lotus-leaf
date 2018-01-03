@@ -131,17 +131,20 @@ def config_options_from_json(obj,
 
   Returns:
     A list of DataOptions objects.
+
+  Raises:
+    ValueError: When a required parameter is not present.
   """
   options = []
   for item in obj:
     if 'start' not in item or 'end' not in item:
-      raise Exception('A start and end date are required.')
+      raise ValueError('A start and end date are required.')
 
     if not ('topic_id' in item or topic_id_override):
-      raise Exception('A topic ID is required.')
+      raise ValueError('A topic ID is required.')
 
     if not ('topic_name' in item or topic_name_override):
-      raise Exception('A topic name is required.')
+      raise ValueError('A topic name is required.')
 
     start = dateutil.parser.parse(item.get('start'))
     end = dateutil.parser.parse(item.get('end'))
