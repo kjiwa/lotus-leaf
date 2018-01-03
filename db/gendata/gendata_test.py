@@ -3,6 +3,7 @@
 import datetime
 import unittest
 import gendata
+import model
 
 
 class GendataTestCase(unittest.TestCase):
@@ -25,8 +26,7 @@ class GendataTestCase(unittest.TestCase):
 
     actual = gendata.config_options_from_json(cfg)
     opts = GendataTestCase.default_data_options(
-        datetime.datetime(2016, 1, 9, 19),
-        datetime.datetime(2016, 1, 9, 21),
+        datetime.datetime(2016, 1, 9, 19), datetime.datetime(2016, 1, 9, 21),
         1, 'Topic name')
 
     self.assertEqual([opts], actual)
@@ -46,7 +46,6 @@ class GendataTestCase(unittest.TestCase):
       # expected
       pass
 
-
   def test_config_from_json_no_end(self):
     """Tests that an error is raised when there is no end date."""
     cfg = [{
@@ -62,7 +61,6 @@ class GendataTestCase(unittest.TestCase):
       # expected
       pass
 
-
   def test_config_from_json_no_topic_id(self):
     """Tests that an error is raised when there is topic ID."""
     cfg = [{
@@ -77,7 +75,6 @@ class GendataTestCase(unittest.TestCase):
     except ValueError:
       # expected
       pass
-
 
   def test_config_from_json_no_topic_name(self):
     """Tests that an error is raised when there is no topic name."""
@@ -104,8 +101,7 @@ class GendataTestCase(unittest.TestCase):
     }]
 
     expected = GendataTestCase.default_data_options(
-        datetime.datetime(2016, 1, 9, 19),
-        datetime.datetime(2016, 1, 9, 21),
+        datetime.datetime(2016, 1, 9, 19), datetime.datetime(2016, 1, 9, 21),
         33, 'Topic name')
 
     actual = gendata.config_options_from_json(cfg, topic_id_override=33)
@@ -121,11 +117,11 @@ class GendataTestCase(unittest.TestCase):
     }]
 
     expected = GendataTestCase.default_data_options(
-        datetime.datetime(2016, 1, 9, 19),
-        datetime.datetime(2016, 1, 9, 21),
+        datetime.datetime(2016, 1, 9, 19), datetime.datetime(2016, 1, 9, 21),
         1, 'Override')
 
-    actual = gendata.config_options_from_json(cfg, topic_name_override='Override')
+    actual = gendata.config_options_from_json(
+        cfg, topic_name_override='Override')
     self.assertEqual([expected], actual)
 
   def test_config_from_json_topic_sample_rate_override(self):
@@ -139,15 +135,10 @@ class GendataTestCase(unittest.TestCase):
     }]
 
     expected = gendata.DataOptions(
-        datetime.datetime(2016, 1, 9, 19),
-        datetime.datetime(2016, 1, 9, 21),
-        1, 'Topic name',
-        0.33,
-        gendata.DEFAULT_PERIOD,
-        gendata.DEFAULT_AMPLITUDE_COS,
-        gendata.DEFAULT_AMPLITUDE_SIN,
-        gendata.DEFAULT_AMPLITUDE_OFFSET,
-        gendata.DEFAULT_SPREAD)
+        datetime.datetime(2016, 1, 9, 19), datetime.datetime(
+            2016, 1, 9, 21), 1, 'Topic name', 0.33, gendata.DEFAULT_PERIOD,
+        gendata.DEFAULT_AMPLITUDE_COS, gendata.DEFAULT_AMPLITUDE_SIN,
+        gendata.DEFAULT_AMPLITUDE_OFFSET, gendata.DEFAULT_SPREAD)
     actual = gendata.config_options_from_json(cfg, sample_rate_override=0.33)
     self.assertEqual([expected], actual)
 
@@ -162,17 +153,28 @@ class GendataTestCase(unittest.TestCase):
     }]
 
     expected = gendata.DataOptions(
-        datetime.datetime(2016, 1, 9, 19),
-        datetime.datetime(2016, 1, 9, 21),
-        1, 'Topic name',
-        gendata.DEFAULT_SAMPLE_RATE,
-        gendata.DEFAULT_PERIOD,
-        gendata.DEFAULT_AMPLITUDE_COS,
-        gendata.DEFAULT_AMPLITUDE_SIN,
-        gendata.DEFAULT_AMPLITUDE_OFFSET,
-        0.33)
+        datetime.datetime(2016, 1, 9, 19), datetime.datetime(
+            2016, 1, 9, 21), 1, 'Topic name', gendata.DEFAULT_SAMPLE_RATE,
+        gendata.DEFAULT_PERIOD, gendata.DEFAULT_AMPLITUDE_COS,
+        gendata.DEFAULT_AMPLITUDE_SIN, gendata.DEFAULT_AMPLITUDE_OFFSET, 0.33)
     actual = gendata.config_options_from_json(cfg, spread_override=0.33)
     self.assertEqual([expected], actual)
+
+  def test_create_topics_does_not_dupe(self):
+    """Tests topics are not duplicated."""
+    existing_topics = {1: model.Topic(1, 'Original')}
+    option = self.default_data_options(datetime.datetime.now(),
+                                       datetime.datetime.now(), 1, 'Duplicate')
+    gendata.create_topic(existing_topics, option)
+    self.assertEqual('Original', existing_topics[1].topic_name)
+
+  def test_create_topics(self):
+    """Tests topics objects are added to the list to be written."""
+    topics = {}
+    option = self.default_data_options(datetime.datetime.now(),
+                                       datetime.datetime.now(), 1, 'New Topic')
+    gendata.create_topic(topics, option)
+    self.assertEqual('New Topic', topics[1].topic_name)
 
   @staticmethod
   def default_data_options(start, end, topic_id, topic_name):
@@ -185,12 +187,9 @@ class GendataTestCase(unittest.TestCase):
       topic_name: The topic name.
     """
     return gendata.DataOptions(
-        start, end, topic_id, topic_name,
-        gendata.DEFAULT_SAMPLE_RATE,
-        gendata.DEFAULT_PERIOD,
-        gendata.DEFAULT_AMPLITUDE_COS,
-        gendata.DEFAULT_AMPLITUDE_SIN,
-        gendata.DEFAULT_AMPLITUDE_OFFSET,
+        start, end, topic_id, topic_name, gendata.DEFAULT_SAMPLE_RATE,
+        gendata.DEFAULT_PERIOD, gendata.DEFAULT_AMPLITUDE_COS,
+        gendata.DEFAULT_AMPLITUDE_SIN, gendata.DEFAULT_AMPLITUDE_OFFSET,
         gendata.DEFAULT_SPREAD)
 
 

@@ -180,8 +180,8 @@ def config_options_from_json(obj,
   return options
 
 
-def generate_topic(topics, options):
-  """Generates a topic for the given data generation options.
+def create_topic(topics, options):
+  """Creates a topic for the given data generation options.
 
   Args:
     topics: A dictionary of existing topics, keyed by the topic ID.
@@ -215,8 +215,8 @@ def generate_datum(options, ts):
   return datum
 
 
-def generate_data(data, options):
-  """Generates data for a given configuration options.
+def create_data(data, options):
+  """Creates data for a given configuration options.
 
   Args:
     data: Previously generated data.
@@ -286,8 +286,8 @@ def main():
   topics = {}
   for i in options:
     logging.info('Generating data with the following options: %s', i)
-    generate_topic(topics, i)
-    generate_data(data, i)
+    create_topic(topics, i)
+    create_data(data, i)
 
   logging.info('Topics generated: %d, data generated: %d', len(topics),
                len(data))
