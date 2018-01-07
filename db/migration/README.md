@@ -11,22 +11,20 @@ The following dependencies must be present before DB migration can occur:
 * MariaDB (https://mariadb.org/) or MySQL (https://www.mysql.com/)
 * Python 3 (https://www.python.org/)
 
-### Quick Start
+### Running
 
-If there is an existing MySQL installation, it must be prepared for use with Alembic by executing the expressions in ```init.sql```.
+The script, ```scripts/db-migrate.sh```, sets up the Python environment and passes custom DB flags to Alembic.
 
 ```bash
-$ mysql -u uwsolar uwsolar < init.sql
+$ scripts/db-migrate.sh --db_host=sqlite.db
 ```
 
-The commands in ```init.sql``` create a table called ```alembic_versions``` and add a row that sets the current database version. For subsequent invocations, first ensure that a Python environment with the dependencies listed in ```requirements.txt``` is available (this can be created by running `setup.sh`).
+More fine-grained control over DB migrations can be had by directly executing Alembic.
 
 ```bash
-$ pushd lotus-leaf/db
-$ source env/bin/activate
-(env) $ alembic upgrade head
+$ source db/env/bin/activate
+(env) $ alembic -c db/migration/alembic.ini -x db_host=sqlite.db upgrade head
 (env) $ deactivate
-$ popd
 ```
 
 The key command being executed is ```alembic upgrade head```, which inspects the database and applies any updates required to make it current.
@@ -47,3 +45,13 @@ To set these variables, run Alembic with the following flags:
 ```bash
 (env) $ alembic -x db_user=uwsolar_ro -x db_name=uwsolar_test upgrade head
 ```
+
+### Migrating Existing Databases
+
+If there is an existing database installation, it must be prepared for use with Alembic by executing the expressions in ```init.sql```.
+
+```bash
+$ mysql -u uwsolar uwsolar < init.sql
+```
+
+The commands in ```init.sql``` create a table called ```alembic_versions``` and add a row that sets the current database version. For subsequent invocations, first ensure that a Python environment with the dependencies listed in ```requirements.txt``` is available (this can be created by running `setup.sh`).

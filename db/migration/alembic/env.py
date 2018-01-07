@@ -73,10 +73,10 @@ def set_sqlalchemy_url():
     - db_name: The database name.
   """
   x_args = context.get_x_argument(as_dictionary=True)
-  db_type = x_args.get('db_type', 'mysql+mysqlconnector')
+  db_type = x_args.get('db_type', 'sqlite')
   db_user = x_args.get('db_user', 'uwsolar')
   db_password = x_args.get('db_password', '')
-  db_host = x_args.get('db_host', 'localhost')
+  db_host = x_args.get('db_host', ':memory:')
   db_port = x_args.get('db_port', 3306)
   db_name = x_args.get('db_name', 'uwsolar')
 

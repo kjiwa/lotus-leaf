@@ -27,11 +27,7 @@ Nearly any function can be approximated, since the tool generates data based on 
 To generate square wave data, run the following commands:
 
 ```bash
-$ pushd lotus-leaf/db
-$ source env/bin/activate
-(env) $ python gendata/gendata.py --input_file=gendata/sample-square.json
-(end) $ deactivate
-$ popd
+$ scripts/db-gendata.sh -- --db_host=sqlite.db --input_file=gendata/sample-square.json
 ```
 
 ### Database Connectivity
@@ -41,7 +37,7 @@ By default, the tool will try to connect to a local, in-memory SQLite database. 
 To connect to a local, file-based SQLite database:
 
 ```bash
-$ python gendata/gendata.py \
+(env) $ python gendata/gendata.py \
       --input_file=gendata/sample-cos.json \
       --db_host=/path/to/sqlite.db
 ```
@@ -49,7 +45,7 @@ $ python gendata/gendata.py \
 To connect to a local MySQL installation:
 
 ```bash
-$ python gendata/gendata.py \
+(env) $ python gendata/gendata.py \
       --input_file=gendata/sample-cos.json \
       --db_type=mysql+mysqlconnector \
       --db_host=localhost
