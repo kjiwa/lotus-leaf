@@ -13,7 +13,7 @@ eval set -- "${FLAGS_ARGV}"
 set -e
 set -o posix
 
-echo -e "\e[1;45mMigrating database...\e[0m"
+echo -e "\e[1;45mGenerating data...\e[0m"
 
 source "${FLAGS_db_envroot}/bin/activate"
 PYTHONPATH="$ROOT/src/server" python "$ROOT/db/gendata/gendata.py" $@
