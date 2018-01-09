@@ -1,0 +1,12 @@
+@import '~typeface-open-sans/index.css';
+
+/* Override anchor styles so that buttons do not contain blue, underlined text. */
+button > span > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Allow the appbar to extend to the edges of the page. */
+body {
+  margin: 0;
+}

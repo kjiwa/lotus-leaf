@@ -1,0 +1,10 @@
+SQLAlchemy
+bottle
+mysql-connector==2.1.6
+python-dateutil
+sqlparse
+
+# Build and test dependencies.
+boddle
+coverage
+pylint

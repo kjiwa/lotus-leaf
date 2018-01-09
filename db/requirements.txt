@@ -1,0 +1,12 @@
+mysql-connector==2.1.6
+sqlalchemy
+
+# Migration dependencies.
+alembic
+
+# Gendata dependencies.
+jsmin
+
+# Build and test dependencies
+coverage
+pylint

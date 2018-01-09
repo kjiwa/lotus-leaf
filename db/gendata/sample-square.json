@@ -1,0 +1,60 @@
+// A sample data file that generates a curve approximating a square wave for two
+// weeks, between 12/18/2017 and 12/31/2017, with values between [-0.5, 0.5],
+// and a spread of 0.01 units.
+//
+// The Fourier series coefficients for a square wave with peak-to-peak amplitude
+// 1 and 50% duty cycle are:
+//
+//     A_cos = 0
+//     A_sin = -2/(pi*n) for odd n
+//           = 0         for even n
+//
+// The period for each entry should be chosen so that:
+//
+//     period = base_period / n
+//
+// Thus, a square wave approximated to four terms has the following amplitudes
+// and periods:
+//
+//     1. A_cos = 0, A_sin = -0.637, period = 86400
+//     2. A_cos = 0, A_sin = -0.212, period = 28800
+//     3. A_cos = 0, A_sin = -0.127, period = 17280
+//     4. A_cos = 0, A_sin = -0.091, period = 12342.857
+[
+  {
+    "start": "2017-12-18T00:00:00.0000Z",
+    "end": "2017-12-31T00:00:00.0000Z",
+    "topic_id": 14,
+    "topic_name": "UW/Alder/eaton_meter/W",
+    "amplitude_sin": -0.637,
+    "period": 86400,
+    "spread": 0.01
+  },
+  {
+    "start": "2017-12-18T00:00:00.0000Z",
+    "end": "2017-12-31T00:00:00.0000Z",
+    "topic_id": 14,
+    "topic_name": "UW/Alder/eaton_meter/W",
+    "amplitude_sin": -0.212,
+    "period": 28800,
+    "spread": 0.01
+  },
+  {
+    "start": "2017-12-18T00:00:00.0000Z",
+    "end": "2017-12-31T00:00:00.0000Z",
+    "topic_id": 14,
+    "topic_name": "UW/Alder/eaton_meter/W",
+    "amplitude_sin": -0.127,
+    "period": 17280,
+    "spread": 0.01
+  },
+  {
+    "start": "2017-12-18T00:00:00.0000Z",
+    "end": "2017-12-31T00:00:00.0000Z",
+    "topic_id": 14,
+    "topic_name": "UW/Alder/eaton_meter/W",
+    "amplitude_sin": -0.091,
+    "period": 12342.857,
+    "spread": 0.01
+  }
+]

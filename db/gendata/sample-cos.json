@@ -1,0 +1,13 @@
+// A sample data file that generates a cosine wave, with values between [-1, 1],
+// and a spread of 0.5 units (effectively [-1.5, 1.5]).
+[
+  {
+    "start": "2017-12-20T00:00:00.0000Z",
+    "end": "2017-12-21T23:59:59.99999Z",
+    "topic_id": 14,
+    "topic_name": "UW/Alder/eaton_meter/W",
+    "amplitude_cos": 1,
+    "period": 86400,
+    "spread": 0.5
+  }
+]

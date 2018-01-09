@@ -1,0 +1,11 @@
+**/*.pyc
+**/*~
+**/__pycache__/
+.coverage
+db/env/
+dist/
+scripts/shflags-real
+sqlite.db
+src/client/node_modules/
+src/client/package-lock.json
+src/server/env/
