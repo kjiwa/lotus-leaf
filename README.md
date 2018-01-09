@@ -65,5 +65,5 @@ $ scripts/start.sh -- --db_host=sqlite.db
 The server can be configured to connect to and read data from an existing MySQL installation.
 
 ```bash
-$ scripts/run.sh -- --db_type=mysql+mysqlconnector --db_host=localhost --db_name=uwsolar
+$ scripts/start.sh -- --db_type=mysql+mysqlconnector --db_host=localhost --db_name=uwsolar
 ```
