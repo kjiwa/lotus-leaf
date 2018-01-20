@@ -9,7 +9,7 @@ set -o posix
 
 if [ ! -f "$ROOT/scripts/shflags-real" ]; then
   echo -e "\e[1;45mDownloading shflags...\e[0m"
-  wget -q -O $ROOT/scripts/shflags-real https://github.com/kward/shflags/raw/master/lib/shflags
+  wget -q -O $ROOT/scripts/shflags-real https://github.com/kward/shflags/raw/master/shflags
 fi
 
 set +e
