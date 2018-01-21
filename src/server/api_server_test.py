@@ -106,7 +106,7 @@ class ApiServerTestCase(unittest.TestCase):
     params = {
         'start_date_time': start.isoformat(),
         'end_date_time': end.isoformat(),
-        'topic_id': '18',
+        'topic_ids': '18',
         'sample_rate': '1'
     }
 
@@ -132,7 +132,7 @@ class ApiServerTestCase(unittest.TestCase):
     params = {
         'start_date_time': start.isoformat(),
         'end_date_time': end.isoformat(),
-        'topic_id': '18',
+        'topic_ids': '18',
         'sample_rate': '1'
     }
 
@@ -169,7 +169,7 @@ class ApiServerTestCase(unittest.TestCase):
     """Tests that an error occurs when there is no start date present."""
     params = {
         'end_date_time': datetime.datetime.now().isoformat(),
-        'topic_id': '18',
+        'topic_ids': '18',
         'sample_rate': '1'
     }
 
@@ -186,7 +186,7 @@ class ApiServerTestCase(unittest.TestCase):
     """Tests that an error occurs when there is no end date present."""
     params = {
         'start_date_time': datetime.datetime.now().isoformat(),
-        'topic_id': '18',
+        'topic_ids': '18',
         'sample_rate': '1'
     }
 
@@ -204,7 +204,7 @@ class ApiServerTestCase(unittest.TestCase):
     params = {
         'start_date_time': datetime.datetime.now().isoformat(),
         'end_date_time': datetime.datetime.now().isoformat(),
-        'topic_id': '18'
+        'topic_ids': '18'
     }
 
     try:

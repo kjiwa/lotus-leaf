@@ -66,8 +66,9 @@ class ChartOptions extends React.Component {
               <FormControl>
                 <InputLabel>Topic</InputLabel>
                 <Select
+                  multiple
                   className={classes.topicSelect}
-                  value={this.props.selectedTopicId}
+                  value={this.props.selectedTopicIds}
                   onChange={this.props.onTopicChange}>
                   {topicMenuItems}
                 </Select>
@@ -175,7 +176,7 @@ class ChartOptions extends React.Component {
 
 ChartOptions.propTypes = {
   topics: PropTypes.array.isRequired,
-  selectedTopicId: PropTypes.number.isRequired,
+  selectedTopicIds: PropTypes.array.isRequired,
   startDateTime: PropTypes.instanceOf(Moment).isRequired,
   endDateTime: PropTypes.instanceOf(Moment).isRequired,
   selectedSampleRate: PropTypes.number.isRequired,

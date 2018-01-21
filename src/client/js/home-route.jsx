@@ -42,11 +42,11 @@ class HomeRoute extends React.Component {
       // A list of known topics.
       topics: [],
 
-      // The currently selected topic.
-      selectedTopicId: 0,
+      // The currently selected topics.
+      selectedTopicIds: [],
 
-      // The currently displayed data.
-      data: [],
+      // The currently displayed data, grouped by topic.
+      data: {},
 
       // The currently selected sample rate.
       selectedSampleRate: 0.05,
@@ -75,17 +75,11 @@ class HomeRoute extends React.Component {
 
     let chart = null;
     if (this.state.data.length > 0) {
-      const selectedTopic = this.state.topics.find((e) => (
-        e.topicId == this.state.selectedTopicId
-      ));
-
       chart = (
         <Card className={classes.chartCard}>
           <CardHeader title="Chart" />
           <CardContent>
-            <Chart
-              data={this.state.data}
-              label={selectedTopic.topicName} />
+            <Chart data={this.state.data} topics={this.state.topics} />
           </CardContent>
         </Card>
       );
@@ -101,7 +95,7 @@ class HomeRoute extends React.Component {
           <ExpansionPanelDetails>
             <ChartOptions
               topics={this.state.topics}
-              selectedTopicId={this.state.selectedTopicId}
+              selectedTopicIds={this.state.selectedTopicIds}
               startDateTime={this.state.startDateTime}
               endDateTime={this.state.endDateTime}
               selectedSampleRate={this.state.selectedSampleRate}
@@ -165,16 +159,16 @@ class HomeRoute extends React.Component {
     this.setState({ showProgressIndicator: true });
 
     const params = new URLSearchParams();
-    params.set('topic_id', this.state.selectedTopicId);
     params.set('start_date_time', this.state.startDateTime.toISOString());
     params.set('end_date_time', this.state.endDateTime.toISOString());
     params.set('sample_rate', this.state.selectedSampleRate);
+    params.set('topic_ids', this.state.selectedTopicIds);
 
     fetch('/_/data?' + params.toString())
       .then((response) => response.json())
       .then((data) => {
         this.setState({
-          data: data.map((e) => (new Datum(new Moment(e[0]), e[1], e[2]))),
+          data: data.map((e) => (new Datum(new Moment(e[0]), parseInt(e[1], 10), e[2]))),
           showProgressIndicator: false
         });
       });
@@ -186,7 +180,7 @@ class HomeRoute extends React.Component {
    * @returns {undefined}
    */
   handleSelectedTopicChange(event) {
-    this.setState({ selectedTopicId: event.target.value });
+    this.setState({ selectedTopicIds: event.target.value });
   }
 
   /**

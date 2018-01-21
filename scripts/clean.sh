@@ -33,4 +33,3 @@ find "$ROOT" -type d -name "__pycache__" -exec rm -rf {} \; 2> /dev/null || true
 find "$ROOT" -type f -name "*.pyc" -delete
 find "$ROOT" -type f -name "*~" -delete
 rm -f .coverage
-rm -f sqlite.db
