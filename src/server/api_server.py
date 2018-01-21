@@ -66,7 +66,7 @@ class ApiServer(server.BaseServer):
     # Validate topic ID.
     try:
       topic_ids = [int(i) for i in params.get('topic_ids').split(',')]
-    except (TypeError, ValueError):
+    except (AttributeError, TypeError, ValueError):
       raise bottle.HTTPError(400, 'A valid topic ID is required.')
 
     # Validate start and end times.
