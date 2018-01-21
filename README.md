@@ -60,6 +60,12 @@ $ scripts/db-gendata.sh -- --db_host=sqlite.db --input_file=db/gendata/sample-sq
 $ scripts/start.sh -- --db_host=sqlite.db
 ```
 
+After running these commands, a SQLite database will be created and filled with sample data in the shape of a square wave. All application dependencies will also be installed, so subsequent invocations of ```start.sh``` can be sped up by skipping the cleaning and setup stages. Finally, setting the ```--debug``` flag speeds up compilation of the frontend and enables debugging.
+
+```bash
+$ scripts/start.sh --noclean --nosetup --debug -- --db_host=sqlite.db
+```
+
 #### Connecting to a MySQL Database
 
 The server can be configured to connect to and read data from an existing MySQL installation.
