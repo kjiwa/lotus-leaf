@@ -8,6 +8,7 @@ deploy the application for production purposes.
 
 import argparse
 import logging
+import os.path
 import api_server
 import bottle
 import db
@@ -28,6 +29,10 @@ def parse_arguments():
       help='Whether to run the server in debug mode.')
   parser.add_argument(
       '--log_level', default='WARNING', help='The logging threshold.')
+  parser.add_argument(
+      '--www_path',
+      default=os.path.dirname(__file__) + '/../../dist/www',
+      help='The directory where web resources are stored.')
 
   # HTTP server arguments
   http_group = parser.add_argument_group('http', 'HTTP server arguments.')
@@ -77,7 +82,7 @@ def main():
   db_accessor = db.Database(db_options)
 
   # Initialize and start the web application.
-  app = www_server.WwwServer().app()
+  app = www_server.WwwServer(args.www_path).app()
   app.mount('/_/', api_server.ApiServer(db_accessor).app())
   bottle.run(app=app, host=args.host, port=args.port, debug=args.debug)
 

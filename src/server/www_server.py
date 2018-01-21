@@ -1,24 +1,27 @@
 """The UW Solar web server."""
 
-import os.path
 import bottle
 import server
-
-_WWW_PATH = os.path.dirname(__file__) + '/../../dist/www'
 
 
 class WwwServer(server.BaseServer):
   """The UW Solar web server."""
 
-  def __init__(self):
-    """Initializes routes and WSGI application."""
+  def __init__(self, www_path):
+    """Initializes routes and WSGI application.
+
+    Args:
+      www_path: The directory where web resources are stored.
+    """
     super().__init__([
-        server.Route('GET', '/', WwwServer.root),
-        server.Route('GET', '/favicon.ico', WwwServer.faviconico),
-        server.Route('GET', '/uwsolar.js', WwwServer.uwsolarjs),
-        server.Route('GET', '/uwsolar.js.map', WwwServer.uwsolarjsmap),
+        server.Route('GET', '/', self.root),
+        server.Route('GET', '/favicon.ico', self.faviconico),
+        server.Route('GET', '/uwsolar.js', self.uwsolarjs),
+        server.Route('GET', '/uwsolar.js.map', self.uwsolarjsmap),
         server.Route('GET', '/<:re:.*>', WwwServer.redirect)
     ])
+
+    self._www_path = www_path
 
   @staticmethod
   def read_file(path, open_mode='r'):
@@ -34,45 +37,41 @@ class WwwServer(server.BaseServer):
     with open(path, open_mode) as f:
       return f.read()
 
-  @staticmethod
-  def faviconico():
+  def faviconico(self):
     """Returns the contents of favicon.ico.
 
     Returns:
       An icon image.
     """
     bottle.response.content_type = 'image/x-icon'
-    return WwwServer.read_file(_WWW_PATH + '/favicon.ico', open_mode='rb')
+    return WwwServer.read_file(self._www_path + '/favicon.ico', open_mode='rb')
 
-  @staticmethod
-  def root():
+  def root(self):
     """Returns the contents of index.html.
 
     Returns:
       An HTML document.
     """
     bottle.response.content_type = 'text/html'
-    return WwwServer.read_file(_WWW_PATH + '/index.html')
+    return WwwServer.read_file(self._www_path + '/index.html')
 
-  @staticmethod
-  def uwsolarjs():
+  def uwsolarjs(self):
     """Returns the contents of uwsolar.js.
 
     Returns:
       A JavaScript script.
     """
     bottle.response.content_type = 'application/javascript'
-    return WwwServer.read_file(_WWW_PATH + '/uwsolar.js')
+    return WwwServer.read_file(self._www_path + '/uwsolar.js')
 
-  @staticmethod
-  def uwsolarjsmap():
+  def uwsolarjsmap(self):
     """Returns the contents of uwsolar.js.map.
 
     Returns:
       A source map.
     """
     bottle.response.content_type = 'application/json'
-    return WwwServer.read_file(_WWW_PATH + '/uwsolar.js.map')
+    return WwwServer.read_file(self._www_path + '/uwsolar.js.map')
 
   @staticmethod
   def redirect():
