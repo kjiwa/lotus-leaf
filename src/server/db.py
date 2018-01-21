@@ -29,13 +29,13 @@ class Database(object):
                                   opts.host, opts.database)
       self.engine = sqlalchemy.create_engine(dsn, pool_size=opts.pool_size)
 
-  def get_data(self, topic_id, start_dt, end_dt, sample_rate):
-    """Gets time-series data for a given topic and date range.
+  def get_data(self, topic_ids, start_dt, end_dt, sample_rate):
+    """Gets time-series data for the given topics and date range.
 
     NOTE: Sampling does not work when using a SQLite backend.
 
     Args:
-      topic_id: The topic to query.
+      topic_ids: The topics to query.
       start_dt: The start datetime.
       end_dt: The end datetime.
       sample_rate: A sample rate, between 0 and 1 inclusive.
@@ -52,7 +52,7 @@ class Database(object):
       sample_rate = SQLITE_MAX_INT * 2 * (sample_rate - 0.5)
 
     s = sqlalchemy.orm.Session(self.engine)
-    result = (s.query(model.Datum).filter(model.Datum.topic_id == topic_id)
+    result = (s.query(model.Datum).filter(model.Datum.topic_id.in_(topic_ids))
               .filter(model.Datum.ts >= start_dt)
               .filter(model.Datum.ts <= end_dt)
               .filter(sqlalchemy.sql.functions.random() <= sample_rate).all())

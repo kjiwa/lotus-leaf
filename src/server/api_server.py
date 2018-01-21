@@ -86,9 +86,7 @@ class ApiServer(server.BaseServer):
 
     # Query database.
     bottle.response.content_type = 'application/octet-stream'
-    result = []
-    for i in topic_ids:
-      result += self._db.get_data(i, start_dt, end_dt, sample_rate)
+    result = self._db.get_data(topic_ids, start_dt, end_dt, sample_rate)
 
     return json.dumps(result, cls=codec.DatumEncoder)
 
