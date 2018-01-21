@@ -1,6 +1,6 @@
 # UW Solar Power Monitor
 
-A web service to show data from solar panels deployed around the University of Washington.
+A web service to show data from solar panels deployed around the University of Washington. View a demo [here](http://kjiwa.pythonanywhere.com/).
 
 <p align="center">
   <img src="screenshot.png" width="640">
