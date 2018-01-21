@@ -56,7 +56,7 @@ Optionally, use ```db-migrate.sh``` and ```db-gendata.sh``` to create a new SQLi
 
 ```bash
 $ scripts/db-migrate.sh --db_host=sqlite.db
-$ scripts/db-gendata.sh -- --db_host=sqlite.db
+$ scripts/db-gendata.sh -- --db_host=sqlite.db --input_file=db/gendata/sample-square.json
 $ scripts/start.sh -- --db_host=sqlite.db
 ```
 
