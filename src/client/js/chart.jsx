@@ -2,124 +2,91 @@
  * A chart component that renders timeseries data.
  */
 
-import ChartJs from 'chart.js';
 import Moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
-import uuid4 from 'uuid/v4';
-import { withStyles } from 'material-ui/styles';
+import { VictoryChart, VictoryLegend, VictoryScatter, VictoryTheme, VictoryVoronoiContainer } from 'victory';
 
-const styles = (theme) => ({ canvas: {} });
+const CHART_COLORS = [
+  '#e94858', '#f3a32a', '#82BF6E', '#3CB4CB',
+  '#16434B', '#d9f35a', '#13aacb', '#5b6368',
+  '#ac62b2', '#5f62a0', '#17b2b4', '#80217a'
+];
 
 /**
  * A chart component for rendering timeseries data.
  */
 class Chart extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // The chart.js object.
-      chart: null
-    };
-  }
-
-  /**
-   * Handles post-render page processing after the initial render.
-   * @returns {undefined}
-   */
-  componentDidMount() {
-    this.refreshChart();
-  }
-
-  /**
-   * Checks whether the component requires a refresh.
-   * @param {Object} nextProps The next properties values to be set.
-   * @param {Object} nextState The next state values to be set.
-   * @returns {boolean} Whether the component should process updates.
-   */
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.data.length != nextProps.data.length) {
-      return true;
-    }
-
-    const sortedData = this.props.data.slice(0);
-    sortedData.sort((a, b) => (a.ts.milliseconds() - b.ts.milliseconds()));
-
-    const sortedNextData = nextProps.data.slice(0);
-    sortedNextData.sort((a, b) => (a.ts.milliseconds() - b.ts.milliseconds()));
-
-    for (let i = 0, j = sortedData.length; i < j; ++i) {
-      const a = sortedData[i];
-      const b = sortedNextData[i];
-      if (!a.ts.isSame(b.ts) || a.topicId != b.topicId || a.valueString != b.valueString) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * Handles post-render page processing after property updates.
-   * @returns {undefined}
-   */
-  componentDidUpdate() {
-    this.refreshChart();
-  }
-
   /**
    * Renders chart DOM elements.
    * @returns {undefined}
    */
   render() {
-    const { classes } = this.props;
-    return <canvas className={classes.canvas} />;
-  }
+    // Use a Voronoi container so that labels appear over data points.
+    const container = (
+      <VictoryVoronoiContainer
+        labels={(d) => `${d.x.format('YYYY-MM-DD[T]HH:mm:ss.SSS')}, ${d.y}`} />
+    );
 
-  /**
-   * Refreshes the chart.
-   * @returns {undefined}
-   */
-  refreshChart() {
-    // TODO(kjiwa): Put this into a worker thread.
-    const data = this.props.data.map((e) => ({
-      x: new Moment(e.ts),
-      y: parseFloat(e.valueString)
-    }));
-
-    const args = {
-      type: 'scatter',
-      data: {
-        datasets: [
-          {
-            label: this.props.label,
-            data: data,
-            backgroundColor: '#4b2e83',
-            borderColor: '#4b2e83',
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        scales: {
-          xAxes: [{ type: 'time' }]
-        }
+    // Group data by topic ID.
+    const data = {};
+    this.props.data.forEach(function(datum) {
+      if (!(datum.topicId in data)) {
+        data[datum.topicId] = [];
       }
-    };
 
-    if (this.state.chart) {
-      this.state.chart.destroy();
-    }
+      data[datum.topicId].push({
+        x: datum.ts,
+        y: parseFloat(datum.valueString)
+      });
+    });
 
-    const { classes } = this.props;
-    const canvas = document.getElementsByClassName(classes.canvas)[0];
-    this.state.chart = new ChartJs(canvas.getContext('2d'), args);
+    // Create a scatter chart for each topic ID.
+    const charts = [];
+    const legendData = [];
+    const topics = this.props.topics;
+    Object.keys(data).forEach(function(topicId, index) {
+      const color = CHART_COLORS[index % CHART_COLORS.length];
+      const topic = topics.find((e) => (e.topicId == topicId));
+
+      charts.push(
+        <VictoryScatter
+          key={topicId}
+          data={data[topicId]}
+          style={{ data: { fill: color } }} />
+      );
+
+      legendData.push({
+        name: topic.topicName,
+        symbol: { fill: color }
+      });
+    });
+
+    // Create legend entries.
+    Object.keys(data).forEach(function(topicId, index) {
+    });
+
+    return (
+      <VictoryChart
+        containerComponent={container}
+        theme={VictoryTheme.material}
+        scale={{ x: 'time' }}
+        width={1280}
+        height={720}>
+
+        {charts}
+        <VictoryLegend
+          gutter={16}
+          x={960} y={64}
+          data={legendData} />
+      </VictoryChart>
+    );
   }
 }
 
 Chart.propTypes = {
   data: PropTypes.array.isRequired,
-  label: PropTypes.string.isRequired
+  topics: PropTypes.array.isRequired
 };
 
-export default withStyles(styles)(Chart);
+export default Chart;

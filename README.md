@@ -1,6 +1,6 @@
 # UW Solar Power Monitor
 
-A web service to show data from solar panels deployed around the University of Washington.
+A web service to show data from solar panels deployed around the University of Washington. View a demo [here](http://kjiwa.pythonanywhere.com/).
 
 <p align="center">
   <img src="screenshot.png" width="640">
@@ -56,8 +56,14 @@ Optionally, use ```db-migrate.sh``` and ```db-gendata.sh``` to create a new SQLi
 
 ```bash
 $ scripts/db-migrate.sh --db_host=sqlite.db
-$ scripts/db-gendata.sh -- --db_host=sqlite.db
+$ scripts/db-gendata.sh -- --db_host=sqlite.db --input_file=db/gendata/sample-square.json
 $ scripts/start.sh -- --db_host=sqlite.db
+```
+
+After running these commands, a SQLite database will be created and filled with sample data in the shape of a square wave. All application dependencies will also be installed, so subsequent invocations of ```start.sh``` can be sped up by skipping the cleaning and setup stages. Optionally, setting the ```--debug``` flag speeds up compilation of the frontend and enables debugging.
+
+```bash
+$ scripts/start.sh --noclean --nosetup --debug -- --db_host=sqlite.db
 ```
 
 #### Connecting to a MySQL Database

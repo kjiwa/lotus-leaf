@@ -49,11 +49,11 @@ class ApiServer(server.BaseServer):
     return json.dumps(self._db.get_all_topics(), cls=codec.TopicEncoder)
 
   def get_data(self):
-    """Returns time-series data for a topic.
+    """Returns time-series data for a set of topics.
 
     This method expects the query string to contain the following parameters:
 
-      * topic_id: The topic ID being queried.
+      * topic_ids: A comma-separated list of topic IDs to query.
       * start_date_time: The start of the date range being queried.
       * end_date_time: The end of the date range being queried.
       * sample_rate: The sample rate, between 0 and 1 (inclusive).
@@ -65,8 +65,8 @@ class ApiServer(server.BaseServer):
 
     # Validate topic ID.
     try:
-      topic_id = int(params.get('topic_id'))
-    except (TypeError, ValueError):
+      topic_ids = [int(i) for i in params.get('topic_ids').split(',')]
+    except (AttributeError, TypeError, ValueError):
       raise bottle.HTTPError(400, 'A valid topic ID is required.')
 
     # Validate start and end times.
@@ -86,7 +86,8 @@ class ApiServer(server.BaseServer):
 
     # Query database.
     bottle.response.content_type = 'application/octet-stream'
-    result = self._db.get_data(topic_id, start_dt, end_dt, sample_rate)
+    result = self._db.get_data(topic_ids, start_dt, end_dt, sample_rate)
+
     return json.dumps(result, cls=codec.DatumEncoder)
 
   def get_earliest_data_timestamp(self):
