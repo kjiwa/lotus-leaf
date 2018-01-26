@@ -17,7 +17,6 @@ set -e
 set -o posix
 
 echo -e "\e[1;45mRunning web server...\e[0m"
-python3 -m venv "${FLAGS_envroot}"
 source "${FLAGS_envroot}/bin/activate"
 python "$ROOT/src/server/main.py" $@
 deactivate
