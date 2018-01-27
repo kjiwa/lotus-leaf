@@ -6,10 +6,7 @@ Database migration scripts allow changes to database schemas to be rolled out in
 
 ### Requirements
 
-The following dependencies must be present before DB migration can occur:
-
-* MariaDB (https://mariadb.org/) or MySQL (https://www.mysql.com/)
-* Python 3 (https://www.python.org/)
+Python3 must be present before DB migration can occur. All databases supported by SQLAlchemy are supported, though MariaDB/MySQL and SQLite3 are given primary support in our application.
 
 ### Running
 
