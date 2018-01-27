@@ -2,9 +2,9 @@
 
 The application cannot accept command line arguments when executed in a WSGI
 environment. Instead, application parameters are passed through by environment
- variables.
+variables.
 
-For example, with gunicorn, the following command line runs the server and
+For example, with Green Unicorn, the following command line runs the server and
 queries a MySQL instance:
 
     $ gunicorn \
