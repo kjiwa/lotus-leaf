@@ -7,7 +7,7 @@ source "${ROOT}/scripts/shflags"
 
 DEFINE_boolean "debug" ${FLAGS_TRUE} "Whether to build debuggable artifacts." "d"
 DEFINE_string "envroot" "${ROOT}/src/server/env" "The server environment root." "e"
-DEFINE_string "db_envroot" "$ROOT/db/env" "The DB migrations environment root." "D"
+DEFINE_string "db_envroot" "$ROOT/src/db/env" "The DB migrations environment root." "D"
 DEFINE_boolean "frontend" ${FLAGS_TRUE} "Whether to build the frontend." "f"
 DEFINE_boolean "backend" ${FLAGS_TRUE} "Whether to build the backend." "b"
 DEFINE_boolean "db" ${FLAGS_TRUE} "Whether to build the DB scripts." "E"
@@ -57,7 +57,7 @@ fi
 if [ ${FLAGS_db} -eq ${FLAGS_TRUE} ]; then
   echo -e "\e[1;33mLinting database scripts...\e[0m"
   source "${FLAGS_db_envroot}/bin/activate"
-  SCRIPTS=$(find "$ROOT/db" -not -path "${FLAGS_db_envroot}/*" -type f -name "*.py")
-  PYTHONPATH="$ROOT/src/server" pylint --rcfile="$ROOT/db/pylintrc" ${SCRIPTS} || true
+  SCRIPTS=$(find "$ROOT/src/db" -not -path "${FLAGS_db_envroot}/*" -type f -name "*.py")
+  PYTHONPATH="$ROOT/src/server" pylint --rcfile="$ROOT/src/db/pylintrc" ${SCRIPTS} || true
   deactivate
 fi

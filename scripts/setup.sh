@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source "${ROOT}/scripts/shflags"
 
 DEFINE_string "envroot" "${ROOT}/src/server/env" "The server environment root." "e"
-DEFINE_string "db_envroot" "$ROOT/db/env" "The DB migrations environment root." "d"
+DEFINE_string "db_envroot" "$ROOT/src/db/env" "The DB migrations environment root." "d"
 
 FLAGS "$@" || exit $?
 eval set -- "${FLAGS_ARGV}"
@@ -27,7 +27,7 @@ echo -e "\e[1;33mInstalling Python dependencies...\e[0m"
 
 python3 -m venv "${FLAGS_db_envroot}"
 source "${FLAGS_db_envroot}/bin/activate"
-pip install -q -r "$ROOT/db/requirements.txt"
+pip install -q -r "$ROOT/src/db/requirements.txt"
 deactivate
 
 python3 -m venv "${FLAGS_envroot}"
