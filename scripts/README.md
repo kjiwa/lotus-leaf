@@ -8,6 +8,7 @@
 2. setup.sh
 3. build.sh
 4. run.sh
+5. start.sh
 
 ### clean.sh
 
@@ -37,19 +38,23 @@ Run ```build.sh --help``` to view additional configuration options.
 
 ### run.sh
 
+This script runs the web server application and is a very thin wrapper over ```src/server/main.py```.
+
+### start.sh
+
 Sets up build and runtime environments, builds source code, and runs the web application. By default, this script is configured to perform an optimized build and connect to an in-memory SQLite database populated with sample data.
 
 New developers should run this script with its default options the first time so that the development environment can be setup and to ensure that the system is configured correctly to run the application. The following invocation builds and runs an optimized web application with sample data.
 
 ```bash
-$ scripts/run.sh
+$ scripts/start.sh
 ```
 While developing, running this script with its default configuration can become time-consuming and cumbersome. This is because the setup stage is always executed. Skipping this step can cause a significant reduction in the time required to build and run the application. Use the ```--noclean``` and ```--nosetup``` options to prevent the clean and setup stages from executing.
 
 The ```--debug``` flag should also be used when developing so that errors can be more easily debugged. The following invocation builds and runs a debuggable web application with sample data, and skips the setup stage.
 
 ```bash
-$ scripts/run.sh --noclean --nosetup --debug
+$ scripts/start.sh --noclean --nosetup --debug
 ```
 
-Run ```run.sh --help``` to view additional configuration options.
+Run ```start.sh --help``` to view additional configuration options.
