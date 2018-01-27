@@ -52,12 +52,14 @@ class Database(object):
       sample_rate = SQLITE_MAX_INT * 2 * (sample_rate - 0.5)
 
     s = sqlalchemy.orm.Session(self.engine)
-    result = (s.query(model.Datum).filter(model.Datum.topic_id.in_(topic_ids))
-              .filter(model.Datum.ts >= start_dt)
-              .filter(model.Datum.ts <= end_dt)
-              .filter(sqlalchemy.sql.functions.random() <= sample_rate).all())
-    s.close()
-    return result
+    try:
+      result = (s.query(model.Datum).filter(model.Datum.topic_id.in_(topic_ids))
+                .filter(model.Datum.ts >= start_dt)
+                .filter(model.Datum.ts <= end_dt)
+                .filter(sqlalchemy.sql.functions.random() <= sample_rate).all())
+      return result
+    finally:
+      s.close()
 
   def get_earliest_data_timestamp(self):
     """Gets the earliest timestamp from the data table.
@@ -100,6 +102,8 @@ class Database(object):
       A list of Topic objects.
     """
     s = sqlalchemy.orm.Session(self.engine)
-    result = s.query(model.Topic).all()
-    s.close()
-    return result
+    try:
+      result = s.query(model.Topic).all()
+      return result
+    finally:
+      s.close()

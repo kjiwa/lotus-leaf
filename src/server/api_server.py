@@ -45,7 +45,7 @@ class ApiServer(server.BaseServer):
     Returns:
       A JSON-encoded list of topic values.
     """
-    bottle.response.content_type = 'application/octet-stream'
+    bottle.response.content_type = 'application/json'
     return json.dumps(self._db.get_all_topics(), cls=codec.TopicEncoder)
 
   def get_data(self):
@@ -85,7 +85,7 @@ class ApiServer(server.BaseServer):
       raise bottle.HTTPError(400, 'A valid sample rate is required.')
 
     # Query database.
-    bottle.response.content_type = 'application/octet-stream'
+    bottle.response.content_type = 'application/json'
     result = self._db.get_data(topic_ids, start_dt, end_dt, sample_rate)
 
     return json.dumps(result, cls=codec.DatumEncoder)
@@ -96,7 +96,7 @@ class ApiServer(server.BaseServer):
     Returns:
       A JSON-encoded ISO8601 timestamp.
     """
-    bottle.response.content_type = 'application/octet-stream'
+    bottle.response.content_type = 'application/json'
     result = self._db.get_earliest_data_timestamp()
     if not result:
       return ''
@@ -109,7 +109,7 @@ class ApiServer(server.BaseServer):
     Returns:
       A JSON-encoded ISO8601 timestamp.
     """
-    bottle.response.content_type = 'application/octet-stream'
+    bottle.response.content_type = 'application/json'
     result = self._db.get_latest_data_timestamp()
     if not result:
       return ''
