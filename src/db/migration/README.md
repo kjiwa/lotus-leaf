@@ -22,8 +22,8 @@ $ scripts/db-migrate.sh --db_host=sqlite.db
 More fine-grained control over DB migrations can be had by directly executing Alembic.
 
 ```bash
-$ source db/env/bin/activate
-(env) $ alembic -c db/migration/alembic.ini -x db_host=sqlite.db upgrade head
+$ source src/db/env/bin/activate
+(env) $ alembic -c src/db/migration/alembic.ini -x db_host=sqlite.db upgrade head
 (env) $ deactivate
 ```
 
