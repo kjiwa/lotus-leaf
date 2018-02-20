@@ -44,8 +44,8 @@ class App extends React.Component {
         <HashRouter>
           <div>
             <PrimaryHeader title="Solar Power Monitor">
-              <Button color="accent"><Link to="/">Home</Link></Button>
-              <Button color="accent" className="{classes.button}"><Link to="/about">About</Link></Button>
+              <Button color="inherit"><Link to="/">Home</Link></Button>
+              <Button color="inherit" className="{classes.button}"><Link to="/about">About</Link></Button>
             </PrimaryHeader>
             <div className={classes.content}>
               <Route exact path="/" component={HomeRoute} />
