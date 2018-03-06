@@ -78,7 +78,7 @@ class ChartOptions extends React.Component {
               <Tooltip title="Select the meter you would like to receive data from. You may
                 select multiple to overlap data.">
                 <InfoIcon />
-	          </Tooltip>
+              </Tooltip>
             </Grid>
             <Grid xs={12} item key={'start-date-time=' + this.props.startDateTime.milliseconds()}>
               <FormControl>
