@@ -20,6 +20,8 @@ import { FormControl } from 'material-ui/Form';
 import { InputLabel } from 'material-ui/Input';
 import { MenuItem } from 'material-ui/Menu';
 import { withStyles } from 'material-ui/styles';
+import Tooltip from 'material-ui/Tooltip';
+import InfoIcon from 'material-ui-icons/Info';
 
 const styles = (theme) => ({
   topicSelect: {
@@ -73,6 +75,9 @@ class ChartOptions extends React.Component {
                   {topicMenuItems}
                 </Select>
               </FormControl>
+              <Tooltip title="Select the meter you would like to receive data from. You may select multiple to overlap data.">
+                <InfoIcon />
+              </Tooltip>
             </Grid>
             <Grid xs={12} item key={'start-date-time=' + this.props.startDateTime.milliseconds()}>
               <FormControl>
@@ -83,6 +88,9 @@ class ChartOptions extends React.Component {
                   onChange={this.handleStartDateTimeChange.bind(this)}
                   InputLabelProps={{ shrink: true }} />
               </FormControl>
+              <Tooltip title="Enter the date and time you would like the sample to start.">
+                <InfoIcon />
+              </Tooltip>
             </Grid>
             <Grid xs={12} item key={'end-date-time=' + this.props.endDateTime.milliseconds()}>
               <FormControl>
@@ -93,6 +101,9 @@ class ChartOptions extends React.Component {
                   onChange={this.handleEndDateTimeChange.bind(this)}
                   InputLabelProps={{ shrink: true }} />
               </FormControl>
+              <Tooltip title="Enter the date and time you would like the sample to end.">
+                <InfoIcon />
+              </Tooltip>
             </Grid>
             <Grid xs={12} item>
               <FormControl>
@@ -102,10 +113,13 @@ class ChartOptions extends React.Component {
                   onChange={this.handleSampleRateChange.bind(this)}
                   error={this.state.sampleRateFieldError} />
               </FormControl>
+              <Tooltip title="Recommend between 0.1 to 1.0 for quickest results.">
+                <InfoIcon />
+              </Tooltip>
             </Grid>
             <Grid xs={12} item>
               <Button
-                raised
+                raised="true"
                 color="primary"
                 onClick={this.props.onSubmit.bind(this)}>
                 Submit

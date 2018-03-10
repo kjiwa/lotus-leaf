@@ -27,7 +27,7 @@ Nearly any function can be approximated, since the tool generates data based on 
 To generate square wave data, run the following commands:
 
 ```bash
-$ scripts/db-gendata.sh -- --db_host=sqlite.db --input_file=gendata/sample-square.json
+$ scripts/db-gendata.sh -- --db_host=sqlite.db --input_file=src/db/gendata/sample-square.json
 ```
 
 ### Database Connectivity
@@ -38,7 +38,7 @@ To connect to a local, file-based SQLite database:
 
 ```bash
 (env) $ python gendata/gendata.py \
-      --input_file=gendata/sample-cos.json \
+      --input_file=src/db/gendata/sample-cos.json \
       --db_host=/path/to/sqlite.db
 ```
 
@@ -46,7 +46,7 @@ To connect to a local MySQL installation:
 
 ```bash
 (env) $ python gendata/gendata.py \
-      --input_file=gendata/sample-cos.json \
+      --input_file=src/db/gendata/sample-cos.json \
       --db_type=mysql+mysqlconnector \
       --db_host=localhost
 ```
