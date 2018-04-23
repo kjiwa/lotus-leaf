@@ -46,8 +46,8 @@ class AboutRoute extends React.Component {
             <ListItem>
               <Avatar><AccountCircleIcon/></Avatar>
               <ListItemText
-                primary="Jordan Wollenman"
-                secondary="wollej@uw.edu" />
+                primary="Jerome Paliakkara"
+                secondary="jeromp@uw.edu" />
             </ListItem>
           </List>
         </CardContent>
