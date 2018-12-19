@@ -1,8 +1,7 @@
 """Manages unit test access to database instances."""
 
 import sqlalchemy
-import db
-import model
+from src import db, model
 
 
 def create_engine(db_file):

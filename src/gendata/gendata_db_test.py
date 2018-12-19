@@ -6,8 +6,7 @@ import tempfile
 import unittest
 import sqlalchemy.orm
 import gendata
-import model
-import testdb
+from src import model, testdb
 
 
 class GendataDbTestCase(unittest.TestCase):

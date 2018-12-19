@@ -3,7 +3,7 @@
 import datetime
 import unittest
 import gendata
-import model
+from src import model
 
 
 class GendataTestCase(unittest.TestCase):

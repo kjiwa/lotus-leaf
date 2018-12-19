@@ -5,7 +5,7 @@ import sys
 import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.sql.expression
-import model
+from src import model
 
 SQLITE_MAX_INT = sys.maxsize
 

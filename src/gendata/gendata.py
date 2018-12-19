@@ -48,7 +48,7 @@ import random
 import dateutil.parser
 import jsmin
 import sqlalchemy
-import model
+from src import model
 
 DEFAULT_SAMPLE_RATE = 0.01
 DEFAULT_PERIOD = 86400
@@ -256,7 +256,7 @@ def write_to_db(args, options, topics, data):
   # Delete any existing data values.
   for i in options:
     q = session.query(model.Datum).filter(model.Datum.ts >= i.start).filter(
-      model.Datum.ts <= i.end).filter(model.Datum.topic_id == i.topic_id)
+        model.Datum.ts <= i.end).filter(model.Datum.topic_id == i.topic_id)
     logging.info('Replacing %d existing records.', q.count())
     q.delete(synchronize_session=False)
 

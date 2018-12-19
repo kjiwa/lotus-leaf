@@ -1,8 +1,8 @@
 """Defines the test suite for server unit tests."""
 
 import unittest
-import gendata.gendata_db_test
-import gendata.gendata_test
+import src.gendata.gendata_db_test
+import src.gendata.gendata_test
 
 
 def testsuite():
@@ -10,9 +10,9 @@ def testsuite():
   loader = unittest.TestLoader()
   ts = unittest.TestSuite()
   ts.addTests(
-    loader.loadTestsFromTestCase(gendata.gendata_db_test.GendataDbTestCase))
+    loader.loadTestsFromTestCase(src.gendata.gendata_db_test.GendataDbTestCase))
   ts.addTests(
-    loader.loadTestsFromTestCase(gendata.gendata_test.GendataTestCase))
+    loader.loadTestsFromTestCase(src.gendata.gendata_test.GendataTestCase))
   return ts
 
 
