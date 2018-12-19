@@ -15,7 +15,7 @@ DatabaseOptions = collections.namedtuple(
   ['db_type', 'user', 'password', 'host', 'database', 'pool_size'])
 
 
-class Database(object):
+class Database:
   """A class for all SQL-based database connection handlers."""
 
   def __init__(self, opts):

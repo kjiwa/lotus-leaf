@@ -1,3 +1,5 @@
 alembic
+bottle
 jsmin
+pymodbus
 sqlalchemy
