@@ -76,8 +76,5 @@ class PanelAccessor:
 
     decoder = BinaryPayloadDecoder.fromRegisters(
       result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
-    if metric.data_type == model.MetricDataType.STRING:
-      return decoder.decode_string(BITS_PER_REGISTER).decode('utf-8')
-
     decoded_value = DATA_TYPE_TO_DECODER_MAP[metric.data_type](decoder)
     return decoded_value * metric.scaling_factor

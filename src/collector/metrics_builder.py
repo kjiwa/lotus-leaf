@@ -14,8 +14,7 @@ DATA_TYPE_STR_TO_ENUM = {
   'INT32': model.MetricDataType.INT32,
   'INT64': model.MetricDataType.INT64,
   'FLOAT32': model.MetricDataType.FLOAT32,
-  'FLOAT64': model.MetricDataType.FLOAT64,
-  'STRING': model.MetricDataType.STRING
+  'FLOAT64': model.MetricDataType.FLOAT64
 }
 
 
