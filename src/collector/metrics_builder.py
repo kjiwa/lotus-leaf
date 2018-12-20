@@ -30,7 +30,7 @@ def build_metrics(input_workbook, metrics_worksheet_name, topic_name_prefix):
   Returns:
     A dict from the metric name to its metadata.
   """
-  wb = openpyxl.load_workbook(input_workbook)
+  wb = openpyxl.load_workbook(input_workbook, data_only=True, read_only=True)
   ws = wb[metrics_worksheet_name]
 
   result = {}
@@ -42,9 +42,10 @@ def build_metrics(input_workbook, metrics_worksheet_name, topic_name_prefix):
     description = row[1].value
     address = row[2].value
     size = row[3].value
-    data_type = DATA_TYPE_STR_TO_ENUM[row[4].value]
-    topic_name = topic_name_prefix + row[5].value
+    scaling_factor = row[4].value
+    data_type = DATA_TYPE_STR_TO_ENUM[row[5].value]
+    topic_name = topic_name_prefix + row[6].value
     result[name] = model.Metric(
-      name, description, address, size, data_type, topic_name)
+      name, description, address, size, scaling_factor, data_type, topic_name)
 
   return result

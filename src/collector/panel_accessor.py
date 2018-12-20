@@ -7,8 +7,12 @@ provided in Excel spreadsheets.
 """
 
 from pymodbus.client.sync import ModbusTcpClient
+from pymodbus.constants import Endian
 from pymodbus.payload import BinaryPayloadDecoder
 from collector import model
+
+# The number of bits per register (2 bytes = 16 bits).
+BITS_PER_REGISTER = 16
 
 # A mapping from metric data type to decoding method.
 DATA_TYPE_TO_DECODER_MAP = {
@@ -70,8 +74,10 @@ class PanelAccessor:
     result = self._modbus_client.read_holding_registers(
       metric.address, metric.size, unit=0x01)
 
-    decoder = BinaryPayloadDecoder.fromRegisters(result.registers)
+    decoder = BinaryPayloadDecoder.fromRegisters(
+      result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
     if metric.data_type == model.MetricDataType.STRING:
-      return decoder.decode_string(metric.size * 8)
+      return decoder.decode_string(BITS_PER_REGISTER).decode('utf-8')
 
-    return DATA_TYPE_TO_DECODER_MAP[metric.data_type](decoder)
+    decoded_value = DATA_TYPE_TO_DECODER_MAP[metric.data_type](decoder)
+    return decoded_value * metric.scaling_factor

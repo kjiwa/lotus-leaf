@@ -26,9 +26,10 @@ class MetricDataType(enum.Enum):
 #   name: The metric name.
 #   description: A description of the metric.
 #   address: The metric's Modbus address.
-#   size: The number of registers used by the metric.
+#   size: The number of registers used by the metric. Each register is 2 bytes.
+#   scaling_factor: The scaling factor to apply to the metric value.
 #   data_type: The metric data type.
 #   topic_name: The topic name.
 Metric = collections.namedtuple(
-  'Metric', ['name', 'description', 'address', 'size', 'data_type',
-             'topic_name'])
+  'Metric', ['name', 'description', 'address', 'size', 'scaling_factor',
+             'data_type', 'topic_name'])
