@@ -120,5 +120,6 @@ class DatabaseAccessor:
     s = sqlalchemy.orm.Session(self.engine)
     try:
       s.add_all(data)
+      s.commit()
     finally:
       s.close()
