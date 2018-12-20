@@ -110,3 +110,15 @@ class DatabaseAccessor:
       return result
     finally:
       s.close()
+
+  def write_data(self, data):
+    """Writes a list of topic values to the database.
+
+    Args:
+      data: A list of topic values to be written.
+    """
+    s = sqlalchemy.orm.Session(self.engine)
+    try:
+      s.add_all(data)
+    finally:
+      s.close()

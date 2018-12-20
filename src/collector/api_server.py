@@ -1,7 +1,10 @@
 """The UW Solar API server."""
 
 import collections
+import datetime
+import time
 import bottle
+from db import db_model
 
 Route = collections.namedtuple('Route', ['method', 'path', 'callback'])
 
@@ -22,7 +25,8 @@ class ApiServer:
 
     routes = [
       Route('GET', '/ping', ApiServer.ping),
-      Route('GET', '/metric', self.get_metric)
+      Route('GET', '/metric', self.get_metric),
+      Route('POST', '/collect', self.collect)
     ]
     for route in routes:
       self._app.route(route.path, method=route.method, callback=route.callback)
@@ -45,7 +49,9 @@ class ApiServer:
   def get_metric(self):
     """Retrieves the value for a particular metric.
 
-    The metric name is expected to be provided in the query string.
+    Query string format:
+
+      - name: The metric name.
 
     Returns:
       The current value of the metric.
@@ -56,3 +62,43 @@ class ApiServer:
 
     bottle.response.content_type = 'text/plain'
     return str(self._panel_con.get_metric(name))
+
+  def collect(self):
+    """Queries all known metrics and writes their values to the database.
+
+    Query string format:
+
+      - iterations: The number of times to query the metrics.
+      - wait_time: The time in seconds to wait between iterations.
+
+    It is expected that this method will be invoked periodically by a task
+    scheduling service (e.g. cron). Cron specifically may invoke a task as
+    frequently as once per minute. To collect data approximately once per
+    second, the number of iterations may be set to 60 and the wait time may be
+    set to 1.
+    """
+    iterations = bottle.request.query.get('iterations', '1')
+    try:
+      iterations = int(iterations)
+    except ValueError:
+      raise bottle.HTTPError(400)
+
+    wait_time = bottle.request.query.get('wait_time', '1')
+    try:
+      wait_time = int(wait_time)
+    except ValueError:
+      raise bottle.HTTPError(400)
+
+    # Map topic names to their IDs.
+    topics = self._db_con.get_all_topics()
+    topic_ids_by_name = {t.topic_name: t.topic_id for t in topics}
+
+    # Query metrics.
+    metrics = self._panel_con.metrics
+    for _ in range(0, iterations):
+      data = [db_model.TopicDatum(datetime.datetime.now(),
+                                  topic_ids_by_name[m.topic_name],
+                                  self._panel_con.get_metric(m.name))
+              for m in metrics.values()]
+      self._db_con.write_data(data)
+      time.sleep(wait_time)

@@ -38,6 +38,10 @@ class PanelAccessor:
     self._modbus_client = ModbusTcpClient(host)
     self._metrics = metrics
 
+  @property
+  def metrics(self):
+    return self._metrics
+
   def has_metric(self, name):
     """Checks if a particular metric is supported by this panel.
 
