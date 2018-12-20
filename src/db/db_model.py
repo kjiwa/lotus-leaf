@@ -1,4 +1,14 @@
-"""A module containing object model definitions for the UW Solar application."""
+"""A module containing database model definitions for the UW Solar application.
+
+The object model for the UW Solar project is derived from the default schema
+implemented by the VOLTTRON platform, which defines the following structures:
+
+  * Topic: A particular solar panel property (e.g. V_AN, frequency, etc.)
+  * Metadata: A map containing topic information (e.g. units or timezone).
+
+A process (the collector) periodically queries a solar panel for its topic data
+and writes it to the "data" table by creating a TopicDatum object.
+"""
 
 from sqlalchemy import Column, DateTime, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
@@ -7,7 +17,23 @@ BASE = declarative_base()
 
 
 class Metadata(BASE):
-  """An object containing metadata for a particular Topic."""
+  """An object containing JSON-encoded metadata for a particular Topic.
+
+  Each topic has one metadata object with the following properties:
+
+    * units: The units associated with the topic data.
+    * tz: The timezone to use when interpreting the topic data.
+    * type: The type of data.
+
+  Not all of these properties may be present for a given topic. The following
+  table shows example metadata for a few different topics.
+
+  Topic                          | Metadata
+  -----------------------------------------------------------------------------
+  UW/Maple/eaton_meter/Angle_I_A | {"units":"degrees","tz":"PT","type":"float"}
+  UW/Maple/eaton_meter/freq      | {"units":"Hz","tz":"PT","type":"float"}
+  UW/Maple/eaton_meter/pf        | {"units":"","tz":"PT","type":"float"}
+  """
   __tablename__ = 'meta'
   topic_id = Column(Integer, primary_key=True)
   md = Column('metadata', Text, primary_key=True)
@@ -38,7 +64,7 @@ class Topic(BASE):
     self.topic_name = topic_name
 
 
-class Datum(BASE):
+class TopicDatum(BASE):
   """An object containing the value for a given topic at a particular time."""
   __tablename__ = 'data'
   ts = Column(DateTime, primary_key=True)

@@ -6,7 +6,7 @@ import tempfile
 import unittest
 import sqlalchemy.orm
 import gendata
-from src import model, testdb
+from db import db_model, testdb
 
 
 class GendataDbTestCase(unittest.TestCase):
@@ -25,12 +25,13 @@ class GendataDbTestCase(unittest.TestCase):
     """Test that topics and data can be written to the DB."""
     # Create one topic and one datum to be created.
     ts = datetime.datetime.now()
-    self.write_to_db([], [model.Topic(1, 'Topic')], [model.Datum(ts, 1, '1.0')])
+    self.write_to_db([], [db_model.Topic(1, 'Topic')], [
+      db_model.TopicDatum(ts, 1, '1.0')])
 
     # Verify the items were written.
     session = sqlalchemy.orm.Session(bind=self.engine, expire_on_commit=False)
-    actual_topics = session.query(model.Topic).all()
-    actual_data = session.query(model.Datum).all()
+    actual_topics = session.query(db_model.Topic).all()
+    actual_data = session.query(db_model.TopicDatum).all()
 
     self.assertEqual(1, len(actual_topics))
     self.assertEqual(1, len(actual_data))

@@ -1,5 +1,6 @@
 alembic
 bottle
 jsmin
+openpyxl
 pymodbus
 sqlalchemy

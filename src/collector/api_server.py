@@ -2,8 +2,6 @@
 
 import collections
 import bottle
-from pymodbus.client.sync import ModbusTcpClient
-from pymodbus.payload import BinaryPayloadDecoder
 
 Route = collections.namedtuple('Route', ['method', 'path', 'callback'])
 
@@ -11,20 +9,20 @@ Route = collections.namedtuple('Route', ['method', 'path', 'callback'])
 class ApiServer:
   """The UW Solar API server."""
 
-  def __init__(self, db_accessor, modbus_host):
+  def __init__(self, db_con, panel_con):
     """Initializes routes and the WSGI application.
 
     Args:
-      db_accessor: The database accessor.
-      modbus_host: The Modbus host address.
+      db_con: A handle to the database.
+      panel_con: A handle to the solar panel.
     """
     self._app = bottle.Bottle()
-    self._db_accessor = db_accessor
-    self._modbus_client = ModbusTcpClient(modbus_host)
+    self._db_con = db_con
+    self._panel_con = panel_con
 
     routes = [
       Route('GET', '/ping', ApiServer.ping),
-      Route('GET', '/device_name', self.get_device_name)
+      Route('GET', '/metric', self.get_metric)
     ]
     for route in routes:
       self._app.route(route.path, method=route.method, callback=route.callback)
@@ -40,13 +38,21 @@ class ApiServer:
     For now, this method always returns success as long as the server is
     active. In the future, this may be extneded to perform more extensive
     health checks, such as to ensure that dependent services are available
-    (e.g. the database).
+    (e.g. the database and solar panel).
     """
     pass
 
-  def get_device_name(self):
-    """Returns the name of the Modbus device."""
-    result = self._modbus_client.read_holding_registers(0, 8, unit=0x01)
-    decoder = BinaryPayloadDecoder.fromRegisters(result.registers)
-    name = decoder.decode_string(16).decode('utf-8')
-    return name
+  def get_metric(self):
+    """Retrieves the value for a particular metric.
+
+    The metric name is expected to be provided in the query string.
+
+    Returns:
+      The current value of the metric.
+    """
+    name = bottle.request.query['name']
+    if not name or not self._panel_con.has_metric(name):
+      raise bottle.HTTPError(400)
+
+    bottle.response.content_type = 'text/plain'
+    return str(self._panel_con.get_metric(name))

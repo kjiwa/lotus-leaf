@@ -3,7 +3,7 @@
 import datetime
 import unittest
 import gendata
-from src import model
+from db import db_model
 
 
 class GendataTestCase(unittest.TestCase):
@@ -162,7 +162,7 @@ class GendataTestCase(unittest.TestCase):
 
   def test_create_topics_does_not_dupe(self):
     """Tests topics are not duplicated."""
-    existing_topics = {1: model.Topic(1, 'Original')}
+    existing_topics = {1: db_model.Topic(1, 'Original')}
     option = self.default_data_options(datetime.datetime.now(),
                                        datetime.datetime.now(), 1, 'Duplicate')
     gendata.create_topic(existing_topics, option)
@@ -197,8 +197,8 @@ class GendataTestCase(unittest.TestCase):
     option = gendata.DataOptions(
       datetime.datetime(2018, 1, 1), datetime.datetime(2018, 1, 1, 0, 0, 1),
       1, 'New Topic', 1, 1, 0, 0, 1, 0)
-    expected = {option.start: model.Datum(option.start, 1, '2.0')}
-    actual = {option.start: model.Datum(option.start, 1, '1.0')}
+    expected = {option.start: db_model.TopicDatum(option.start, 1, '2.0')}
+    actual = {option.start: db_model.TopicDatum(option.start, 1, '1.0')}
     gendata.create_data(actual, option)
     self.assertEqual(len(expected), len(actual))
     self.assertEqual(expected[option.start].value_string,

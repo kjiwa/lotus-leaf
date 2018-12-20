@@ -48,7 +48,7 @@ import random
 import dateutil.parser
 import jsmin
 import sqlalchemy
-from src import model
+from db import db_model
 
 DEFAULT_SAMPLE_RATE = 0.01
 DEFAULT_PERIOD = 86400
@@ -182,7 +182,7 @@ def create_topic(topics, options):
   if options.topic_id in topics:
     return
 
-  topic = model.Topic(options.topic_id, options.topic_name)
+  topic = db_model.Topic(options.topic_id, options.topic_name)
   topics[options.topic_id] = topic
 
 
@@ -204,10 +204,12 @@ def create_datum(options, ts):
   seconds = (ts - options.start).total_seconds()
   fuzz = random.uniform(-options.spread, options.spread)
   x = omega * seconds
-  value = (options.amplitude_offset + options.amplitude_cos * math.cos(
-    x) + options.amplitude_sin * math.sin(x) + fuzz)
+  value = (options.amplitude_offset
+           + options.amplitude_cos * math.cos(x)
+           + options.amplitude_sin * math.sin(x)
+           + fuzz)
 
-  datum = model.Datum(ts, options.topic_id, str(value))
+  datum = db_model.TopicDatum(ts, options.topic_id, str(value))
   return datum
 
 
@@ -255,8 +257,10 @@ def write_to_db(args, options, topics, data):
 
   # Delete any existing data values.
   for i in options:
-    q = session.query(model.Datum).filter(model.Datum.ts >= i.start).filter(
-        model.Datum.ts <= i.end).filter(model.Datum.topic_id == i.topic_id)
+    q = session.query(db_model.TopicDatum).filter(
+      db_model.TopicDatum.ts >= i.start).filter(
+      db_model.TopicDatum.ts <= i.end).filter(
+      db_model.TopicDatum.topic_id == i.topic_id)
     logging.info('Replacing %d existing records.', q.count())
     q.delete(synchronize_session=False)
 

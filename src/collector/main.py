@@ -9,8 +9,18 @@ deploy the application for production purposes.
 import argparse
 import bottle
 import logging
-from src import db
-from src.collector import api_server
+from collector import api_server, metrics_builder, panel_accessor
+from db import db_accessor
+
+DEFAULT_HTTP_SERVER_HOST = '0.0.0.0'
+DEFAULT_HTTP_SERVER_PORT = 8080
+DEFAULT_DB_TYPE = 'sqlite'
+DEFAULT_DB_USER = 'uwsolar'
+DEFAULT_DB_PASSWORD = ''
+DEFAULT_DB_HOST = ':memory:'
+DEFAULT_DB_NAME = 'uwsolar'
+DEFAULT_DB_POOL_SIZE = 3
+DEFAULT_PANEL_METRICS_WORKSHEET_NAME = 'Metrics'
 
 
 def parse_arguments():
@@ -29,10 +39,10 @@ def parse_arguments():
   # HTTP server arguments.
   http_group = parser.add_argument_group('http', 'HTTP server arguments.')
   http_group.add_argument(
-    '--host', default='0.0.0.0',
+    '--host', default=DEFAULT_HTTP_SERVER_HOST,
     help='The hostname to bind to when listening for requests.')
   http_group.add_argument(
-    '--port', type=int, default=8080,
+    '--port', type=int, default=DEFAULT_HTTP_SERVER_PORT,
     help='The port on which to listen for requests.')
 
   # Database connectivity arguments.
@@ -40,23 +50,34 @@ def parse_arguments():
     'database', 'Database connectivity arguments.')
   db_group.add_argument(
     '--db_type', choices=['mysql+mysqlconnector', 'sqlite'],
-    default='sqlite', help='Which database type should be used.')
+    default=DEFAULT_DB_TYPE, help='Which database type should be used.')
   db_group.add_argument(
-    '--db_user', default='uwsolar', help='The database user.')
+    '--db_user', default=DEFAULT_DB_USER, help='The database user.')
   db_group.add_argument(
-    '--db_password', default='', help='The database password.')
+    '--db_password', default=DEFAULT_DB_PASSWORD, help='The database password.')
   db_group.add_argument(
-    '--db_host', default=':memory:', help='The database host.')
+    '--db_host', default=DEFAULT_DB_HOST, help='The database host.')
   db_group.add_argument(
-    '--db_name', default='uwsolar', help='The database name.')
+    '--db_name', default=DEFAULT_DB_NAME, help='The database name.')
   db_group.add_argument(
-    '--db_pool_size', type=int, default=3, help='The database pool size.')
+    '--db_pool_size', type=int, default=DEFAULT_DB_POOL_SIZE,
+    help='The database pool size.')
 
-  # Modbus connectivity arguments.
-  modbus_group = parser.add_argument_group(
-    'modbus', 'Modbus connectivity arguments.')
-  modbus_group.add_argument(
-    '--modbus_host', required=True, help='The Modbus host address.')
+  # Solar panel connectivity arguments.
+  panel_group = parser.add_argument_group(
+    'panel', 'Solar panel connectivity arguments.')
+  panel_group.add_argument(
+    '--panel_host', required=True, help='The solar panel host address.')
+  panel_group.add_argument(
+    '--panel_topic_prefix', required=True,
+    help='The solar panel topic prefix (e.g. UW/Mercer).')
+  panel_group.add_argument(
+    '--panel_metrics_workbook', required=True,
+    help='The workbook containing solar panel metrics data.')
+  panel_group.add_argument(
+    '--panel_metrics_worksheet_name',
+    default=DEFAULT_PANEL_METRICS_WORKSHEET_NAME,
+    help='The name of the worksheet containing metrics data.')
 
   return parser.parse_args()
 
@@ -66,12 +87,20 @@ def main():
   args = parse_arguments()
   logging.basicConfig(level=logging.getLevelName(args.log_level))
 
-  db_options = db.DatabaseOptions(
+  # Initialize database connection.
+  db_opts = db_accessor.DatabaseOptions(
     args.db_type, args.db_user, args.db_password, args.db_host, args.db_name,
     args.db_pool_size)
-  db_accessor = db.Database(db_options)
+  db_con = db_accessor.DatabaseAccessor(db_opts)
 
-  app = api_server.ApiServer(db_accessor, args.modbus_host).app()
+  # Initialize solar panel connection.
+  panel_metrics = metrics_builder.build_metrics(
+    args.panel_metrics_workbook, args.panel_metrics_worksheet_name,
+    args.panel_topic_prefix)
+  panel_con = panel_accessor.PanelAccessor(args.panel_host, panel_metrics)
+
+  # Initialize and run API server.
+  app = api_server.ApiServer(db_con, panel_con).app()
   bottle.run(app=app, host=args.host, port=args.port, debug=args.debug)
 
 

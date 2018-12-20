@@ -5,7 +5,7 @@ import sys
 import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.sql.expression
-from src import model
+from db import db_model
 
 SQLITE_MAX_INT = sys.maxsize
 
@@ -15,7 +15,7 @@ DatabaseOptions = collections.namedtuple(
   ['db_type', 'user', 'password', 'host', 'database', 'pool_size'])
 
 
-class Database:
+class DatabaseAccessor:
   """A class for all SQL-based database connection handlers."""
 
   def __init__(self, opts):
@@ -53,9 +53,10 @@ class Database:
 
     s = sqlalchemy.orm.Session(self.engine)
     try:
-      result = (s.query(model.Datum).filter(model.Datum.topic_id.in_(topic_ids))
-                .filter(model.Datum.ts >= start_dt)
-                .filter(model.Datum.ts <= end_dt)
+      result = (s.query(db_model.TopicDatum).filter(
+        db_model.TopicDatum.topic_id.in_(topic_ids))
+                .filter(db_model.TopicDatum.ts >= start_dt)
+                .filter(db_model.TopicDatum.ts <= end_dt)
                 .filter(sqlalchemy.sql.functions.random() <= sample_rate).all())
       return result
     finally:
@@ -69,7 +70,8 @@ class Database:
     """
     s = sqlalchemy.orm.Session(self.engine)
     try:
-      result = s.query(model.Datum).order_by(model.Datum.ts.asc())
+      result = s.query(db_model.TopicDatum).order_by(
+        db_model.TopicDatum.ts.asc())
       if result.count() == 0:
         return None
 
@@ -86,7 +88,8 @@ class Database:
     """
     s = sqlalchemy.orm.Session(self.engine)
     try:
-      result = s.query(model.Datum).order_by(model.Datum.ts.desc())
+      result = s.query(db_model.TopicDatum).order_by(
+        db_model.TopicDatum.ts.desc())
       if result.count() == 0:
         return None
 
@@ -103,7 +106,7 @@ class Database:
     """
     s = sqlalchemy.orm.Session(self.engine)
     try:
-      result = s.query(model.Topic).all()
+      result = s.query(db_model.Topic).all()
       return result
     finally:
       s.close()

@@ -1,7 +1,7 @@
 """Manages unit test access to database instances."""
 
 import sqlalchemy
-from src import db, model
+from db import db_accessor, db_model
 
 
 def create_engine(db_file):
@@ -16,7 +16,7 @@ def create_engine(db_file):
     An engine object pointing to a SQLite database.
   """
   engine = sqlalchemy.create_engine('sqlite:///%s' % (db_file))
-  model.BASE.metadata.create_all(engine)
+  db_model.BASE.metadata.create_all(engine)
   return engine
 
 
@@ -29,8 +29,8 @@ def create_accessor(db_file):
   Returns:
     A database accessor object.
   """
-  opts = db.DatabaseOptions('sqlite', None, None, db_file, None, None)
-  return db.Database(opts)
+  opts = db_accessor.DatabaseOptions('sqlite', None, None, db_file, None, None)
+  return db_accessor.DatabaseAccessor(opts)
 
 
 def new_data(start, end, topic_id, value_string, delta):
@@ -48,7 +48,7 @@ def new_data(start, end, topic_id, value_string, delta):
   cur = start
   data = []
   while cur <= end:
-    data.append(model.Datum(cur, topic_id, value_string))
+    data.append(db_model.TopicDatum(cur, topic_id, value_string))
     cur += delta
 
   return data
