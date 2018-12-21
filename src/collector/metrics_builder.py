@@ -43,7 +43,7 @@ def build_metrics(input_workbook, metrics_worksheet_name, topic_name_prefix):
     size = row[3].value
     scaling_factor = row[4].value
     data_type = DATA_TYPE_STR_TO_ENUM[row[5].value]
-    topic_name = topic_name_prefix + row[6].value
+    topic_name = topic_name_prefix + name
     result[name] = model.Metric(
       name, description, address, size, scaling_factor, data_type, topic_name)
 
