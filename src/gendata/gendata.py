@@ -148,7 +148,6 @@ def config_options_from_json(obj, topic_id_override=None,
     amplitude_sin = float(item.get('amplitude_sin', DEFAULT_AMPLITUDE_SIN))
     amplitude_offset = float(
       item.get('amplitude_offset', DEFAULT_AMPLITUDE_OFFSET))
-    spread = float(item.get('spread', DEFAULT_SPREAD))
 
     if topic_id_override:
       topic_id = topic_id_override
@@ -164,7 +163,7 @@ def config_options_from_json(obj, topic_id_override=None,
     if spread_override:
       spread = spread_override
     else:
-      spread = item.get('spread', DEFAULT_SPREAD)
+      spread = float(item.get('spread', DEFAULT_SPREAD))
 
     options.append(
       DataOptions(start, end, topic_id, topic_name, sample_rate, period,
@@ -178,6 +177,7 @@ def create_topic(topics, options):
 
   Args:
     topics: A dictionary of existing topics, keyed by the topic ID.
+    options: The configuration options for the current data generation run.
   """
   if options.topic_id in topics:
     return
@@ -240,6 +240,7 @@ def write_to_db(args, options, topics, data):
 
   Args:
     args: Arguments containing DB connectivity options.
+    options: The configuration options for the current data generation run.
     topics: A list of topics to be written.
     data: A list of data to be written.
   """

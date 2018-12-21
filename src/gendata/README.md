@@ -2,7 +2,7 @@
 
 ## Data Generation Tool
 
-This tool generates fake data for the Solar Power Monitor database. An input file containing data generation options is required, and should be a valid JSON file containing a list of dictionaries. A basic configuration, which generates one sample every 100 seconds from the function f(x) = 1, for one day, has the form:
+The gendata tool generates fake data for the Solar Power Monitor database. An input file containing data generation options is required, and should be a valid JSON file containing a list of dictionaries. A basic configuration, which generates one sample every 100 seconds from the function f(x) = 1, for one day, has the form:
 
 ```json
 [
@@ -27,7 +27,7 @@ Nearly any function can be approximated, since the tool generates data based on 
 To generate square wave data, run the following commands:
 
 ```bash
-$ scripts/db-gendata.sh -- --db_host=sqlite.db --input_file=src/db/gendata/sample-square.json
+$ python gendata --db_host=sqlite.db --input_file=src/db/gendata/sample-square.json
 ```
 
 ### Database Connectivity
@@ -37,7 +37,7 @@ By default, the tool will try to connect to a local, in-memory SQLite database. 
 To connect to a local, file-based SQLite database:
 
 ```bash
-(env) $ python gendata/gendata.py \
+(env) $ python gendata.py \
       --input_file=src/db/gendata/sample-cos.json \
       --db_host=/path/to/sqlite.db
 ```
@@ -45,8 +45,12 @@ To connect to a local, file-based SQLite database:
 To connect to a local MySQL installation:
 
 ```bash
-(env) $ python gendata/gendata.py \
+(env) $ python gendata.py \
       --input_file=src/db/gendata/sample-cos.json \
       --db_type=mysql+mysqlconnector \
       --db_host=localhost
 ```
+
+## Topic Generation Tool
+
+The gentopics tool creates the default set of UW solar topics for the Alder, Elm, Maple, and Mercer buildings.
