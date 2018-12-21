@@ -1,4 +1,4 @@
-"""A program that launches the UW Solar web server.
+"""A program that launches the UW Solar web server for a single solar panel.
 
 This launcher should only be used for development purposes. It is not suitable
 for production deployments. A WSGI container such as Green Unicorn or uWSGI, or
