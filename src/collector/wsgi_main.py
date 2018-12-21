@@ -13,7 +13,7 @@ queries a MySQL instance:
           -e UWSOLAR_PANEL_METRICS_WORKBOOK=maps/nexus-metrics.xlsx \
           -e UWSOLAR_PANEL_HOST=10.0.0.1 \
           -e UWSOLAR_PANEL_TOPIC_PREFIX=UW/Smithsonian/nexus_meter \
-          gunicorn_main:APP
+          gunicorn_main
 """
 import os
 from collector import api_server, metrics_builder, panel_accessor
@@ -55,4 +55,4 @@ def create_app():
   return api_server.ApiServer(db_con, panel_con).app()
 
 
-APP = create_app()
+application = create_app()
