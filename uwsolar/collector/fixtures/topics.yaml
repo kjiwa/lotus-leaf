@@ -1,0 +1,252 @@
+- model: collector.topic
+  pk: 1
+  fields: {topic_id: 8, topic_name: UW/Alder/eaton_meter/Angle_I_A}
+- model: collector.topic
+  pk: 2
+  fields: {topic_id: 11, topic_name: UW/Alder/eaton_meter/Angle_I_B}
+- model: collector.topic
+  pk: 3
+  fields: {topic_id: 5, topic_name: UW/Alder/eaton_meter/Angle_I_C}
+- model: collector.topic
+  pk: 4
+  fields: {topic_id: 20, topic_name: UW/Alder/eaton_meter/Angle_V_AN}
+- model: collector.topic
+  pk: 5
+  fields: {topic_id: 21, topic_name: UW/Alder/eaton_meter/Angle_V_BN}
+- model: collector.topic
+  pk: 6
+  fields: {topic_id: 19, topic_name: UW/Alder/eaton_meter/Angle_V_CN}
+- model: collector.topic
+  pk: 7
+  fields: {topic_id: 15, topic_name: UW/Alder/eaton_meter/Current_N}
+- model: collector.topic
+  pk: 8
+  fields: {topic_id: 17, topic_name: UW/Alder/eaton_meter/freq}
+- model: collector.topic
+  pk: 9
+  fields: {topic_id: 12, topic_name: UW/Alder/eaton_meter/pf}
+- model: collector.topic
+  pk: 10
+  fields: {topic_id: 10, topic_name: UW/Alder/eaton_meter/pf_A}
+- model: collector.topic
+  pk: 11
+  fields: {topic_id: 9, topic_name: UW/Alder/eaton_meter/pf_B}
+- model: collector.topic
+  pk: 12
+  fields: {topic_id: 13, topic_name: UW/Alder/eaton_meter/pf_C}
+- model: collector.topic
+  pk: 13
+  fields: {topic_id: 1, topic_name: UW/Alder/eaton_meter/VA}
+- model: collector.topic
+  pk: 14
+  fields: {topic_id: 16, topic_name: UW/Alder/eaton_meter/VAR}
+- model: collector.topic
+  pk: 15
+  fields: {topic_id: 3, topic_name: UW/Alder/eaton_meter/Voltage_AN}
+- model: collector.topic
+  pk: 16
+  fields: {topic_id: 7, topic_name: UW/Alder/eaton_meter/Voltage_BN}
+- model: collector.topic
+  pk: 17
+  fields: {topic_id: 4, topic_name: UW/Alder/eaton_meter/Voltage_CN}
+- model: collector.topic
+  pk: 18
+  fields: {topic_id: 14, topic_name: UW/Alder/eaton_meter/W}
+- model: collector.topic
+  pk: 19
+  fields: {topic_id: 2, topic_name: UW/Alder/eaton_meter/W_A}
+- model: collector.topic
+  pk: 20
+  fields: {topic_id: 18, topic_name: UW/Alder/eaton_meter/W_B}
+- model: collector.topic
+  pk: 21
+  fields: {topic_id: 6, topic_name: UW/Alder/eaton_meter/W_C}
+- model: collector.topic
+  pk: 22
+  fields: {topic_id: 29, topic_name: UW/Elm/eaton_meter/Angle_I_A}
+- model: collector.topic
+  pk: 23
+  fields: {topic_id: 32, topic_name: UW/Elm/eaton_meter/Angle_I_B}
+- model: collector.topic
+  pk: 24
+  fields: {topic_id: 26, topic_name: UW/Elm/eaton_meter/Angle_I_C}
+- model: collector.topic
+  pk: 25
+  fields: {topic_id: 41, topic_name: UW/Elm/eaton_meter/Angle_V_AN}
+- model: collector.topic
+  pk: 26
+  fields: {topic_id: 42, topic_name: UW/Elm/eaton_meter/Angle_V_BN}
+- model: collector.topic
+  pk: 27
+  fields: {topic_id: 40, topic_name: UW/Elm/eaton_meter/Angle_V_CN}
+- model: collector.topic
+  pk: 28
+  fields: {topic_id: 36, topic_name: UW/Elm/eaton_meter/Current_N}
+- model: collector.topic
+  pk: 29
+  fields: {topic_id: 38, topic_name: UW/Elm/eaton_meter/freq}
+- model: collector.topic
+  pk: 30
+  fields: {topic_id: 33, topic_name: UW/Elm/eaton_meter/pf}
+- model: collector.topic
+  pk: 31
+  fields: {topic_id: 31, topic_name: UW/Elm/eaton_meter/pf_A}
+- model: collector.topic
+  pk: 32
+  fields: {topic_id: 30, topic_name: UW/Elm/eaton_meter/pf_B}
+- model: collector.topic
+  pk: 33
+  fields: {topic_id: 34, topic_name: UW/Elm/eaton_meter/pf_C}
+- model: collector.topic
+  pk: 34
+  fields: {topic_id: 22, topic_name: UW/Elm/eaton_meter/VA}
+- model: collector.topic
+  pk: 35
+  fields: {topic_id: 37, topic_name: UW/Elm/eaton_meter/VAR}
+- model: collector.topic
+  pk: 36
+  fields: {topic_id: 24, topic_name: UW/Elm/eaton_meter/Voltage_AN}
+- model: collector.topic
+  pk: 37
+  fields: {topic_id: 28, topic_name: UW/Elm/eaton_meter/Voltage_BN}
+- model: collector.topic
+  pk: 38
+  fields: {topic_id: 25, topic_name: UW/Elm/eaton_meter/Voltage_CN}
+- model: collector.topic
+  pk: 39
+  fields: {topic_id: 35, topic_name: UW/Elm/eaton_meter/W}
+- model: collector.topic
+  pk: 40
+  fields: {topic_id: 23, topic_name: UW/Elm/eaton_meter/W_A}
+- model: collector.topic
+  pk: 41
+  fields: {topic_id: 39, topic_name: UW/Elm/eaton_meter/W_B}
+- model: collector.topic
+  pk: 42
+  fields: {topic_id: 27, topic_name: UW/Elm/eaton_meter/W_C}
+- model: collector.topic
+  pk: 43
+  fields: {topic_id: 50, topic_name: UW/Maple/eaton_meter/Angle_I_A}
+- model: collector.topic
+  pk: 44
+  fields: {topic_id: 53, topic_name: UW/Maple/eaton_meter/Angle_I_B}
+- model: collector.topic
+  pk: 45
+  fields: {topic_id: 47, topic_name: UW/Maple/eaton_meter/Angle_I_C}
+- model: collector.topic
+  pk: 46
+  fields: {topic_id: 62, topic_name: UW/Maple/eaton_meter/Angle_V_AN}
+- model: collector.topic
+  pk: 47
+  fields: {topic_id: 63, topic_name: UW/Maple/eaton_meter/Angle_V_BN}
+- model: collector.topic
+  pk: 48
+  fields: {topic_id: 61, topic_name: UW/Maple/eaton_meter/Angle_V_CN}
+- model: collector.topic
+  pk: 49
+  fields: {topic_id: 57, topic_name: UW/Maple/eaton_meter/Current_N}
+- model: collector.topic
+  pk: 50
+  fields: {topic_id: 59, topic_name: UW/Maple/eaton_meter/freq}
+- model: collector.topic
+  pk: 51
+  fields: {topic_id: 54, topic_name: UW/Maple/eaton_meter/pf}
+- model: collector.topic
+  pk: 52
+  fields: {topic_id: 52, topic_name: UW/Maple/eaton_meter/pf_A}
+- model: collector.topic
+  pk: 53
+  fields: {topic_id: 51, topic_name: UW/Maple/eaton_meter/pf_B}
+- model: collector.topic
+  pk: 54
+  fields: {topic_id: 55, topic_name: UW/Maple/eaton_meter/pf_C}
+- model: collector.topic
+  pk: 55
+  fields: {topic_id: 43, topic_name: UW/Maple/eaton_meter/VA}
+- model: collector.topic
+  pk: 56
+  fields: {topic_id: 58, topic_name: UW/Maple/eaton_meter/VAR}
+- model: collector.topic
+  pk: 57
+  fields: {topic_id: 45, topic_name: UW/Maple/eaton_meter/Voltage_AN}
+- model: collector.topic
+  pk: 58
+  fields: {topic_id: 49, topic_name: UW/Maple/eaton_meter/Voltage_BN}
+- model: collector.topic
+  pk: 59
+  fields: {topic_id: 46, topic_name: UW/Maple/eaton_meter/Voltage_CN}
+- model: collector.topic
+  pk: 60
+  fields: {topic_id: 56, topic_name: UW/Maple/eaton_meter/W}
+- model: collector.topic
+  pk: 61
+  fields: {topic_id: 44, topic_name: UW/Maple/eaton_meter/W_A}
+- model: collector.topic
+  pk: 62
+  fields: {topic_id: 60, topic_name: UW/Maple/eaton_meter/W_B}
+- model: collector.topic
+  pk: 63
+  fields: {topic_id: 48, topic_name: UW/Maple/eaton_meter/W_C}
+- model: collector.topic
+  pk: 64
+  fields: {topic_id: 71, topic_name: UW/Mercer/nexus_meter/Angle_I_A}
+- model: collector.topic
+  pk: 65
+  fields: {topic_id: 74, topic_name: UW/Mercer/nexus_meter/Angle_I_B}
+- model: collector.topic
+  pk: 66
+  fields: {topic_id: 68, topic_name: UW/Mercer/nexus_meter/Angle_I_C}
+- model: collector.topic
+  pk: 67
+  fields: {topic_id: 83, topic_name: UW/Mercer/nexus_meter/Angle_V_AN}
+- model: collector.topic
+  pk: 68
+  fields: {topic_id: 84, topic_name: UW/Mercer/nexus_meter/Angle_V_BN}
+- model: collector.topic
+  pk: 69
+  fields: {topic_id: 82, topic_name: UW/Mercer/nexus_meter/Angle_V_CN}
+- model: collector.topic
+  pk: 70
+  fields: {topic_id: 78, topic_name: UW/Mercer/nexus_meter/Current_N}
+- model: collector.topic
+  pk: 71
+  fields: {topic_id: 80, topic_name: UW/Mercer/nexus_meter/freq}
+- model: collector.topic
+  pk: 72
+  fields: {topic_id: 75, topic_name: UW/Mercer/nexus_meter/pf}
+- model: collector.topic
+  pk: 73
+  fields: {topic_id: 73, topic_name: UW/Mercer/nexus_meter/pf_A}
+- model: collector.topic
+  pk: 74
+  fields: {topic_id: 72, topic_name: UW/Mercer/nexus_meter/pf_B}
+- model: collector.topic
+  pk: 75
+  fields: {topic_id: 76, topic_name: UW/Mercer/nexus_meter/pf_C}
+- model: collector.topic
+  pk: 76
+  fields: {topic_id: 64, topic_name: UW/Mercer/nexus_meter/VA}
+- model: collector.topic
+  pk: 77
+  fields: {topic_id: 79, topic_name: UW/Mercer/nexus_meter/VAR}
+- model: collector.topic
+  pk: 78
+  fields: {topic_id: 66, topic_name: UW/Mercer/nexus_meter/Voltage_AN}
+- model: collector.topic
+  pk: 79
+  fields: {topic_id: 70, topic_name: UW/Mercer/nexus_meter/Voltage_BN}
+- model: collector.topic
+  pk: 80
+  fields: {topic_id: 67, topic_name: UW/Mercer/nexus_meter/Voltage_CN}
+- model: collector.topic
+  pk: 81
+  fields: {topic_id: 77, topic_name: UW/Mercer/nexus_meter/W}
+- model: collector.topic
+  pk: 82
+  fields: {topic_id: 65, topic_name: UW/Mercer/nexus_meter/W_A}
+- model: collector.topic
+  pk: 83
+  fields: {topic_id: 81, topic_name: UW/Mercer/nexus_meter/W_B}
+- model: collector.topic
+  pk: 84
+  fields: {topic_id: 69, topic_name: UW/Mercer/nexus_meter/W_C}

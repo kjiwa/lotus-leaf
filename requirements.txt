@@ -1,6 +1,4 @@
-alembic
-bottle
-jsmin
+Django
 openpyxl
 pymodbus
-sqlalchemy
+pyyaml
