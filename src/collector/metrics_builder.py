@@ -33,7 +33,7 @@ def build_metrics(input_workbook, metrics_worksheet_name, topic_name_prefix):
   ws = wb[metrics_worksheet_name]
 
   result = {}
-  for row in ws.iter_rows(row_offset=1):
+  for row in ws.iter_rows(min_row=2):
     name = row[0].value
     if not name:
       break
