@@ -11,3 +11,21 @@ The following scripts and utilities help manage and interact with the Solar Powe
 1. The ```gendata``` directory contains a tool that can be used to populate the database with sample data.
 2. The ```migration``` directory contains scripts that can be used to make incremental changes to the database schema.
 3. The ```sql``` directory contains sample SQL scripts that were used to create the original database schema.
+
+## Installation
+
+In a python3 environment do the following to get the collector up and running.
+
+`pip install -r requirements.txt`
+
+Navigate to the `src` directory and run the `main.py` file with the following arguments.
+
+- `panel_host` = The solar panel host address.
+- `panel_topic_prefix` = The solar panel topic prefix.
+- `panel_metrics_workbook` = The workbook containing solar panel metrics data.
+
+Example:
+
+```
+python main.py --panel_host=10.154.120.13 --panel_topic_prefix=UW/Mercer/nexus_meter --panel_metrics_workbook=collector/maps/nexus-metrics.xlsx
+```
