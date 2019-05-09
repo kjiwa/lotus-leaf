@@ -51,9 +51,10 @@ def create_app():
 
   # Initialize solar panel connection.
   panel_metrics = metrics_builder.build_metrics(
-    panel_metrics_workbook, panel_metrics_worksheet_name, panel_topic_prefix,
-    panel_modbus_retries, panel_modbus_retry_wait_time)
-  panel_con = panel_accessor.PanelAccessor(panel_host, panel_metrics)
+    panel_metrics_workbook, panel_metrics_worksheet_name, panel_topic_prefix)
+  panel_con = panel_accessor.PanelAccessor(
+    panel_host, panel_metrics, panel_modbus_retries,
+    panel_modbus_retry_wait_time)
 
   # Create application instance.
   return api_server.ApiServer(db_con, panel_con).app()
