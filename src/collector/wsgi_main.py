@@ -40,6 +40,9 @@ def create_app():
     'UWSOLAR_PANEL_METRICS_WORKSHEET_NAME', 'Metrics')
   panel_topic_prefix = os.environ.get('UWSOLAR_PANEL_TOPIC_PREFIX')
   panel_host = os.environ.get('UWSOLAR_PANEL_HOST')
+  panel_modbus_retries = os.environ.get('UWSOLAR_PANEL_MODBUS_RETRIES', 3)
+  panel_modbus_retry_wait_time = os.environ.get(
+    'UWSOLAR_PANEL_MODBUS_RETRY_WAIT_TIME', 1)
 
   # Initialize database connection.
   db_opts = db_accessor.DatabaseOptions(db_type, db_user, db_password, db_host,
@@ -48,7 +51,8 @@ def create_app():
 
   # Initialize solar panel connection.
   panel_metrics = metrics_builder.build_metrics(
-    panel_metrics_workbook, panel_metrics_worksheet_name, panel_topic_prefix)
+    panel_metrics_workbook, panel_metrics_worksheet_name, panel_topic_prefix,
+    panel_modbus_retries, panel_modbus_retry_wait_time)
   panel_con = panel_accessor.PanelAccessor(panel_host, panel_metrics)
 
   # Create application instance.

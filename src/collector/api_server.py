@@ -56,7 +56,7 @@ class ApiServer:
     Returns:
       The current value of the metric.
     """
-    name = bottle.request.query['name']
+    name = bottle.request.query.get('name', None)
     if not name or not self._panel_con.has_metric(name):
       raise bottle.HTTPError(400)
 

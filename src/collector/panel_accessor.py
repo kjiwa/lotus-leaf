@@ -6,8 +6,10 @@ heterogeneous, so register mappings for each different configuration are
 provided in Excel spreadsheets.
 """
 
+import time
 from pymodbus.client.sync import ModbusTcpClient
 from pymodbus.constants import Endian
+from pymodbus.exceptions import ConnectionException
 from pymodbus.payload import BinaryPayloadDecoder
 from collector import model
 
@@ -32,15 +34,19 @@ DATA_TYPE_TO_DECODER_MAP = {
 class PanelAccessor:
   """A data accessor for solar panels."""
 
-  def __init__(self, host, metrics):
+  def __init__(self, host, metrics, retries, retry_wait_time):
     """Creates a new solar panel accessor.
 
     Args:
       host: The TCP host.
       metrics: A mapping of metric names to metric metadata for this panel.
+      retries: The number of times to retry a Modbus RPC.
+      retry_wait_time: The delay in seconds between Modbus RPC retries.
     """
     self._modbus_client = ModbusTcpClient(host)
     self._metrics = metrics
+    self._retries = retries
+    self._retry_wait_time = retry_wait_time
 
   @property
   def metrics(self):
@@ -71,10 +77,19 @@ class PanelAccessor:
       The current value of the metric.
     """
     metric = self._metrics[name]
-    result = self._modbus_client.read_holding_registers(
-      metric.address, metric.size, unit=0x01)
+    for i in range(0, self._retries):
+      result = None
+      try:
+        result = self._modbus_client.read_holding_registers(
+          metric.address, metric.size, unit=0x01)
+      except ConnectionException as e:
+        if i == self._retries - 1:
+          raise e
 
-    decoder = BinaryPayloadDecoder.fromRegisters(
-      result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
-    decoded_value = DATA_TYPE_TO_DECODER_MAP[metric.data_type](decoder)
-    return decoded_value * metric.scaling_factor
+        time.sleep(self._retry_wait_time)
+        continue
+
+      decoder = BinaryPayloadDecoder.fromRegisters(
+        result.registers, byteorder=Endian.Big, wordorder=Endian.Big)
+      decoded_value = DATA_TYPE_TO_DECODER_MAP[metric.data_type](decoder)
+      return decoded_value * metric.scaling_factor

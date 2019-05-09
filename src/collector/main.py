@@ -21,6 +21,8 @@ DEFAULT_DB_HOST = ':memory:'
 DEFAULT_DB_NAME = 'uwsolar'
 DEFAULT_DB_POOL_SIZE = 3
 DEFAULT_PANEL_METRICS_WORKSHEET_NAME = 'Metrics'
+DEFAULT_PANEL_MODBUS_RETRIES = 3
+DEFAULT_PANEL_MODBUS_RETRY_WAIT_TIME = 1
 
 
 def parse_arguments():
@@ -78,6 +80,13 @@ def parse_arguments():
     '--panel_metrics_worksheet_name',
     default=DEFAULT_PANEL_METRICS_WORKSHEET_NAME,
     help='The name of the worksheet containing metrics data.')
+  panel_group.add_argument(
+    '--panel_modbus_retries', default=DEFAULT_PANEL_MODBUS_RETRIES,
+    help='The number of times to retry Modbus RPCs.')
+  panel_group.add_argument(
+    '--panel_modbus_retry_wait_time',
+    default=DEFAULT_PANEL_MODBUS_RETRY_WAIT_TIME,
+    help='The delay in seconds to wait between Modbus RPC retries.')
 
   return parser.parse_args()
 
@@ -97,7 +106,9 @@ def main():
   panel_metrics = metrics_builder.build_metrics(
     args.panel_metrics_workbook, args.panel_metrics_worksheet_name,
     args.panel_topic_prefix)
-  panel_con = panel_accessor.PanelAccessor(args.panel_host, panel_metrics)
+  panel_con = panel_accessor.PanelAccessor(
+    args.panel_host, panel_metrics, args.panel_modbus_retries,
+    args.panel_modbus_retry_wait_time)
 
   # Initialize and run API server.
   app = api_server.ApiServer(db_con, panel_con).app()
