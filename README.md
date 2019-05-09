@@ -26,6 +26,11 @@ Navigate to the `src` directory and run the `main.py` file with the following ar
 
 Example:
 
-```
-python main.py --panel_host=10.154.120.13 --panel_topic_prefix=UW/Mercer/nexus_meter --panel_metrics_workbook=collector/maps/nexus-metrics.xlsx
+```bash
+$ cd lotus-leaf
+$ python3 -m venv env
+$ source env/bin/activate
+(env)$ pip install -r requirements.txt
+(env)$ cd src
+(env)$ PYTHONPATH=. python collector/main.py --panel_host=10.154.120.13 --panel_topic_prefix=UW/Mercer/nexus_meter --panel_metrics_workbook=collector/maps/nexus-metrics.xlsx
 ```
