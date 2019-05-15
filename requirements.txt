@@ -1,6 +1,7 @@
 alembic
 bottle
 jsmin
+mysql-connector-python
 openpyxl
 pymodbus
 sqlalchemy

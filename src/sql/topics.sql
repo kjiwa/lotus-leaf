@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `topics`;
 
 CREATE TABLE `topics` (
-  `topic_id` int(11) NOT NULL,
+  `topic_id` int(11) NOT NULL AUTO_INCREMENT,
   `topic_name` varchar(512) NOT NULL,
   PRIMARY KEY (`topic_id`),
   UNIQUE (`topic_name`)
