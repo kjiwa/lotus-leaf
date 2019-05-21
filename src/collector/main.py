@@ -115,8 +115,8 @@ def main():
   for _, metric_info in panel_metrics.items():
     topic_name = getattr(metric_info, 'topic_name')
     if not db_con.topic_exists(topic_name):
-      # Set the id of the topic to be None. This responsibility should be
-      # handled by the database.
+      # Set the id of the topic to be None. The responsibility of assigning an id
+      # should be handled by the database.
       topic = db_model.Topic(None, topic_name)
       topics_to_add.append(topic)
 
