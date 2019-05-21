@@ -26,8 +26,7 @@ class ApiServer:
     routes = [
       Route('GET', '/ping', ApiServer.ping),
       Route('GET', '/metric', self.get_metric),
-      Route('POST', '/collect', self.collect),
-      Route('POST', '/addtopic', self.add_topic),
+      Route('POST', '/collect', self.collect)
     ]
     for route in routes:
       self._app.route(route.path, method=route.method, callback=route.callback)
@@ -103,40 +102,3 @@ class ApiServer:
               for m in metrics.values()]
       self._db_con.write_data(data)
       time.sleep(wait_time)
-
-  def add_topic(self):
-    # On the situation where a new solar panel is introduced, this method
-    # adds the corresponding topic names to the database.
-    topic_names = [
-      "Voltage_AN",
-      "Voltage_BN",
-      "Voltage_CN",
-      "Current_N",
-      "VA",
-      "VAR",
-      "W_A",
-      "W_B",
-      "W_C",
-      "W",
-      "freq",
-      "pf_A",
-      "pf_B",
-      "pf_C",
-      "pf",
-      "Angle_V_AN",
-      "Angle_V_BN",
-      "Angle_V_CN",
-      "Angle_I_A",
-      "Angle_I_B",
-      "Angle_I_C"
-    ]
-
-    meter_name = bottle.request.query.get('meter_name', None)
-    if meter_name is None:
-      raise bottle.HTTPError(400)
-
-    data = [db_model.Topic(None, ("%s/%s") % (meter_name, topic)) for topic in topic_names]
-    self._db_con.write_data(data)
-
-    bottle.response.content_type = 'text/plain'
-    return ("%s topics added.") % (len(data))

@@ -6,6 +6,7 @@ import sqlalchemy
 import sqlalchemy.orm
 import sqlalchemy.sql.expression
 from db import db_model
+from sqlalchemy.sql import exists
 
 SQLITE_MAX_INT = sys.maxsize
 
@@ -107,6 +108,23 @@ class DatabaseAccessor:
     s = sqlalchemy.orm.Session(self.engine)
     try:
       result = s.query(db_model.Topic).all()
+      return result
+    finally:
+      s.close()
+
+  def topic_exists(self, topic_name):
+    """Returns whether a topic with the given topic name exists.
+
+    Args:
+      topic_name: The potential name of a topic.
+
+    Returns:
+      True if a topic with the given name exists in the database.
+      False otherwise.
+    """
+    s = sqlalchemy.orm.Session(self.engine)
+    try:
+      result = s.query(exists().where(db_model.Topic.topic_name == topic_name)).scalar()
       return result
     finally:
       s.close()
