@@ -23,6 +23,20 @@ class ApiServer:
     self._db_con = db_con
     self._panel_con = panel_con
 
+    # Add any topics that may not already exist in the database.
+    topics_to_add = []
+    panel_metrics = panel_con.metrics
+    for metric in panel_metrics:
+      topic_name = panel_metrics[metric].topic_name
+      if not db_con.topic_exists(topic_name):
+        # Set the id of the topic to be None. The responsibility of assigning an id
+        # should be handled by the database.
+        topic = db_model.Topic(None, topic_name)
+        topics_to_add.append(topic)
+
+    if topics_to_add:
+      db_con.write_data(topics_to_add)
+
     routes = [
       Route('GET', '/ping', ApiServer.ping),
       Route('GET', '/metric', self.get_metric),

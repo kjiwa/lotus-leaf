@@ -10,7 +10,7 @@ import argparse
 import bottle
 import logging
 from collector import api_server, metrics_builder, panel_accessor
-from db import db_accessor, db_model
+from db import db_accessor
 
 DEFAULT_HTTP_SERVER_HOST = '0.0.0.0'
 DEFAULT_HTTP_SERVER_PORT = 8080
@@ -109,19 +109,6 @@ def main():
   panel_con = panel_accessor.PanelAccessor(
     args.panel_host, panel_metrics, args.panel_modbus_retries,
     args.panel_modbus_retry_wait_time)
-
-  # Add any topics that may not already exist in the database.
-  topics_to_add = []
-  for _, metric_info in panel_metrics.items():
-    topic_name = getattr(metric_info, 'topic_name')
-    if not db_con.topic_exists(topic_name):
-      # Set the id of the topic to be None. The responsibility of assigning an id
-      # should be handled by the database.
-      topic = db_model.Topic(None, topic_name)
-      topics_to_add.append(topic)
-
-  if topics_to_add:
-    db_con.write_data(topics_to_add)
 
   # Initialize and run API server.
   app = api_server.ApiServer(db_con, panel_con).app()
