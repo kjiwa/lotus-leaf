@@ -23,19 +23,7 @@ class ApiServer:
     self._db_con = db_con
     self._panel_con = panel_con
 
-    # Add any topics that may not already exist in the database.
-    topics_to_add = []
-    panel_metrics = panel_con.metrics
-    for metric in panel_metrics:
-      topic_name = panel_metrics[metric].topic_name
-      if not db_con.topic_exists(topic_name):
-        # Set the id of the topic to be None. The responsibility of assigning an id
-        # should be handled by the database.
-        topic = db_model.Topic(None, topic_name)
-        topics_to_add.append(topic)
-
-    if topics_to_add:
-      db_con.write_data(topics_to_add)
+    self.init_topics()
 
     routes = [
       Route('GET', '/ping', ApiServer.ping),
@@ -48,6 +36,24 @@ class ApiServer:
   def app(self):
     """Returns a reference to the WSGI application."""
     return self._app
+
+  def init_topics(self):
+    """Adds the current panel connection's topics to the database if they don't already exist.
+
+    If they do exist, do nothing.
+    """
+    topics_to_add = []
+    panel_metrics = self._panel_con.metrics
+    for metric in panel_metrics:
+      topic_name = panel_metrics[metric].topic_name
+      if not self._db_con.topic_exists(topic_name):
+        # Set the id of the topic to be None. The responsibility of assigning an id
+        # should be handled by the database.
+        topic = db_model.Topic(None, topic_name)
+        topics_to_add.append(topic)
+
+    if topics_to_add:
+      self._db_con.write_data(topics_to_add)
 
   @staticmethod
   def ping():

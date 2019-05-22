@@ -107,8 +107,7 @@ class DatabaseAccessor:
     """
     s = sqlalchemy.orm.Session(self.engine)
     try:
-      result = s.query(db_model.Topic).all()
-      return result
+      return s.query(db_model.Topic).all()
     finally:
       s.close()
 
@@ -124,8 +123,7 @@ class DatabaseAccessor:
     """
     s = sqlalchemy.orm.Session(self.engine)
     try:
-      result = s.query(exists().where(db_model.Topic.topic_name == topic_name)).scalar()
-      return result
+      return s.query(exists().where(db_model.Topic.topic_name == topic_name)).scalar()
     finally:
       s.close()
 
