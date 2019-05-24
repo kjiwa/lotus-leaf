@@ -38,22 +38,12 @@ class ApiServer:
     return self._app
 
   def init_topics(self):
-    """Adds the current panel connection's topics to the database if they don't already exist.
-
-    If they do exist, do nothing.
-    """
-    topics_to_add = []
-    panel_metrics = self._panel_con.metrics
-    for metric in panel_metrics:
-      topic_name = panel_metrics[metric].topic_name
-      if not self._db_con.topic_exists(topic_name):
-        # Set the id of the topic to be None. The responsibility of assigning an id
-        # should be handled by the database.
-        topic = db_model.Topic(None, topic_name)
-        topics_to_add.append(topic)
-
-    if topics_to_add:
-      self._db_con.write_data(topics_to_add)
+    """Adds the current panel connection's topics to the database."""
+    topics = [db_model.Topic(None, m.topic_name)
+              for m in self._panel_con.metrics.values()
+              if not self._db_con.topic_exists(m.topic_name)]
+    if topics:
+      self._db_con.write_topics(topics)
 
   @staticmethod
   def ping():
