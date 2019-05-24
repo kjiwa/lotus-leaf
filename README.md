@@ -15,8 +15,8 @@ The daemon exposes three HTTP endpoints:
 | POST /collect | Begins a data collection cycle                |
 
 Currently an external process (e.g. a cron job) is required to trigger a data
-collection cycle by calling "POST /collect." In the future, this functionality
-may be integrated into the daemon directly.
+collection cycle by calling "POST /collect." In the future this functionality
+may be integrated directly into the daemon.
 
 ## Meter Support
 
