@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Energy Meter Data Collector (EMDC) is a daemon that connect to an energy
+The Energy Meter Data Collector (EMDC) is a daemon that connects to an energy
 meter over a network using the Modbus TCP protocol. It was designed to
 periodically query a meter for a set of metrics and record them to a database.
 
