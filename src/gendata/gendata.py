@@ -39,7 +39,7 @@ An example configuration that generates the line, y = 1 +/- 0.1, for one day is:
 ]
 """
 import argparse
-import collections
+import dataclasses
 import datetime
 import json
 import logging
@@ -57,11 +57,19 @@ DEFAULT_AMPLITUDE_SIN = 0
 DEFAULT_AMPLITUDE_OFFSET = 0
 DEFAULT_SPREAD = 0.05
 
-DataOptions = collections.namedtuple('DataOptions',
-                                     ['start', 'end', 'topic_id', 'topic_name',
-                                      'sample_rate', 'period', 'amplitude_cos',
-                                      'amplitude_sin', 'amplitude_offset',
-                                      'spread'])
+
+@dataclasses.dataclass(frozen=True)
+class DataOptions:
+  start: datetime.datetime
+  end: datetime.datetime
+  topic_id: int
+  topic_name: str
+  sample_rate: float
+  period: int
+  amplitude_cos: float
+  amplitude_sin: float
+  amplitude_offset: float
+  spread: float
 
 
 def parse_arguments():

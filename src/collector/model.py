@@ -1,6 +1,6 @@
 """Object model definitions for solar panels."""
 
-import collections
+import dataclasses
 import enum
 
 
@@ -30,6 +30,12 @@ class MetricDataType(enum.Enum):
 #   scaling_factor: The scaling factor to apply to the metric value.
 #   data_type: The metric data type.
 #   topic_name: The topic name.
-Metric = collections.namedtuple(
-  'Metric', ['name', 'description', 'address', 'size', 'scaling_factor',
-             'data_type', 'topic_name'])
+@dataclasses.dataclass(frozen=True)
+class Metric:
+  name: str
+  description: str
+  address: int
+  size: int
+  scaling_factor: float
+  data_type: str
+  topic_name: str

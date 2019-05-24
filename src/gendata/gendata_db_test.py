@@ -19,7 +19,10 @@ class GendataDbTestCase(unittest.TestCase):
 
   def tearDown(self):
     """Removes the temporary database file."""
-    os.unlink(self.db_file)
+    try:
+      os.unlink(self.db_file)
+    except PermissionError:
+      pass
 
   def test_write_to_db(self):
     """Test that topics and data can be written to the DB."""

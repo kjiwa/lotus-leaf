@@ -1,6 +1,6 @@
 """A module containing a SQL database connection handler."""
 
-import collections
+import dataclasses
 import sys
 import sqlalchemy
 import sqlalchemy.orm
@@ -9,10 +9,16 @@ from db import db_model
 
 SQLITE_MAX_INT = sys.maxsize
 
+
 # An object containing database options.
-DatabaseOptions = collections.namedtuple(
-  'DatabaseOptions',
-  ['db_type', 'user', 'password', 'host', 'database', 'pool_size'])
+@dataclasses.dataclass(frozen=True)
+class DatabaseOptions:
+  db_type: str
+  user: str
+  password: str
+  host: str
+  database: str
+  pool_size: int
 
 
 class DatabaseAccessor:
