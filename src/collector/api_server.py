@@ -29,27 +29,30 @@ class ApiServer:
     self._db_con = db_con
     self._panel_con = panel_con
 
-    self.init_topics()
+    self._init_routes()
+    self._init_topics()
 
+  def _init_routes(self):
     routes = [
       Route('GET', '/ping', ApiServer.ping),
       Route('GET', '/metric', self.get_metric),
       Route('POST', '/collect', self.collect)
     ]
+
     for route in routes:
       self._app.route(route.path, method=route.method, callback=route.callback)
 
-  def app(self):
-    """Returns a reference to the WSGI application."""
-    return self._app
-
-  def init_topics(self):
+  def _init_topics(self):
     """Adds the current panel connection's topics to the database."""
     topics = [db_model.Topic(None, m.topic_name)
               for m in self._panel_con.metrics.values()
               if not self._db_con.topic_exists(m.topic_name)]
     if topics:
       self._db_con.write_topics(topics)
+
+  def app(self):
+    """Returns a reference to the WSGI application."""
+    return self._app
 
   @staticmethod
   def ping():
