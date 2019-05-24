@@ -1,12 +1,18 @@
 """The UW Solar API server."""
 
-import collections
+import dataclasses
 import datetime
 import time
+import typing
 import bottle
 from db import db_model
 
-Route = collections.namedtuple('Route', ['method', 'path', 'callback'])
+
+@dataclasses.dataclass(frozen=True)
+class Route:
+  method: str
+  path: str
+  callback: typing.Callable
 
 
 class ApiServer:
