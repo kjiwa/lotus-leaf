@@ -72,7 +72,7 @@ def parse_arguments():
     '--panel_host', required=True, help='The solar panel host address.')
   panel_group.add_argument(
     '--panel_topic_prefix', required=True,
-    help='The solar panel topic prefix (e.g. UW/Mercer).')
+    help='The solar panel topic prefix (e.g. UW/Mercer/nexus_meter).')
   panel_group.add_argument(
     '--panel_metrics_workbook', required=True,
     help='The workbook containing solar panel metrics data.')
