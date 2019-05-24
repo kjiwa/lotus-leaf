@@ -23,6 +23,8 @@ class ApiServer:
     self._db_con = db_con
     self._panel_con = panel_con
 
+    self.init_topics()
+
     routes = [
       Route('GET', '/ping', ApiServer.ping),
       Route('GET', '/metric', self.get_metric),
@@ -35,12 +37,30 @@ class ApiServer:
     """Returns a reference to the WSGI application."""
     return self._app
 
+  def init_topics(self):
+    """Adds the current panel connection's topics to the database if they don't already exist.
+
+    If they do exist, do nothing.
+    """
+    topics_to_add = []
+    panel_metrics = self._panel_con.metrics
+    for metric in panel_metrics:
+      topic_name = panel_metrics[metric].topic_name
+      if not self._db_con.topic_exists(topic_name):
+        # Set the id of the topic to be None. The responsibility of assigning an id
+        # should be handled by the database.
+        topic = db_model.Topic(None, topic_name)
+        topics_to_add.append(topic)
+
+    if topics_to_add:
+      self._db_con.write_data(topics_to_add)
+
   @staticmethod
   def ping():
     """Returns a ping response.
 
     For now, this method always returns success as long as the server is
-    active. In the future, this may be extneded to perform more extensive
+    active. In the future, this may be extended to perform more extensive
     health checks, such as to ensure that dependent services are available
     (e.g. the database and solar panel).
     """
