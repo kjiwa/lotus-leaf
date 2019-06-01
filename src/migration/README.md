@@ -1,18 +1,20 @@
-# Energy Meter Data Collector
+# UW Solar Power Monitor
 
-## Database Migration Scripts
+## Energy Meter Data Collector
+
+### Database Migration Scripts
 
 Database migration scripts allow changes to database schemas to be rolled out
 incrementally and gracefully. We use the Alembic toolkit
 (http://alembic.zzzcomputing.com/en/latest/) for changes to the EMDC schema.
 
-### Requirements
+#### Requirements
 
 Python 3 must be present before DB migration can occur. All databases supported
 by SQLAlchemy are supported, though MariaDB/MySQL and SQLite3 are given primary
 support in our application.
 
-### Running
+#### Running
 
 The script, `migrate.py`, sets up the Python environment and passes custom DB
 flags to Alembic.
@@ -31,7 +33,7 @@ Alembic.
 The key command being executed is ```alembic upgrade head```, which inspects
 the database and applies any updates required to make it current.
 
-### Options
+#### Options
 
 By default, the DB migration scripts are configured to connect to SQLite with
 the following connection string:

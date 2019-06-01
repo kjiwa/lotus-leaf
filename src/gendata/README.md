@@ -1,6 +1,8 @@
-# Energy Meter Data Collector
+# UW Solar Power Monitor
 
-## Data Generation Tool
+## Energy Meter Data Collector
+
+### Data Generation Tool
 
 The gendata tool generates fake data for the EMDC database. An input file
 containing data generation options is required, and should be a valid JSON file
@@ -27,7 +29,7 @@ Fourier series coefficients (i.e. by using the `amplitude_cos` and
 `amplitude_sin` options. Sample scripts showing square waves, sawtooth waves,
 and simple cosines are included.
 
-### Quick Start
+#### Quick Start
 
 To generate square wave data, run the following commands:
 
@@ -35,7 +37,7 @@ To generate square wave data, run the following commands:
 $ python gendata --db_host=sqlite.db --input_file=src/gendata/sample-square.json
 ```
 
-### Database Connectivity
+#### Database Connectivity
 
 By default, the tool will try to connect to a local, in-memory SQLite database.
 Database connectivity can be configured using the same set of flags present in
@@ -58,7 +60,7 @@ To connect to a local MySQL installation:
       --db_host=localhost
 ```
 
-## Topic Generation Tool
+### Topic Generation Tool
 
 The gentopics tool creates the default set of UW solar topics for the Alder,
 Elm, Maple, and Mercer buildings.

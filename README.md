@@ -1,6 +1,8 @@
-# Energy Meter Data Collector
+# UW Solar Power Monitor
 
-## Overview
+## Energy Meter Data Collector
+
+### Overview
 
 The Energy Meter Data Collector (EMDC) is a daemon that connects to an energy
 meter over a network using the Modbus TCP protocol. It was designed to
@@ -18,7 +20,7 @@ Currently an external process (e.g. a cron job) is required to trigger a data
 collection cycle by calling "POST /collect." In the future this functionality
 may be integrated directly into the daemon.
 
-## Meter Support
+### Meter Support
 
 The Eaton Power Xpert Meter 4000 and Nexus 1272 meters are presently
 supported. Support for additional meters can be added by creating spreadsheets
@@ -36,7 +38,7 @@ Nexus 1272 meter. The metric is two registers in length and should be
 interpreted as a 32-bit integer. The value must be multiplied by a scaling
 factor to be converted to its true value.
 
-## Database Utilities
+### Database Utilities
 
 The following scripts and utilities help manage the EMDC database:
 
@@ -47,9 +49,9 @@ incremental changes to the database schema.
 3. The ```sql``` directory contains sample SQL scripts that were used to create
 the original database schema.
 
-## Installation
+### Installation
 
-### Virtual Environment
+#### Virtual Environment
 
 EMDC depends on several third-party libraries. These libraries should be
 installed in a virtual environment.
@@ -62,7 +64,7 @@ $ source env/bin/activate
 (env) $ pip install -r requirements.txt
 ```
 
-### Database Setup
+#### Database Setup
 
 EDMC defaults to using an in-memory SQLite database. This is so that an
 instance of the daemon can be run easily out of the box. Developers may also
@@ -82,9 +84,9 @@ The following command can be used to prepare a MySQL database:
 (env) migration$ python migrate.py --db_type=mysql+mysqlconnector --db_host=localhost
 ```
 
-## Deployment
+### Deployment
 
-### Development
+#### Development
 
 A command line client is made available for developers. The client uses the web
 server built into the Bottle framework. This server is not considered
@@ -105,7 +107,7 @@ The following parameters are needed to run EMDC:
     --panel_metrics_workbook=collector/maps/nexus-metrics.xlsx
 ```
 
-### Production
+#### Production
 
 It is recommended that a WSGI application server such as uWSGI be used to
 deploy EMDC in production. The file `wsgi_main.py` serves as an entrypoint
